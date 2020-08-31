@@ -1,0 +1,15 @@
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\WallBrite.exe.config
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\WallBrite.exe
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\WallBrite.pdb
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csprojAssemblyReference.cache
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\MainWindow.g.cs
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\App.g.cs
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.cache
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.lref
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\MainWindow.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.g.resources
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.Properties.Resources.resources
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.GenerateResource.cache
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CoreCompileInputs.cache
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.exe
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.pdb
