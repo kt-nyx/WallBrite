@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,26 +29,30 @@ namespace WallBrite
 
         private void Test_Click(object sender, RoutedEventArgs e)
         {
-            Bitmap darkImage = new Bitmap(@"D:\bright.jpg");
-
-            Color pixelColor;
-            float averageBrightness = 0;
-            int widthLog = Convert.ToInt32(Math.Log(darkImage.Width));
-            int heightLog = Convert.ToInt32(Math.Log(darkImage.Height));
-
-            // Dark image average brightness test
-            for (int x = 0; x < darkImage.Width; x += widthLog)
+            // Create OpenFileDialog to browse files
+            OpenFileDialog dialog = new OpenFileDialog
             {
-                for (int y = 0; y < darkImage.Height; y+= heightLog)
+
+                // Filter dialog to only show supported image types (or all files)
+                Filter = "Images|*.jpg; *.png; *.gif; *.bmp; *.exif; *.tiff" +
+                            "|All Files|*.*",
+
+                // Set dialog to select multiple files
+                Multiselect = true
+            };
+
+            // If user clicked OK (not Cancel) in file dialog
+            if (dialog.ShowDialog() == true) {
+                // Create stream from selected file
+                Stream[] fileStreams = dialog.OpenFiles();
+
+                // 
+                foreach (Stream stream in fileStreams)
                 {
-                    pixelColor = darkImage.GetPixel(x, y);
-                    averageBrightness += pixelColor.GetBrightness();
+                    WBImage image = new WBImage(stream);
                 }
+                
             }
-
-            // averageBrightness /= darkImage.Width * darkImage.Height;
-            averageBrightness /= (darkImage.Width / widthLog) * (darkImage.Height / heightLog);
-
         }
     }
 }
