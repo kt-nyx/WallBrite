@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Click="Test_Click">Dew it!</Button>
-    </Grid>
+    <StackPanel>
+        <Button Click="Add_Files">Add Files</Button>
+        <Button Click="Add_Folder">Add Folder</Button>
+    </StackPanel>
 </Window>
