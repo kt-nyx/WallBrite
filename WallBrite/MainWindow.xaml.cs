@@ -47,13 +47,13 @@ namespace WallBrite
 
         private void Add_Folder(object sender, RoutedEventArgs e)
         {
-            // Create OpenFileDialog to browse files
+            // Create FolderBrowserDialog to browse folders
             WinForms.FolderBrowserDialog dialog = new WinForms.FolderBrowserDialog();
 
             // If user clicked OK (not Cancel) in folder dialog
             if (dialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                // Create stream from selected file
+                // Get path string from selected path
                 string folderPath = dialog.SelectedPath;
 
                 // TODO: add try catch for possible exceptions of getfiles; pathtoolong??
@@ -69,8 +69,8 @@ namespace WallBrite
                                                         || filePath.EndsWith(".exif")
                                                         || filePath.EndsWith(".tiff"));
 
-                // Loop over each filePath in the array of filePaths (over each file in selected folder and
-                // all subfolders)
+                // Loop over each filePath in the array of filePaths (over each file in
+                // selected folder/subfolders)
                 foreach (string filePath in filePaths)
                 {
                     // TODO: add try catch for possible exceptions
