@@ -13,3 +13,18 @@ D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.Generat
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CoreCompileInputs.cache
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.exe
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\WallBrite.exe.config
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\WallBrite.exe
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\WallBrite.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csprojAssemblyReference.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\MainWindow.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\App.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.lref
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\MainWindow.baml
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.g.resources
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.Properties.Resources.resources
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.GenerateResource.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CoreCompileInputs.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.exe
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.pdb
