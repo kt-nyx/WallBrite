@@ -24,7 +24,7 @@ namespace WallBrite
         /// <summary>
         /// Creation date of this WBImage
         /// </summary>
-        public DateTime CreationDate { get; private set; }
+        public DateTime AddedDate { get; private set; }
 
         /// <summary>
         /// Thumbnail image for use in library UI
@@ -32,11 +32,17 @@ namespace WallBrite
         public Image Thumbnail { get; private set; }
 
         /// <summary>
-        /// Creates WBImage using image from given stream; 
-        /// calculates its average brightness, creates a proportionate thumbnail, sets creation date
+        /// Path to the original image
+        /// </summary>
+        public string Path { get; private set; }
+
+        /// <summary>
+        /// Creates WBImage using image from given stream and file path
+        /// Calculates its average brightness, creates a proportionate thumbnail, sets creation date, and
+        /// stores the given path to the original file
         /// </summary>
         /// <param name="stream"></param>
-        public WBImage(Stream stream)
+        public WBImage(Stream stream, string path)
         {
             // Create bitmap using image from given stream
             _image = new Bitmap(stream);
@@ -59,54 +65,25 @@ namespace WallBrite
             CalculateAverageBrightness();
 
             // Set creation date
-            CreationDate = DateTime.Now;
+            AddedDate = DateTime.Now;
+
+            // Set enabled true by default
+            Enabled = true;
+
+            // Set the path
+            Path = path;
         }
 
-        // FIXME: overloads on the chopping block
-        ///// <summary>
-        ///// Creates WBImage using given Bitmap image
-        ///// </summary>
-        ///// <param name="bitmap"></param>
-        //public WBImage(Bitmap bitmap)
-        //{
-        //    // Create bitmap using given Bitmap image
-        //    _image = bitmap;
-
-        //    // Create thumbnail
-        //    Thumbnail = _image.GetThumbnailImage(200,
-        //    200 * _image.Height / _image.Width, null, IntPtr.Zero);
-
-        //    // Calculate and set average brightness of this WBImage
-        //    CalculateAverageBrightness();
-        //}
-
-        ///// <summary>
-        ///// Creates WBImage using image at given path
-        ///// </summary>
-        ///// <param name="path"></param>
-        //public WBImage(string path)
-        //{
-        //    // Create bitmap using image at given path
-        //    _image = new Bitmap(@path);
-
-        //    // Create thumbnail
-        //    Thumbnail = _image.GetThumbnailImage(200,
-        //    200 * _image.Height / _image.Width, null, IntPtr.Zero);
-
-        //    // Calculate and set average brightness of this WBImage
-        //    CalculateAverageBrightness();
-        //}
-
         /// <summary>
-        /// Returns the average brightness level (from fully black at 0.0 to fully white at 1.0) of given
-        /// bitmap image (approximated for efficiency)
+        /// Sets and returns average brightness level (from fully black at 0.0 to fully white at 1.0) of this
+        /// WBImage
         /// </summary>
         /// <param name="bitmap"></param>
         /// <returns>Average brightness level of given bitmap image</returns>
         public float CalculateAverageBrightness()
         {
             // Brightness value to be summed and averaged
-            float averageBrightness = 0;
+            AverageBrightness = 0;
 
             // Get log of width and height of image; to be used when looping over pixels to
             // increase efficiency
@@ -123,59 +100,14 @@ namespace WallBrite
                     // For every sampled pixel, get the color value of the pixel and add its brightness to
                     // the running sum
                     Color pixelColor = _image.GetPixel(x, y);
-                    averageBrightness += pixelColor.GetBrightness();
+                    AverageBrightness += pixelColor.GetBrightness();
                 }
             }
 
             // Divide summed brightness by the number of pixels sampled to get the average
-            averageBrightness /= (_image.Width / widthLog) * (_image.Height / heightLog);
+            AverageBrightness /= (_image.Width / widthLog) * (_image.Height / heightLog);
 
-            return averageBrightness;
+            return AverageBrightness;
         }
-
-        // FIXME: overloads on the chopping block
-        ///// <summary>
-        ///// Returns the average brightness level (from fully black at 0.0 to fully white at 1.0) of image
-        ///// at given FULL path (approximated for efficiency)
-        ///// </summary>
-        ///// <param name="path"></param>
-        ///// <exception cref="FileNotFoundException">Thrown when no file found at given path</exception>
-        ///// <returns>Average brightness level of image at given path</returns>
-        //public static float CalculateAverageBrightness(string path)
-        //{
-        //    // Create bitmap from image at path
-        //    Bitmap bitmap = new Bitmap(@path);
-
-        //    return CalculateAverageBrightness(bitmap);
-        //}
-
-        ///// <summary>
-        ///// Returns the average brightness level (from fully black at 0.0 to fully white at 1.0) of image
-        ///// in given stream (approximated for efficiency)
-        ///// </summary>
-        ///// <param name="stream"></param>
-        ///// <exception cref="ArgumentException">
-        ///// Thrown when stream does not contain an image or is null
-        ///// </exception>
-        ///// <returns>Average brightness level of image in given stream</returns>
-        //public static float CalculateAverageBrightness(Stream stream)
-        //{
-        //    // Create bitmap from image at path
-        //    Bitmap bitmap = new Bitmap(stream);
-
-        //    return CalculateAverageBrightness(bitmap);
-        //}
-
-        ///// <summary>
-        ///// Calculates, sets and returns the averageBrightness (from fully black at 0.0 to fully white at
-        ///// 1.0) of image represented by this WBImage (approximated for efficiency)
-        ///// </summary>
-        ///// <returns>averageBrightness of image represented by this WBImage</returns>
-        //private float CalculateAverageBrightness()
-        //{
-        //    // Set the field
-        //    AverageBrightness = CalculateAverageBrightness(_image);
-        //    return AverageBrightness;
-        //}
     }
 }

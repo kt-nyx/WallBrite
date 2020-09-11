@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <StackPanel>
-        <Button Click="Add_Files">Add Files</Button>
-        <Button Click="Add_Folder">Add Folder</Button>
+        <Button Click="AddFiles">Add Files</Button>
+        <Button Click="AddFolder">Add Folder</Button>
     </StackPanel>
 </Window>

@@ -1,45 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WallBrite
 {
-    class WBLibrary
+    internal static class WBLibrary
     {
-        public List<WBImage> libraryList { get; }
+        public static List<WBImage> LibraryList { get; }
 
-        public WBLibrary ()
+        static WBLibrary()
         {
             // Create new empty library list
-            libraryList = new List<WBImage>();
+            LibraryList = new List<WBImage>();
         }
 
-        public void AddImage(WBImage image)
+        public static void AddImage(WBImage image)
         {
-            libraryList.Add(image);
+            LibraryList.Add(image);
         }
 
-        public void RemoveImage(WBImage image)
+        public static void RemoveImage(WBImage image)
         {
-            libraryList.Remove(image);
+            LibraryList.Remove(image);
         }
 
-        public bool Sort(string sortType)
+        public static bool Sort(string sortType)
         {
             // Sort library by brightness values
             if (sortType == "brightness")
             {
-                libraryList.Sort((image1, image2) => image1.AverageBrightness.CompareTo(image2.AverageBrightness));
+                LibraryList.Sort((image1, image2) => image1.AverageBrightness.CompareTo(image2.AverageBrightness));
                 return true;
-            } else if (sortType == "date")
+            }
+            else if (sortType == "date")
             {
-                libraryList.Sort((image1, image2) => image1.CreationDate.CompareTo(image2.CreationDate));
+                LibraryList.Sort((image1, image2) => image1.AddedDate.CompareTo(image2.AddedDate));
                 return true;
-            } else if (sortType == "enabled")
+            }
+            else if (sortType == "enabled")
             {
-                libraryList.Sort((image1, image2) => image1.Enabled.CompareTo(image2.Enabled));
+                LibraryList.Sort((image1, image2) => image1.Enabled.CompareTo(image2.Enabled));
                 return true;
             }
             return false;
