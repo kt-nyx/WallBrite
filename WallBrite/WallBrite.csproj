@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WBHelpers.cs" />
     <Compile Include="WBLibrary.cs" />
     <Compile Include="WBManager.cs" />
     <Page Include="MainWindow.xaml">

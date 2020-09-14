@@ -6,8 +6,19 @@
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <Button Click="AddFiles">Add Files</Button>
-        <Button Click="AddFolder">Add Folder</Button>
-    </StackPanel>
+    <DockPanel x:Name="MainPanel">
+        <StackPanel x:Name="SidePanel">
+            <Button Click="AddFiles">Add Files</Button>
+            <Button Click="AddFolder">Add Folder</Button>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True">
+            <Grid x:Name="imageGrid">
+                <Grid.ColumnDefinitions>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                </Grid.RowDefinitions>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+    
 </Window>
