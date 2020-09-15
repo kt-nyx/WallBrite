@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -49,7 +50,7 @@ namespace WallBrite
             // Create first row before populating
             RowDefinition firstRow = new RowDefinition
             {
-                Height = new GridLength(200)
+                Height = new GridLength(250)
             };
             imageGrid.RowDefinitions.Add(firstRow);
 
@@ -57,7 +58,9 @@ namespace WallBrite
             int row = 0;
             int column = 0;
 
+            // Total available space for the grid (the total window space - the side panel)
             double availableGridWidth = MainPanel.ActualWidth - SidePanel.ActualWidth;
+
             // Total width currently taken up by all grid columns; for use in resizing grid to fit window
             int totalWidth = 0;
 
@@ -69,37 +72,52 @@ namespace WallBrite
                 BitmapImage sourceBitmap = WBHelpers.ImagetoBitmapSource(wbImage.Thumbnail);
                 gridImage.Source = sourceBitmap;
 
+                // Calculate background color for this image based on its AverageBrightness
+                int backgroundBrightness = (int) Math.Round(wbImage.AverageBrightness * 255);
+
+                // Create border for image
+                Border imageBorder = new Border
+                {
+                    BorderBrush = new SolidColorBrush(Colors.Black),
+                    BorderThickness = new Thickness(1),
+                    Child = gridImage,
+                    Margin = new Thickness(25),
+                    Background = new SolidColorBrush(Color.FromArgb(255, 
+                                                                    (byte)backgroundBrightness, 
+                                                                    (byte)backgroundBrightness, 
+                                                                    (byte)backgroundBrightness))
+                };
+
                 // Add image to grid
-                imageGrid.Children.Add(gridImage);
-                
+                imageGrid.Children.Add(imageBorder);
 
                 // If placing this image in next column will fit in window, then place it there
-                if (totalWidth + 200 <= availableGridWidth)
+                if (totalWidth + 250 <= availableGridWidth)
                 {
                     // If this is first row, column still needs to be created, so create it
                     if (row == 0)
                     {
                         ColumnDefinition newColumn = new ColumnDefinition
                         {
-                            Width = new GridLength(200)
+                            Width = new GridLength(250)
                         };
                         imageGrid.ColumnDefinitions.Add(newColumn);
                     }
 
-                    // PLace image at this row and column
-                    Grid.SetRow(gridImage, row);
-                    Grid.SetColumn(gridImage, column);
+                    // Place image at this row and column
+                    Grid.SetRow(imageBorder, row);
+                    Grid.SetColumn(imageBorder, column);
 
                     // Increment counters for next image (possibly) in this row
                     column++;
-                    totalWidth += 200;
+                    totalWidth += 250;
                 } 
                 // Otherwise place this image on a new row starting at column 0
                 else {
                     // Create new row
                     RowDefinition newRow = new RowDefinition
                     {
-                        Height = new GridLength(200)
+                        Height = new GridLength(250)
                     };
                     imageGrid.RowDefinitions.Add(newRow);
  
@@ -108,13 +126,13 @@ namespace WallBrite
                     column = 0;
 
                     // Place image at this row and column
-                    Grid.SetRow(gridImage, row);
-                    Grid.SetColumn(gridImage, column);
+                    Grid.SetRow(imageBorder, row);
+                    Grid.SetColumn(imageBorder, column);
 
                     // Increment column and total width counters so next image is (possibly) placed in next
                     // column
                     column++;
-                    totalWidth = 200;
+                    totalWidth = 250;
                 }
             }
         }

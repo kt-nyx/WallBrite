@@ -7,9 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
-        <StackPanel x:Name="SidePanel">
+        <StackPanel DockPanel.Dock="Left" x:Name="SidePanel">
             <Button Click="AddFiles">Add Files</Button>
             <Button Click="AddFolder">Add Folder</Button>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom">
+            <Button>Cool1</Button>
+            <Button>Cool2</Button>
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True">
             <Grid x:Name="imageGrid">
