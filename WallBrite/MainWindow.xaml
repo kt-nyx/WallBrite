@@ -7,10 +7,35 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
-        <StackPanel DockPanel.Dock="Left" x:Name="SidePanel">
-            <Button Click="AddFiles">Add Files</Button>
-            <Button Click="AddFolder">Add Folder</Button>
-        </StackPanel>
+        <Border x:Name="SidePanel" Width="105" Background="GhostWhite" BorderBrush="Black" BorderThickness="0 0 2 0" Padding="5 0">
+            <StackPanel DockPanel.Dock="Left">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="0, 2"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
+
+                <StackPanel>
+                    <Button Click="AddFiles">Add Files</Button>
+                    <Button Click="AddFolder">Add Folder</Button>
+                </StackPanel>
+
+                <StackPanel Margin="0 5">
+                    <TextBlock>Sort By:</TextBlock>
+                    <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content">
+                        <ComboBoxItem>Brightness</ComboBoxItem>
+                        <ComboBoxItem>Date Added</ComboBoxItem>
+                        <ComboBoxItem>Enabled</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock>Sort Order:</TextBlock>
+                    <ComboBox x:Name="SortOrderBox" SelectionChanged="SortOrderChanged" SelectedValuePath="Content">
+                        <ComboBoxItem>Descending</ComboBoxItem>
+                        <ComboBoxItem>Ascending</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+        </Border>
         <StackPanel DockPanel.Dock="Bottom">
             <Button>Cool1</Button>
             <Button>Cool2</Button>

@@ -36,8 +36,10 @@ namespace WallBrite
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
         }
 
+       
         public static void AddFiles()
         {
+            // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create OpenFileDialog to browse files
             OpenFileDialog dialog = new OpenFileDialog
             {
@@ -63,13 +65,14 @@ namespace WallBrite
                     Stream stream = fileStreams[i];
                     string filePath = fileNames[i];
                     WBImage image = new WBImage(stream, filePath);
-                    WBLibrary.AddImage(image);
+                    WBLibrary.AddImage(image, filePath);
                 }
             }
         }
 
         public static void AddFolder()
         {
+            // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create FolderBrowserDialog to browse folders
             WinForms.FolderBrowserDialog dialog = new WinForms.FolderBrowserDialog();
 
@@ -102,7 +105,7 @@ namespace WallBrite
 
                     // Create WBImage for that file and add it to library
                     WBImage image = new WBImage(stream, filePath);
-                    WBLibrary.AddImage(image);
+                    WBLibrary.AddImage(image, filePath);
                 }
             }
         }
