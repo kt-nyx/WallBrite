@@ -7,23 +7,15 @@ namespace WallBrite
 {
     internal static class WBLibrary
     {
-
-        private static string _sortOrder;
         public static List<WBImage> LibraryList { get; }
 
-<<<<<<< HEAD
         private static string _sortOrder;
 
-=======
->>>>>>> master
         private static string[] AllowedSortOrders = new string[] { "descending", "ascending" };
         private static string[] AllowedSortTypes = new string[] { "brightness", "date", "enabled" };
 
         public static string SortType { get; private set; }
-<<<<<<< HEAD
 
-=======
->>>>>>> master
         public static string SortOrder
         {
             get
@@ -38,14 +30,11 @@ namespace WallBrite
                     throw new ArgumentException("Not a valid sort order");
                 }
 
-<<<<<<< HEAD
                 if (_sortOrder != value)
                 {
                     LibraryList.Reverse();
                 }
 
-=======
->>>>>>> master
                 _sortOrder = value;
             }
         }
@@ -54,9 +43,6 @@ namespace WallBrite
         {
             // Create new empty library list
             LibraryList = new List<WBImage>();
-
-            SortOrder = "ascending";
-            SortType = "brightness";
         }
 
         /// <summary>
