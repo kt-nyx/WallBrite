@@ -9,11 +9,18 @@ namespace WallBrite
     {
         public static List<WBImage> LibraryList { get; }
 
+        private static string _sortOrder;
+
+        private static string[] AllowedSortOrders = new string[] { "descending", "ascending" };
+        private static string[] AllowedSortTypes = new string[] { "brightness", "date", "enabled" };
+
+        public static string SortType { get; private set; }
+
         public static string SortOrder
         {
             get
             {
-                return SortOrder;
+                return _sortOrder;
             }
             set
             {
@@ -22,14 +29,16 @@ namespace WallBrite
                 {
                     throw new ArgumentException("Not a valid sort order");
                 }
+
+                if (_sortOrder != value)
+                {
+                    LibraryList.Reverse();
+                }
+
+                _sortOrder = value;
             }
         }
 
-        private static string[] AllowedSortOrders = new string[] { "descending", "ascending" };
-        private static string[] AllowedSortTypes = new string[] { "brightness", "date", "enabled" };
-
-        public static string SortType { get; private set; }
-        
         static WBLibrary()
         {
             // Create new empty library list
