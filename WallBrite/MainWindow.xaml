@@ -23,13 +23,13 @@
 
                 <StackPanel Margin="0 5">
                     <TextBlock>Sort By:</TextBlock>
-                    <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content">
+                    <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content" SelectedIndex="1">
                         <ComboBoxItem>Brightness</ComboBoxItem>
                         <ComboBoxItem>Date Added</ComboBoxItem>
                         <ComboBoxItem>Enabled</ComboBoxItem>
                     </ComboBox>
                     <TextBlock>Sort Order:</TextBlock>
-                    <ComboBox x:Name="SortOrderBox" SelectionChanged="SortOrderChanged" SelectedValuePath="Content">
+                    <ComboBox x:Name="SortOrderBox" SelectionChanged="SortOrderChanged" SelectedValuePath="Content" SelectedIndex="1">
                         <ComboBoxItem>Descending</ComboBoxItem>
                         <ComboBoxItem>Ascending</ComboBoxItem>
                     </ComboBox>
