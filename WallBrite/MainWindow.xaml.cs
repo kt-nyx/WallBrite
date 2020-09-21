@@ -184,5 +184,12 @@ namespace WallBrite
                 }
             }
         }
+
+        private void Cool1Click(object sender, RoutedEventArgs e)
+        {
+            WBManager.BrightestTime = new DateTime(1, 1, 1, 12, 0, 0);
+            WBManager.DarkestTime = new DateTime(1, 1, 1, 10, 0, 0);
+            WBManager.ManageWalls();
+        }
     }
 }

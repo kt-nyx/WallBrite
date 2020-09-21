@@ -37,7 +37,7 @@
             </StackPanel>
         </Border>
         <StackPanel DockPanel.Dock="Bottom">
-            <Button>Cool1</Button>
+            <Button Click="Cool1Click">Cool1</Button>
             <Button>Cool2</Button>
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True">

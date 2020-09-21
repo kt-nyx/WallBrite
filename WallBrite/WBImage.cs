@@ -19,7 +19,7 @@ namespace WallBrite
         /// <summary>
         /// Whether this WBImage will show up in the library
         /// </summary>
-        public bool isEnabled { get; set; }
+        public bool IsEnabled { get; set; }
 
         /// <summary>
         /// Creation date of this WBImage
@@ -68,7 +68,7 @@ namespace WallBrite
             AddedDate = DateTime.Now;
 
             // Set enabled true by default
-            isEnabled = true;
+            IsEnabled = true;
 
             // Set the path
             Path = path;

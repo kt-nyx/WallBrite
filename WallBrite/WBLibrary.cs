@@ -11,8 +11,8 @@ namespace WallBrite
 
         private static string _sortOrder;
 
-        private static string[] AllowedSortOrders = new string[] { "descending", "ascending" };
-        private static string[] AllowedSortTypes = new string[] { "brightness", "date", "enabled" };
+        private static readonly string[] AllowedSortOrders = new string[] { "descending", "ascending" };
+        private static readonly string[] AllowedSortTypes = new string[] { "brightness", "date", "enabled" };
 
         public static string SortType { get; private set; }
 
@@ -115,7 +115,7 @@ namespace WallBrite
             // Sort library by enabled status
             else if (sortType == "enabled")
             {
-                LibraryList.Sort((image1, image2) => image1.isEnabled.CompareTo(image2.isEnabled));
+                LibraryList.Sort((image1, image2) => image1.IsEnabled.CompareTo(image2.IsEnabled));
             }
 
             // Set internal SortType property to given sortType
