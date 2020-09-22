@@ -31,17 +31,25 @@ namespace WallBrite
         public static float BrightnessCutoff { get; set; }
         public static bool UsingRelativeChange { get; set; }
 
-        //private static TimeSpan DaySpan;
-        //private static TimeSpan NightSpan;
-        //private static TimeSpan BrightestToDarkest;
-        //private static TimeSpan DarkestToBrightest;
 
         public static void ManageWalls()
         {
-            GetCurrentBrightnessSetting();
+            // Only do wallpaper management if there are wallpapers in the library
+            if (WBLibrary.LibraryList.Count > 0) { 
+                // Get current daylight value
+                double currentDaylight = GetCurrentDaylightSetting();
+                // Find image with brightness value closest to current daylight value
+                WBImage closestImage =
+                    WBLibrary.LibraryList.Aggregate((x, y) =>
+                                                           Math.Abs(x.AverageBrightness - currentDaylight)
+                                                           < Math.Abs(y.AverageBrightness - currentDaylight)
+                                                           ? x : y);
+                // Set wallpaper to this image
+                SetWall(closestImage);
+            }
         }
 
-        public static double GetCurrentBrightnessSetting()
+        public static double GetCurrentDaylightSetting()
         {
             // Get the current time in minutes since midnight
             double now = DateTime.Now.TimeOfDay.TotalMinutes;
