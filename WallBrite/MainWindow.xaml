@@ -40,27 +40,25 @@
             <StackPanel>
                 <TextBlock FontWeight="Bold" FontSize="14" TextAlignment="Center" Margin="0 0 0 5">Automation Settings</TextBlock>
                 <Button Click="Cool1Click">Cool1</Button>
-                <StackPanel>
-                    <Button Click="Cool1Click"
+                <Button Click="Cool1Click"
                             Margin="10"
                             HorizontalAlignment="Center">
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Border x:Name="theBorder"
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="theBorder"
                                         BorderBrush="Transparent"
                                         BorderThickness="2">
-                                    <Image Source="F:\Pictures\Walls\1_SQuyvvEhWC9VmEBE9dqMTg.jpeg" Height="45"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="BorderBrush" TargetName="theBorder"
+                                <Image Source="C:\Users\ranno\Pictures\TestWalls\NsEFcHv.jpeg" Height="45"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" TargetName="theBorder"
                                                 Value="LightSkyBlue"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </StackPanel>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>
         </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True">

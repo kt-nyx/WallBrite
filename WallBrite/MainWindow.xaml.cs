@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -102,12 +103,22 @@ namespace WallBrite
                 bool firstImage = true;
 
                 // Loop over each image in the library
-                foreach (WBImage wbImage in WBLibrary.LibraryList)
+                //foreach (WBImage wbImage in WBLibrary.LibraryList)
+                for (int imageIndex = 0; imageIndex < WBLibrary.LibraryList.Count; imageIndex++)
                 {
+                    WBImage wbImage = WBLibrary.LibraryList[imageIndex];
+
                     // Create image to be shown in library grid; set source to thumbnail for this WBImage
                     Image gridImage = new Image();
                     BitmapImage sourceBitmap = WBHelpers.ImagetoBitmapSource(wbImage.Thumbnail);
                     gridImage.Source = sourceBitmap;
+
+                    // TODO: implement dependency (attached?) property instead
+                    // Set index value for this image to the current index (using tag)
+                    gridImage.Tag = imageIndex;
+
+                    // Add click handler for clicking this image
+                    gridImage.MouseUp += ImageClickHandler;
 
                     // Calculate background color for this image based on its AverageBrightness
                     int backgroundBrightness = (int)Math.Round(wbImage.AverageBrightness * 255);
@@ -183,6 +194,11 @@ namespace WallBrite
                     }
                 }
             }
+        }
+
+        private void ImageClickHandler(object sender, MouseButtonEventArgs e)
+        {
+            string cool = "cool";
         }
 
         private void Cool1Click(object sender, RoutedEventArgs e)

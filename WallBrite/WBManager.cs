@@ -13,22 +13,14 @@ namespace WallBrite
         // DLL Import, method reference, and constants for setting desktop wallpaper
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
-
         public const int SPI_SETDESKWALLPAPER = 20;
-
         public const int SPIF_UPDATEINIFILE = 1;
-
         public const int SPIF_SENDCHANGE = 2;
-
-        public static DateTime DayStartCutoff { get; set; }
-        public static DateTime DayEndCutoff { get; set; }
 
         public static DateTime DarkestTime { get; set; }
 
         public static DateTime BrightestTime { get; set; }
 
-        public static int MinuteCheckFrequency { get; set; }
-        public static float BrightnessCutoff { get; set; }
         public static bool UsingRelativeChange { get; set; }
 
 
