@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace WallBrite
 {
-    internal static class WBLibrary
+    public static class Library
     {
         public static List<WBImage> LibraryList { get; }
 
@@ -39,7 +39,7 @@ namespace WallBrite
             }
         }
 
-        static WBLibrary()
+        static Library()
         {
             // Create new empty library list
             LibraryList = new List<WBImage>();

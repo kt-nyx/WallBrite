@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
@@ -29,7 +31,12 @@ namespace WallBrite
         /// <summary>
         /// Thumbnail image for use in library UI
         /// </summary>
-        public Image Thumbnail { get; private set; }
+        public BitmapImage Thumbnail { get; private set; }
+
+        /// <summary>
+        /// Background color for use in library UI
+        /// </summary>
+        public SolidColorBrush BackgroundColor { get; private set; }
 
         /// <summary>
         /// Path to the original image
@@ -51,18 +58,24 @@ namespace WallBrite
             // If image width larger than height; set width of thumbnail to 200 and reduce height
             // proportionally
             if (_image.Width >= _image.Height)
-                Thumbnail = _image.GetThumbnailImage(200,
+                Thumbnail = Helpers.ImagetoBitmapSource(_image.GetThumbnailImage(200,
                                                      200 * _image.Height / _image.Width,
-                                                     null, IntPtr.Zero);
+                                                     null, IntPtr.Zero));
 
             // If image height larger than width; set height of thumbnail to 200 and reduce width
             // proportionally
-            else Thumbnail = _image.GetThumbnailImage(200 * _image.Width / _image.Height,
+            else Thumbnail = Helpers.ImagetoBitmapSource(_image.GetThumbnailImage(200 * _image.Width / _image.Height,
                                                       200,
-                                                      null, IntPtr.Zero);
+                                                      null, IntPtr.Zero));
 
             // Calculate and set average brightness of this WBImage
             CalculateAverageBrightness();
+
+            // Set background color for UI
+            int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
+            BackgroundColor = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)backgroundBrightness,
+                                                  (byte)backgroundBrightness,
+                                                  (byte)backgroundBrightness));
 
             // Set creation date
             AddedDate = DateTime.Now;
@@ -99,7 +112,7 @@ namespace WallBrite
                 {
                     // For every sampled pixel, get the color value of the pixel and add its brightness to
                     // the running sum
-                    Color pixelColor = _image.GetPixel(x, y);
+                    System.Drawing.Color pixelColor = _image.GetPixel(x, y);
                     AverageBrightness += pixelColor.GetBrightness();
                 }
             }

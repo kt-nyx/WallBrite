@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
-    static class WBHelpers
+    static class Helpers
     {
 
         /// <summary>

@@ -8,7 +8,7 @@ using WinForms = System.Windows.Forms;
 
 namespace WallBrite
 {
-    public static class WBManager
+    public static class Manager
     {
         // DLL Import, method reference, and constants for setting desktop wallpaper
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -27,12 +27,12 @@ namespace WallBrite
         public static void ManageWalls()
         {
             // Only do wallpaper management if there are wallpapers in the library
-            if (WBLibrary.LibraryList.Count > 0) { 
+            if (Library.LibraryList.Count > 0) { 
                 // Get current daylight value
                 double currentDaylight = GetCurrentDaylightSetting();
                 // Find image with brightness value closest to current daylight value
                 WBImage closestImage =
-                    WBLibrary.LibraryList.Aggregate((x, y) =>
+                    Library.LibraryList.Aggregate((x, y) =>
                                                            Math.Abs(x.AverageBrightness - currentDaylight)
                                                            < Math.Abs(y.AverageBrightness - currentDaylight)
                                                            ? x : y);
@@ -164,7 +164,7 @@ namespace WallBrite
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
         }
 
-        public static void AddFiles()
+        public static void AddFiles(LibraryViewModel library)
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create OpenFileDialog to browse files
@@ -192,7 +192,7 @@ namespace WallBrite
                     Stream stream = fileStreams[i];
                     string filePath = fileNames[i];
                     WBImage image = new WBImage(stream, filePath);
-                    WBLibrary.AddImage(image, filePath);
+                    library.AddImage(image, filePath);
                 }
             }
         }
@@ -232,7 +232,7 @@ namespace WallBrite
 
                     // Create WBImage for that file and add it to library
                     WBImage image = new WBImage(stream, filePath);
-                    WBLibrary.AddImage(image, filePath);
+                    Library.AddImage(image, filePath);
                 }
             }
         }

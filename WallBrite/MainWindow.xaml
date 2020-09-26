@@ -40,35 +40,21 @@
             <StackPanel>
                 <TextBlock FontWeight="Bold" FontSize="14" TextAlignment="Center" Margin="0 0 0 5">Automation Settings</TextBlock>
                 <Button Click="Cool1Click">Cool1</Button>
-                <Button Click="Cool1Click"
-                            Margin="10"
-                            HorizontalAlignment="Center">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Border x:Name="theBorder"
-                                        BorderBrush="Transparent"
-                                        BorderThickness="2">
-                                <Image Source="C:\Users\ranno\Pictures\TestWalls\NsEFcHv.jpeg" Height="45"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="BorderBrush" TargetName="theBorder"
-                                                Value="LightSkyBlue"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
             </StackPanel>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True">
-            <Grid x:Name="imageGrid">
-                <Grid.ColumnDefinitions>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                </Grid.RowDefinitions>
-            </Grid>
-        </ScrollViewer>
+        <ListView x:Name="imageGrid" ItemsSource="{Binding LibraryList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Black" BorderThickness="1" Background="{Binding BackgroundColor}">
+                        <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </DockPanel>
-    
 </Window>

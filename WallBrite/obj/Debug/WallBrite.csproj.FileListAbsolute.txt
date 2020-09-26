@@ -28,3 +28,4 @@ C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.Generate
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CoreCompileInputs.cache
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.exe
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.pdb
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.Fody.CopyLocal.cache
