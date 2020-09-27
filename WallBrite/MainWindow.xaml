@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WallBrite"
+        xmlns:local="clr-namespace:WallBrite" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
@@ -28,8 +28,8 @@
                         <ComboBoxItem>Date Added</ComboBoxItem>
                         <ComboBoxItem>Enabled</ComboBoxItem>
                     </ComboBox>
-                    <TextBlock>Sort Order:</TextBlock>
-                    <ComboBox x:Name="SortOrderBox" SelectionChanged="SortOrderChanged" SelectedValuePath="Content" SelectedIndex="1">
+                    <TextBlock>Sort Direction:</TextBlock>
+                    <ComboBox x:Name="SortDirectionBox" SelectionChanged="SortDirectionChanged" SelectedValuePath="Content" SelectedIndex="1">
                         <ComboBoxItem>Descending</ComboBoxItem>
                         <ComboBoxItem>Ascending</ComboBoxItem>
                     </ComboBox>
@@ -42,15 +42,21 @@
                 <Button Click="Cool1Click">Cool1</Button>
             </StackPanel>
         </Border>
-        <ListView x:Name="imageGrid" ItemsSource="{Binding LibraryList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
+            <ListView.DataContext>
+                <CollectionViewSource Source="{Binding LibraryList}">
+                    <CollectionViewSource.SortDescriptions>
+                    </CollectionViewSource.SortDescriptions>
+                </CollectionViewSource>
+            </ListView.DataContext>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="Black" BorderThickness="1" Background="{Binding BackgroundColor}">
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
                         <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
                     </Border>
                 </DataTemplate>

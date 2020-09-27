@@ -9,11 +9,6 @@ namespace WallBrite
     public class WBImage
     {
         /// <summary>
-        /// Image represented by this WBImage
-        /// </summary>
-        private readonly Bitmap _image;
-
-        /// <summary>
         /// Average brightness calculated (or manually set) for this image
         /// </summary>
         public float AverageBrightness { get; set; }
@@ -52,24 +47,24 @@ namespace WallBrite
         public WBImage(Stream stream, string path)
         {
             // Create bitmap using image from given stream
-            _image = new Bitmap(stream);
+            Bitmap image = new Bitmap(stream);
 
             // Create thumbnail, maintaining aspect ratio but staying within a 200 * 200 box:
             // If image width larger than height; set width of thumbnail to 200 and reduce height
             // proportionally
-            if (_image.Width >= _image.Height)
-                Thumbnail = Helpers.ImagetoBitmapSource(_image.GetThumbnailImage(200,
-                                                     200 * _image.Height / _image.Width,
+            if (image.Width >= image.Height)
+                Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
+                                                     200 * image.Height / image.Width,
                                                      null, IntPtr.Zero));
 
             // If image height larger than width; set height of thumbnail to 200 and reduce width
             // proportionally
-            else Thumbnail = Helpers.ImagetoBitmapSource(_image.GetThumbnailImage(200 * _image.Width / _image.Height,
+            else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
                                                       200,
                                                       null, IntPtr.Zero));
 
             // Calculate and set average brightness of this WBImage
-            CalculateAverageBrightness();
+            CalculateAverageBrightness(image);
 
             // Set background color for UI
             int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
@@ -93,7 +88,7 @@ namespace WallBrite
         /// </summary>
         /// <param name="bitmap"></param>
         /// <returns>Average brightness level of given bitmap image</returns>
-        public float CalculateAverageBrightness()
+        public float CalculateAverageBrightness(Bitmap image)
         {
             // Brightness value to be summed and averaged
             AverageBrightness = 0;
@@ -102,23 +97,23 @@ namespace WallBrite
             // increase efficiency
             // (Rather than looping over every pixel, using the log will allow taking a sample
             //  of only pixels on every log(width)th column and log(height)th row)
-            int widthLog = Convert.ToInt32(Math.Log(_image.Width));
-            int heightLog = Convert.ToInt32(Math.Log(_image.Height));
+            int widthLog = Convert.ToInt32(Math.Log(image.Width));
+            int heightLog = Convert.ToInt32(Math.Log(image.Height));
 
             // Loop over image's pixels (taking only the logged sample as described above)
-            for (int x = 0; x < _image.Width; x += widthLog)
+            for (int x = 0; x < image.Width; x += widthLog)
             {
-                for (int y = 0; y < _image.Height; y += heightLog)
+                for (int y = 0; y < image.Height; y += heightLog)
                 {
                     // For every sampled pixel, get the color value of the pixel and add its brightness to
                     // the running sum
-                    System.Drawing.Color pixelColor = _image.GetPixel(x, y);
+                    System.Drawing.Color pixelColor = image.GetPixel(x, y);
                     AverageBrightness += pixelColor.GetBrightness();
                 }
             }
 
             // Divide summed brightness by the number of pixels sampled to get the average
-            AverageBrightness /= (_image.Width / widthLog) * (_image.Height / heightLog);
+            AverageBrightness /= (image.Width / widthLog) * (image.Height / heightLog);
 
             return AverageBrightness;
         }

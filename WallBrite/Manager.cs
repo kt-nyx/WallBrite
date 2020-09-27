@@ -197,7 +197,7 @@ namespace WallBrite
             }
         }
 
-        public static void AddFolder()
+        public static void AddFolder(LibraryViewModel library)
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create FolderBrowserDialog to browse folders
@@ -232,7 +232,7 @@ namespace WallBrite
 
                     // Create WBImage for that file and add it to library
                     WBImage image = new WBImage(stream, filePath);
-                    Library.AddImage(image, filePath);
+                    library.AddImage(image, filePath);
                 }
             }
         }
