@@ -22,12 +22,12 @@ namespace WallBrite
 
         private void AddFiles(object sender, RoutedEventArgs e)
         {
-            Manager.AddFiles(library);
+            library.AddFiles();
         }
 
         private void AddFolder(object sender, RoutedEventArgs e)
         {
-            Manager.AddFolder(library);
+            library.AddFolder();
         }
 
         // TODO: add alphabetical; move code, add comments
