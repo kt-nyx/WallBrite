@@ -34,6 +34,14 @@
                         <ComboBoxItem>Ascending</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
+                <StackPanel Margin="0 10">
+                    <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
+                    <Button x:Name="EnableButton" IsEnabled="False">Enable</Button>
+                    <Button x:Name="DisableButton" IsEnabled="False">Disable</Button>
+                    <Button x:Name="RemoveButton" IsEnabled="False" >
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Border>
         <Border x:Name="BottomPanel" DockPanel.Dock="Bottom" Background="GhostWhite" BorderBrush="Black" BorderThickness="0 2 0 0" Padding="5 5">
