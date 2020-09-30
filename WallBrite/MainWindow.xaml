@@ -50,7 +50,7 @@
                     <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
                     <Button x:Name="EnableButton" Command="{Binding EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
                     <Button x:Name="DisableButton" Command="{Binding DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
-                    <Button x:Name="RemoveButton">
+                    <Button x:Name="RemoveButton" Command="{Binding RemoveCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
                     </Button>
                 </StackPanel>

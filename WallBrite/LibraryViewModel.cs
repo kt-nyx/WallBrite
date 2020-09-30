@@ -20,7 +20,7 @@ namespace WallBrite
 
         public ICommand EnableCommand { get; set; }
         public ICommand DisableCommand { get; set; }
-        public ICommand RemoveCommand;
+        public ICommand RemoveCommand { get; set; }
 
         public LibraryViewModel()
         {
@@ -30,6 +30,7 @@ namespace WallBrite
             // Create commands
             EnableCommand = new RelayCommand(Enable);
             DisableCommand = new RelayCommand(Disable);
+            RemoveCommand = new RelayCommand(Remove);
         }
 
         /// <summary>
@@ -54,15 +55,33 @@ namespace WallBrite
             LibraryList.Add(image);
         }
 
+        public void RemoveImage(WBImage image)
+        {
+            LibraryList.Remove(image);
+        }
+
+        public void Remove(object collection)
+        {
+            // Cast the collection of controls to a collection of WBImages
+            System.Collections.IList items = (System.Collections.IList)collection;
+            var selectedImages = items.Cast<WBImage>();
+
+            // Remove each WBImage in the collection from the library
+            foreach (WBImage image in selectedImages.ToList())
+            {
+                RemoveImage(image);
+            }
+        }
+
         public void Enable(object collection) {
             // Cast the collection of controls to a collection of WBImages
             System.Collections.IList items = (System.Collections.IList)collection;
             var selectedImages = items.Cast<WBImage>();
 
             // Enable each WBImage in the collection
-            foreach (WBImage Image in selectedImages)
+            foreach (WBImage image in selectedImages)
             {
-                Image.IsEnabled = true;
+                image.IsEnabled = true;
             }
         }
 
@@ -73,9 +92,9 @@ namespace WallBrite
             var selectedImages = items.Cast<WBImage>();
 
             // Disable each WBImage in the collection
-            foreach (WBImage Image in selectedImages)
+            foreach (WBImage image in selectedImages)
             {
-                Image.IsEnabled = false;
+                image.IsEnabled = false;
             }
         }
 
