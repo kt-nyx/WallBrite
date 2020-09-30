@@ -35,10 +35,22 @@
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Margin="0 10">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="0 2"/>
+                            <Style.Triggers>
+                                <DataTrigger 
+                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}" 
+                                        Value="0">
+                                    <Setter Property="Button.IsEnabled" Value="false"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Resources>
                     <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
-                    <Button x:Name="EnableButton" IsEnabled="False">Enable</Button>
-                    <Button x:Name="DisableButton" IsEnabled="False">Disable</Button>
-                    <Button x:Name="RemoveButton" IsEnabled="False" >
+                    <Button x:Name="EnableButton" Command="{Binding EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
+                    <Button x:Name="DisableButton" Command="{Binding DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
+                    <Button x:Name="RemoveButton">
                         <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
                     </Button>
                 </StackPanel>

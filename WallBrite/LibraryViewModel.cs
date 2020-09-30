@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WinForms = System.Windows.Forms;
 
 namespace WallBrite
@@ -17,10 +18,18 @@ namespace WallBrite
 
         public ObservableCollection<WBImage> LibraryList { get; }
 
+        public ICommand EnableCommand { get; set; }
+        public ICommand DisableCommand { get; set; }
+        public ICommand RemoveCommand;
+
         public LibraryViewModel()
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
+
+            // Create commands
+            EnableCommand = new RelayCommand(Enable);
+            DisableCommand = new RelayCommand(Disable);
         }
 
         /// <summary>
@@ -45,6 +54,32 @@ namespace WallBrite
             LibraryList.Add(image);
         }
 
+        public void Enable(object collection) {
+            // Cast the collection of controls to a collection of WBImages
+            System.Collections.IList items = (System.Collections.IList)collection;
+            var selectedImages = items.Cast<WBImage>();
+
+            // Enable each WBImage in the collection
+            foreach (WBImage Image in selectedImages)
+            {
+                Image.IsEnabled = true;
+            }
+        }
+
+        public void Disable(object collection)
+        {
+            // Cast the collection of controls to a collection of WBImages
+            System.Collections.IList items = (System.Collections.IList)collection;
+            var selectedImages = items.Cast<WBImage>();
+
+            // Disable each WBImage in the collection
+            foreach (WBImage Image in selectedImages)
+            {
+                Image.IsEnabled = false;
+            }
+        }
+
+        // TODO: change to command
         public void AddFiles()
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
@@ -77,6 +112,8 @@ namespace WallBrite
                 }
             }
         }
+
+        // TODO: change to command
         public void AddFolder()
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
