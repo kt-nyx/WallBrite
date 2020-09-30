@@ -23,15 +23,15 @@ namespace WallBrite
         public static bool UsingRelativeChange { get; set; }
 
 
-        public static void ManageWalls()
+        public static void ManageWalls(LibraryViewModel library)
         {
             // Only do wallpaper management if there are wallpapers in the library
-            if (Library.LibraryList.Count > 0) { 
+            if (library.LibraryList.Count > 0) { 
                 // Get current daylight value
                 double currentDaylight = GetCurrentDaylightSetting();
                 // Find image with brightness value closest to current daylight value
                 WBImage closestImage =
-                    Library.LibraryList.Aggregate((x, y) =>
+                    library.LibraryList.Aggregate((x, y) =>
                                                            Math.Abs(x.AverageBrightness - currentDaylight)
                                                            < Math.Abs(y.AverageBrightness - currentDaylight)
                                                            ? x : y);

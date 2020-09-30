@@ -65,7 +65,6 @@
     </ApplicationDefinition>
     <Compile Include="LibraryViewModel.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Library.cs" />
     <Compile Include="Manager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -75,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="WBImage.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

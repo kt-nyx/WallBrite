@@ -117,7 +117,7 @@ namespace WallBrite
         {
             Manager.BrightestTime = new DateTime(1, 1, 1, 12, 0, 0);
             Manager.DarkestTime = new DateTime(1, 1, 1, 0, 0, 0);
-            Manager.ManageWalls();
+            Manager.ManageWalls(library);
         }
     }
 }
