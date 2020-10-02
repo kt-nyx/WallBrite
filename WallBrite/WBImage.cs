@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
@@ -6,8 +7,10 @@ using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
-    public class WBImage
+    public class WBImage : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// Average brightness calculated (or manually set) for this image
         /// </summary>

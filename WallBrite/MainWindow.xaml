@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WallBrite" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:local="clr-namespace:WallBrite" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
@@ -68,6 +68,16 @@
                     <WrapPanel/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+
+            </ListView.ItemContainerStyle>
             <ListView.DataContext>
                 <CollectionViewSource Source="{Binding LibraryList}">
                     <CollectionViewSource.SortDescriptions>
@@ -76,7 +86,7 @@
             </ListView.DataContext>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
+                    <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
                         <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
                     </Border>
                 </DataTemplate>
