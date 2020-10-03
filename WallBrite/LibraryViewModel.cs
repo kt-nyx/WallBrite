@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using WinForms = System.Windows.Forms;
 
@@ -55,12 +57,20 @@ namespace WallBrite
             LibraryList.Add(image);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
         public void RemoveImage(WBImage image)
         {
             LibraryList.Remove(image);
         }
 
-        public void Remove(object collection)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
+        private void Remove(object collection)
         {
             // Cast the collection of controls to a collection of WBImages
             System.Collections.IList items = (System.Collections.IList)collection;
@@ -73,7 +83,11 @@ namespace WallBrite
             }
         }
 
-        public void Enable(object collection) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
+        private void Enable(object collection) {
             // Cast the collection of controls to a collection of WBImages
             System.Collections.IList items = (System.Collections.IList)collection;
             var selectedImages = items.Cast<WBImage>();
@@ -85,7 +99,11 @@ namespace WallBrite
             }
         }
 
-        public void Disable(object collection)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
+        private void Disable(object collection)
         {
             // Cast the collection of controls to a collection of WBImages
             System.Collections.IList items = (System.Collections.IList)collection;
@@ -98,6 +116,9 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: change to command
         public void AddFiles()
         {
@@ -132,6 +153,9 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: change to command
         public void AddFolder()
         {
@@ -169,6 +193,97 @@ namespace WallBrite
                     // Create WBImage for that file and add it to library
                     WBImage image = new WBImage(stream, filePath);
                     AddImage(image, filePath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="imageGrid"></param>
+        public void SortTypeChanged (object sender, ListView imageGrid)
+        {
+            ComboBox box = (ComboBox)sender;
+
+            // Only do sort work if imageGrid already exists
+            if (imageGrid != null)
+            {
+                // Get selected sort type
+                string selected = box.SelectedValue.ToString();
+
+                // Get view for image grid
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
+
+                // Get current direction of sort to be used (if there is one); default to ascending if none
+                ListSortDirection direction;
+                if (view.SortDescriptions.Count > 0)
+                {
+                    direction = view.SortDescriptions[0].Direction;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
+                }
+
+                // Clear current sort
+                view.SortDescriptions.Clear();
+
+                // Set appropriate sort
+                if (selected.Equals("Brightness"))
+                {
+                    view.SortDescriptions.Add(new SortDescription("AverageBrightness", direction));
+                }
+                else if (selected.Equals("Date Added"))
+                {
+                    view.SortDescriptions.Add(new SortDescription("AddedDate", direction));
+                }
+                else if (selected.Equals("Enabled"))
+                {
+                    view.SortDescriptions.Add(new SortDescription("IsEnabled", direction));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="imageGrid"></param>
+        public void SortDirectionChanged(object sender, ListView imageGrid)
+        {
+            ComboBox box = (ComboBox)sender;
+            // Only do sort work if imageGrid already exists
+            if (imageGrid != null)
+            {
+                // Get selected sort type
+                string selected = box.SelectedValue.ToString();
+
+                // Get view for image grid
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
+
+                // Get current direction of sort to be used (if there is one); default to ascending if none
+                string currentSort;
+                if (view.SortDescriptions.Count > 0)
+                {
+                    currentSort = view.SortDescriptions[0].PropertyName;
+                }
+                else
+                {
+                    currentSort = "DateAdded";
+                }
+
+                // Clear current sort
+                view.SortDescriptions.Clear();
+
+                // Set appropriate sort
+                if (selected.Equals("Descending"))
+                {
+                    view.SortDescriptions.Add(new SortDescription(currentSort, ListSortDirection.Descending));
+                }
+                else if (selected.Equals("Ascending"))
+                {
+                    view.SortDescriptions.Add(new SortDescription(currentSort, ListSortDirection.Ascending));
                 }
             }
         }

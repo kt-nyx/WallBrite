@@ -1,46 +1,61 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
-    public static class Manager
+    public class ManagerViewModel : INotifyPropertyChanged
     {
         // DLL Import, method reference, and constants for setting desktop wallpaper
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+
         public const int SPI_SETDESKWALLPAPER = 20;
         public const int SPIF_UPDATEINIFILE = 1;
         public const int SPIF_SENDCHANGE = 2;
 
-        public static DateTime DarkestTime { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public static DateTime BrightestTime { get; set; }
+        public DateTime DarkestTime { get; set; }
 
-        public static bool UsingRelativeChange { get; set; }
+        public DateTime BrightestTime { get; set; }
 
-        public static void ManageWalls(LibraryViewModel library)
+        public bool UsingRelativeChange { get; set; }
+
+        public double CurrentDaylight { get; set; }
+
+        public string ProgressReport { get; set; }
+
+        public double Progress { get; set; }
+
+        public BitmapImage CurrentClosestImageThumb { get; private set; }
+
+        public void ManageWalls(LibraryViewModel library)
         {
             // Only do wallpaper management if there are wallpapers in the library
-            if (library.LibraryList.Count > 0) { 
+            if (library.LibraryList.Count > 0)
+            {
                 // Get current daylight value
-                double currentDaylight = GetCurrentDaylightSetting();
+                CurrentDaylight = UpdateCurrentDaylightSettings();
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
                     library.LibraryList.Aggregate((x, y) =>
-                                                           Math.Abs(x.AverageBrightness - currentDaylight)
-                                                            < Math.Abs(y.AverageBrightness - currentDaylight) 
+                                                           Math.Abs(x.AverageBrightness - CurrentDaylight)
+                                                            < Math.Abs(y.AverageBrightness - CurrentDaylight)
                                                            && x.IsEnabled
                                                            ? x : y);
                 // Set wallpaper to this image
                 SetWall(closestImage);
+
+                // Update current closest's thumb
+                CurrentClosestImageThumb = closestImage.Thumbnail;
             }
         }
 
-        public static double GetCurrentDaylightSetting()
+        public double UpdateCurrentDaylightSettings()
         {
             // Get the current time in minutes since midnight
             double now = DateTime.Now.TimeOfDay.TotalMinutes;
@@ -142,22 +157,36 @@ namespace WallBrite
             // Get percent of time between brightest and darkest times which has already been covered
             double percentCovered = minutesCovered / brightestToDarkest;
 
-            double brightnessSetting;
+            double daylightSetting;
             // If brightness setting should be inverted relative to the percent covered, do so
             if (invertedBrightness)
             {
-                brightnessSetting = 1 - percentCovered;
+                daylightSetting = 1 - percentCovered;
             }
             // Otherwise just set the brightness setting to the percent covered
             else
             {
-                brightnessSetting = percentCovered;
+                daylightSetting = percentCovered;
             }
 
-            return brightnessSetting;
+            // If approaching darkest time, update progress report to match
+            if (invertedBrightness)
+            {
+                ProgressReport = Math.Round(percentCovered * 100) + "% of time covered before next darkest time";
+            }
+            // If approaching brightest time, update progress report to match
+            else
+            {
+                ProgressReport = Math.Round(percentCovered * 100) + "% of time covered before next brightest time";
+            }
+
+            // Update front-end progress value
+            Progress = percentCovered;
+
+            return daylightSetting;
         }
 
-        private static void SetWall(WBImage image)
+        private void SetWall(WBImage image)
         {
             // TODO: add try catch
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
