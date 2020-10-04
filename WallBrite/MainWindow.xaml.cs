@@ -23,16 +23,6 @@ namespace WallBrite
             BottomPanel.DataContext = manager;
         }
 
-        private void AddFiles(object sender, RoutedEventArgs e)
-        {
-            library.AddFiles();
-        }
-
-        private void AddFolder(object sender, RoutedEventArgs e)
-        {
-            library.AddFolder();
-        }
-
         private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
         {
             library.SortTypeChanged(sender, imageGrid);

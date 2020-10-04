@@ -19,20 +19,55 @@ namespace WallBrite
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private int _updateIntervalHours;
+        private int _updateIntervalMins;
+
         public DateTime DarkestTime { get; set; }
 
         public DateTime BrightestTime { get; set; }
 
+        public int UpdateIntervalHours
+        {
+            get { return _updateIntervalHours; }
+            set
+            {
+                _updateIntervalHours = value;
+                UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
+                NotifyPropertyChanged("UpdateIntervalHours");
+            }
+        }
+
+        public int UpdateIntervalMins
+        {
+            get { return _updateIntervalMins; }
+            set
+            {
+                _updateIntervalMins = value;
+                UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
+                NotifyPropertyChanged("UpdateIntervalMins");
+            }
+        }
+
+        private TimeSpan UpdateInterval { get; set; }
+
         public bool UsingRelativeChange { get; set; }
 
-        public double CurrentDaylight { get; set; }
+        public double CurrentDaylight { get; private set; }
 
-        public string ProgressReport { get; set; }
+        public string ProgressReport { get; private set; }
 
         public double Progress { get; set; }
 
         public BitmapImage CurrentClosestImageThumb { get; private set; }
 
+        public ManagerViewModel()
+        {
+            UpdateIntervalHours = 0;
+            UpdateIntervalMins = 0;
+            DateTime now = DateTime.Now;
+            BrightestTime = new DateTime(now.Year, now.Month, now.Day, 13, 0, 0);
+            DarkestTime = new DateTime(now.Year, now.Month, now.Day, 22, 0, 0);
+        }
         public void ManageWalls(LibraryViewModel library)
         {
             // Only do wallpaper management if there are wallpapers in the library
@@ -190,6 +225,10 @@ namespace WallBrite
         {
             // TODO: add try catch
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
+        }
+        protected void NotifyPropertyChanged(String info)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
         }
     }
 }

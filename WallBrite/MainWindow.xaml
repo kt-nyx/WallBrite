@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
@@ -17,8 +18,8 @@
                 <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
 
                 <StackPanel>
-                    <Button Click="AddFiles">Add Files</Button>
-                    <Button Click="AddFolder">Add Folder</Button>
+                    <Button Command="{Binding AddFilesCommand}">Add Files</Button>
+                    <Button Command="{Binding AddFolderCommand}">Add Folder</Button>
                 </StackPanel>
 
                 <StackPanel Margin="0 5">
@@ -61,26 +62,35 @@
                 <TextBlock FontWeight="Bold" FontSize="14" TextAlignment="Center" Margin="0 0 0 5">Automation Settings</TextBlock>
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="260"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Bottom">
-                        <StackPanel Margin="0 0 20 0">
-                            <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
-                            <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="120" Margin="0 0 0 3" HorizontalAlignment="Left"></xctk:TimePicker>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0 0 5 0">Update Every:</TextBlock>
+                            <xctk:IntegerUpDown Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
+                            <TextBlock Margin="2 0 5 0" VerticalAlignment="Bottom">hrs</TextBlock>
+                            <xctk:IntegerUpDown Maximum="59" Minimum="0" Value="{Binding UpdateIntervalMins}"></xctk:IntegerUpDown>
+                            <TextBlock Margin="2 0 0 0" VerticalAlignment="Bottom">mins</TextBlock>
                         </StackPanel>
-                        <StackPanel>
-                            <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
-                            <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Margin="0 0 0 3" Width="120" HorizontalAlignment="Left"></xctk:TimePicker>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0 0 20 0">
+                                <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
+                                <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="120" Margin="0 0 0 3" HorizontalAlignment="Left"></xctk:TimePicker>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
+                                <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Margin="0 0 0 3" Width="120" HorizontalAlignment="Left"></xctk:TimePicker>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                        <Image Height="50" Source="{Binding CurrentClosestImageThumb}"></Image>
-                        <TextBlock Margin="0 3" HorizontalAlignment="Center">Current Wallpaper</TextBlock>
-                        <Grid>
+                        <Grid Width="260" HorizontalAlignment="Left">
                             <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
                             <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                        <Image Height="100" Source="{Binding CurrentClosestImageThumb}"></Image>
+                        <TextBlock Margin="0 3" HorizontalAlignment="Center">Current Wallpaper</TextBlock>
                     </StackPanel>
                 </Grid>
                 <Button Click="Cool1Click" Margin="0 5 0 0">Cool1</Button>
@@ -110,7 +120,9 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
-                        <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                        <Border BorderBrush="Black">
+                            <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                        </Border>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>

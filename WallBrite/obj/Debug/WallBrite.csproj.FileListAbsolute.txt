@@ -46,3 +46,6 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\ru\Xceed.Wpf.AvalonDock.
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CopyComplete
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.xml

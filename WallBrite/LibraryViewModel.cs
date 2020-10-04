@@ -23,6 +23,8 @@ namespace WallBrite
         public ICommand EnableCommand { get; set; }
         public ICommand DisableCommand { get; set; }
         public ICommand RemoveCommand { get; set; }
+        public ICommand AddFilesCommand { get; set; }
+        public ICommand AddFolderCommand { get; set; }
 
         public LibraryViewModel()
         {
@@ -33,6 +35,8 @@ namespace WallBrite
             EnableCommand = new RelayCommand(Enable);
             DisableCommand = new RelayCommand(Disable);
             RemoveCommand = new RelayCommand(Remove);
+            AddFilesCommand = new RelayCommand(AddFiles);
+            AddFolderCommand = new RelayCommand(AddFolder);
         }
 
         /// <summary>
@@ -119,8 +123,7 @@ namespace WallBrite
         /// <summary>
         /// 
         /// </summary>
-        // TODO: change to command
-        public void AddFiles()
+        public void AddFiles(object dummy = null)
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create OpenFileDialog to browse files
@@ -156,8 +159,7 @@ namespace WallBrite
         /// <summary>
         /// 
         /// </summary>
-        // TODO: change to command
-        public void AddFolder()
+        public void AddFolder(object dummy = null)
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create FolderBrowserDialog to browse folders
