@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel x:Name="MainPanel">
@@ -67,10 +67,27 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
+                            </StackPanel.Resources>
                             <TextBlock Margin="0 0 5 0">Update Every:</TextBlock>
-                            <xctk:IntegerUpDown Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
+                            <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
                             <TextBlock Margin="2 0 5 0" VerticalAlignment="Bottom">hrs</TextBlock>
-                            <xctk:IntegerUpDown Maximum="59" Minimum="0" Value="{Binding UpdateIntervalMins}"></xctk:IntegerUpDown>
+                            <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
+                                <xctk:IntegerUpDown.Style>
+                                    <Style TargetType="{x:Type xctk:IntegerUpDown}">
+                                        <Setter Property="Minimum" Value="1"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
+                                                <Setter Property="Minimum" Value="0" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
+                                                <Setter Property="Minimum" Value="1"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </xctk:IntegerUpDown.Style>
+                            </xctk:IntegerUpDown>
                             <TextBlock Margin="2 0 0 0" VerticalAlignment="Bottom">mins</TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -84,7 +101,7 @@
                             </StackPanel>
                         </StackPanel>
                         <Grid Width="260" HorizontalAlignment="Left">
-                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
+                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
                             <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                     </StackPanel>

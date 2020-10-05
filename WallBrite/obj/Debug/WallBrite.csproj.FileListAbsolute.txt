@@ -49,3 +49,5 @@ D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CopyCom
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.pdb
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.xml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.lref

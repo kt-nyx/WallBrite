@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace WallBrite
 {
@@ -21,7 +23,13 @@ namespace WallBrite
 
         private int _updateIntervalHours;
         private int _updateIntervalMins;
+        private TimeSpan UpdateInterval;
 
+        private DispatcherTimer managerTimer;
+        private DispatcherTimer timerTracker;
+        private TimeSpan managerTimeRemaining;
+        private DateTime managerStartTime;
+        
         public DateTime DarkestTime { get; set; }
 
         public DateTime BrightestTime { get; set; }
@@ -32,7 +40,18 @@ namespace WallBrite
             set
             {
                 _updateIntervalHours = value;
-                UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
+
+                // Prevent user from setting interval to 0 hours 0 mins
+                if (_updateIntervalMins == 0)
+                {
+                    _updateIntervalMins = 1;
+                    NotifyPropertyChanged("UpdateIntervalMins");
+                    UpdateInterval = new TimeSpan(UpdateIntervalHours, 1, 0);
+                }
+                else {
+                    UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
+                }
+                
                 NotifyPropertyChanged("UpdateIntervalHours");
             }
         }
@@ -48,10 +67,6 @@ namespace WallBrite
             }
         }
 
-        private TimeSpan UpdateInterval { get; set; }
-
-        public bool UsingRelativeChange { get; set; }
-
         public double CurrentDaylight { get; private set; }
 
         public string ProgressReport { get; private set; }
@@ -60,15 +75,46 @@ namespace WallBrite
 
         public BitmapImage CurrentClosestImageThumb { get; private set; }
 
-        public ManagerViewModel()
+        public ManagerViewModel(LibraryViewModel library)
         {
+            // Set default property values
+            // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
             UpdateIntervalHours = 0;
-            UpdateIntervalMins = 0;
+            UpdateIntervalMins = 1;
             DateTime now = DateTime.Now;
             BrightestTime = new DateTime(now.Year, now.Month, now.Day, 13, 0, 0);
-            DarkestTime = new DateTime(now.Year, now.Month, now.Day, 22, 0, 0);
+            DarkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
+
+            // Create timer thread for updating walls
+            managerTimer = new DispatcherTimer();
+            managerTimer.Interval = UpdateInterval;
+            managerTimer.Tick += (object s, EventArgs a) => UpdateWall(library);
+
+            // Create timer that keeps track of time remaining on this ^^^ timer (checks every second)
+            timerTracker = new DispatcherTimer();
+            timerTracker.Interval = new TimeSpan(0, 0, 1);
+            timerTracker.Tick += UpdateTimer;
+
+            // Set start time as now and start the timers
+            managerStartTime = DateTime.Now;
+            managerTimer.Start();
+            timerTracker.Start();
         }
-        public void ManageWalls(LibraryViewModel library)
+
+        private void UpdateTimer(object sender, EventArgs e)
+        {
+            TimeSpan timeElapsed = DateTime.Now - managerStartTime;
+            managerTimeRemaining = UpdateInterval.Subtract(timeElapsed);
+
+            Progress = Math.Round(timeElapsed.TotalSeconds / UpdateInterval.TotalSeconds * 100);
+
+            ProgressReport = managerTimeRemaining.ToString("%h") + " hr "
+                             + managerTimeRemaining.ToString("%m") + " min " 
+                             + managerTimeRemaining.ToString("%s") 
+                             + " sec before next update";
+        }
+
+        private void UpdateWall(LibraryViewModel library)
         {
             // Only do wallpaper management if there are wallpapers in the library
             if (library.LibraryList.Count > 0)
@@ -88,9 +134,13 @@ namespace WallBrite
                 // Update current closest's thumb
                 CurrentClosestImageThumb = closestImage.Thumbnail;
             }
+
+            // Restart the timer
+            managerStartTime = DateTime.Now;
+            managerTimer.Start();
         }
 
-        public double UpdateCurrentDaylightSettings()
+        private double UpdateCurrentDaylightSettings()
         {
             // Get the current time in minutes since midnight
             double now = DateTime.Now.TimeOfDay.TotalMinutes;
@@ -203,20 +253,6 @@ namespace WallBrite
             {
                 daylightSetting = percentCovered;
             }
-
-            // If approaching darkest time, update progress report to match
-            if (invertedBrightness)
-            {
-                ProgressReport = Math.Round(percentCovered * 100) + "% of time covered before next darkest time";
-            }
-            // If approaching brightest time, update progress report to match
-            else
-            {
-                ProgressReport = Math.Round(percentCovered * 100) + "% of time covered before next brightest time";
-            }
-
-            // Update front-end progress value
-            Progress = percentCovered;
 
             return daylightSetting;
         }

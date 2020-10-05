@@ -81,6 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CutoffConverter.cs" />
     <Compile Include="LibraryViewModel.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="ManagerViewModel.cs" />

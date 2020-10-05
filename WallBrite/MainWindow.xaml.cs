@@ -17,7 +17,7 @@ namespace WallBrite
         public MainWindow()
         {
             library = new LibraryViewModel();
-            manager = new ManagerViewModel();
+            manager = new ManagerViewModel(library);
             InitializeComponent();
             DataContext = library;
             BottomPanel.DataContext = manager;
@@ -35,7 +35,7 @@ namespace WallBrite
 
         private void Cool1Click(object sender, RoutedEventArgs e)
         {
-            manager.ManageWalls(library);
+
         }
     }
 }
