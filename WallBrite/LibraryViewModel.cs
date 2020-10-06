@@ -35,8 +35,8 @@ namespace WallBrite
             EnableCommand = new RelayCommand(Enable);
             DisableCommand = new RelayCommand(Disable);
             RemoveCommand = new RelayCommand(Remove);
-            AddFilesCommand = new RelayCommand(AddFiles);
-            AddFolderCommand = new RelayCommand(AddFolder);
+            AddFilesCommand = new RelayCommand((object s) => AddFiles());
+            AddFolderCommand = new RelayCommand((object s) => AddFolder());
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace WallBrite
         /// <summary>
         /// 
         /// </summary>
-        public void AddFiles(object dummy = null)
+        public void AddFiles()
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create OpenFileDialog to browse files
@@ -159,7 +159,7 @@ namespace WallBrite
         /// <summary>
         /// 
         /// </summary>
-        public void AddFolder(object dummy = null)
+        public void AddFolder()
         {
             // TODO: add errors for files already existing in library (addfile returns false in this case)
             // Create FolderBrowserDialog to browse folders

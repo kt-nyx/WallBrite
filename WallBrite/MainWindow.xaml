@@ -6,13 +6,13 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1000">
     <DockPanel x:Name="MainPanel">
-        <Border x:Name="SidePanel" Width="105" Background="GhostWhite" BorderBrush="Black" BorderThickness="0 0 2 0" Padding="5 0">
-            <StackPanel DockPanel.Dock="Left">
+        <Expander ExpandDirection="Right" IsExpanded="True">
+            <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Background="GhostWhite" Width="105" Margin="0 0 5 0">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="0, 2"/>
+                        <Setter Property="Margin" Value="0, 2" />
                     </Style>
                 </StackPanel.Resources>
                 <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
@@ -38,12 +38,12 @@
                 <StackPanel Margin="0 10">
                     <StackPanel.Resources>
                         <Style TargetType="Button">
-                            <Setter Property="Margin" Value="0 2"/>
+                            <Setter Property="Margin" Value="0 2" />
                             <Style.Triggers>
-                                <DataTrigger 
-                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}" 
+                                <DataTrigger
+                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}"
                                         Value="0">
-                                    <Setter Property="Button.IsEnabled" Value="false"/>
+                                    <Setter Property="Button.IsEnabled" Value="false" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -56,40 +56,44 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-        </Border>
-        <Border x:Name="BottomPanel" DockPanel.Dock="Bottom" Background="GhostWhite" BorderBrush="Black" BorderThickness="0 2 0 0" Padding="5 5">
-            <StackPanel>
-                <TextBlock FontWeight="Bold" FontSize="14" TextAlignment="Center" Margin="0 0 0 5">Automation Settings</TextBlock>
+        </Expander>
+        <Expander DockPanel.Dock="Bottom" Header="Automation Settings">
+            <StackPanel x:Name="BottomPanel"  Background="GhostWhite">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="260"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
                             <StackPanel.Resources>
                                 <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
                             </StackPanel.Resources>
-                            <TextBlock Margin="0 0 5 0">Update Every:</TextBlock>
+                            <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Update Every:</TextBlock>
                             <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
-                            <TextBlock Margin="2 0 5 0" VerticalAlignment="Bottom">hrs</TextBlock>
+                            <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
                             <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
                                 <xctk:IntegerUpDown.Style>
                                     <Style TargetType="{x:Type xctk:IntegerUpDown}">
-                                        <Setter Property="Minimum" Value="1"/>
+                                        <Setter Property="Minimum" Value="1" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
                                                 <Setter Property="Minimum" Value="0" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
-                                                <Setter Property="Minimum" Value="1"/>
+                                                <Setter Property="Minimum" Value="1" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </xctk:IntegerUpDown.Style>
                             </xctk:IntegerUpDown>
-                            <TextBlock Margin="2 0 0 0" VerticalAlignment="Bottom">mins</TextBlock>
+                            <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
                         </StackPanel>
+                        <Grid Width="260" HorizontalAlignment="Left">
+                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
+                            <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                        <Button Margin="0 5 0 0" Command="{Binding UpdateCommand}">Update Now</Button>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="0 0 20 0">
                                 <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
@@ -100,30 +104,62 @@
                                 <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Margin="0 0 0 3" Width="120" HorizontalAlignment="Left"></xctk:TimePicker>
                             </StackPanel>
                         </StackPanel>
-                        <Grid Width="260" HorizontalAlignment="Left">
-                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
-                            <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
                     </StackPanel>
                     <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                        <Image Height="100" Source="{Binding CurrentClosestImageThumb}"></Image>
-                        <TextBlock Margin="0 3" HorizontalAlignment="Center">Current Wallpaper</TextBlock>
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <StackPanel>
+                                <Border Height="101" Width="300" BorderBrush="Black" BorderThickness="1" Background="{Binding ClosestImageBack}">
+                                    <Image Height="100" Source="{Binding ClosestImageThumb}"></Image>
+                                </Border>
+                                <TextBlock Margin="0 3" HorizontalAlignment="Center">Current Wallpaper</TextBlock>
+                            </StackPanel>
+                            <Grid Height="100" VerticalAlignment="Top">
+                                <StackPanel VerticalAlignment="Center">
+                                <Grid Width="160" HorizontalAlignment="Left" Margin="5 0 5 5">
+                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding CurrentDaylightPercent}"></ProgressBar>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="Current Daylight: {0}%">
+                                                <Binding Path="CurrentDaylightPercent"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
+                                <Grid Width="160" HorizontalAlignment="Left" Margin="5 0">
+                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ClosestImageBrightnessPercent}"></ProgressBar>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="Wallpaper Brightness: {0}%">
+                                                <Binding Path="ClosestImageBrightnessPercent"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Width="160" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 5">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="Filename: {0}">
+                                            <Binding Path="ClosestImageFilename"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
-                <Button Click="Cool1Click" Margin="0 5 0 0">Cool1</Button>
             </StackPanel>
-        </Border>
+        </Expander>
         <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsEnabled}" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="Opacity" Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -138,7 +174,7 @@
                 <DataTemplate>
                     <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
                         <Border BorderBrush="Black">
-                            <Image Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                            <Image Width="200" Height="200" Source="{Binding Thumbnail}" />
                         </Border>
                     </Border>
                 </DataTemplate>

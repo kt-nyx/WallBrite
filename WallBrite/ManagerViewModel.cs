@@ -6,6 +6,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Threading;
 using System.Windows.Threading;
+using System.Windows.Media;
+using System.IO;
 
 namespace WallBrite
 {
@@ -20,6 +22,8 @@ namespace WallBrite
         public const int SPIF_SENDCHANGE = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICommand UpdateCommand { get; set; }
 
         private int _updateIntervalHours;
         private int _updateIntervalMins;
@@ -67,16 +71,25 @@ namespace WallBrite
             }
         }
 
-        public double CurrentDaylight { get; private set; }
+        public double CurrentDaylightPercent { get; set; }
 
         public string ProgressReport { get; private set; }
 
         public double Progress { get; set; }
 
-        public BitmapImage CurrentClosestImageThumb { get; private set; }
+        public BitmapImage ClosestImageThumb { get; private set; }
+
+        public SolidColorBrush ClosestImageBack { get; private set; }
+
+        public double ClosestImageBrightnessPercent { get; set; }
+
+        public string ClosestImageFilename { get; set; }
 
         public ManagerViewModel(LibraryViewModel library)
         {
+            // Create command(s)
+            UpdateCommand = new RelayCommand((object s) => UpdateWall(library));
+
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
             UpdateIntervalHours = 0;
@@ -92,7 +105,7 @@ namespace WallBrite
 
             // Create timer that keeps track of time remaining on this ^^^ timer (checks every second)
             timerTracker = new DispatcherTimer();
-            timerTracker.Interval = new TimeSpan(0, 0, 1);
+            timerTracker.Interval = new TimeSpan(0, 0, 0, 0, 500);
             timerTracker.Tick += UpdateTimer;
 
             // Set start time as now and start the timers
@@ -120,19 +133,23 @@ namespace WallBrite
             if (library.LibraryList.Count > 0)
             {
                 // Get current daylight value
-                CurrentDaylight = UpdateCurrentDaylightSettings();
+                double currentDaylight = UpdateCurrentDaylightSettings();
+                CurrentDaylightPercent = Math.Round(currentDaylight * 100);
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
                     library.LibraryList.Aggregate((x, y) =>
-                                                           Math.Abs(x.AverageBrightness - CurrentDaylight)
-                                                            < Math.Abs(y.AverageBrightness - CurrentDaylight)
+                                                           Math.Abs(x.AverageBrightness - currentDaylight)
+                                                            < Math.Abs(y.AverageBrightness - currentDaylight)
                                                            && x.IsEnabled
                                                            ? x : y);
                 // Set wallpaper to this image
                 SetWall(closestImage);
 
-                // Update current closest's thumb
-                CurrentClosestImageThumb = closestImage.Thumbnail;
+                // Update current closest's thumb, background color, and front-end brightness value
+                ClosestImageThumb = closestImage.Thumbnail;
+                ClosestImageBack = closestImage.BackgroundColor;
+                ClosestImageBrightnessPercent = Math.Round(closestImage.AverageBrightness * 100);
+                ClosestImageFilename = Path.GetFileName(closestImage.Path);
             }
 
             // Restart the timer

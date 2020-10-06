@@ -51,3 +51,24 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.xml
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\GeneratedInternalTypeHelper.g.cs
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\WallBrite_MarkupCompile.lref
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Microsoft.Xaml.Behaviors.xml
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CopyComplete
