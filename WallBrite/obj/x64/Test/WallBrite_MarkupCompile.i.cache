@@ -4,15 +4,15 @@
 winexe
 C#
 .cs
-D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\x64\Test\
 WallBrite
 none
 false
-DEBUG;TRACE
+
 D:\Visual Studio Projects\WallBrite\WallBrite\App.xaml
 11151548125
 
-12990248948
+12-1007229529
 22-835411224
 MainWindow.xaml;
 

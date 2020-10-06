@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\
 WallBrite
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 D:\Visual Studio Projects\WallBrite\WallBrite\App.xaml
 11151548125
 
-12990248948
-22-835411224
+111832608315
+23-865478886
 MainWindow.xaml;
 
-True
+False
 
