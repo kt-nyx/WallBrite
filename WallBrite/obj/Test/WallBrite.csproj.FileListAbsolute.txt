@@ -17,3 +17,22 @@ D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\WallBrite.csproj.Fody.Cop
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\WallBrite.csproj.CopyComplete
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\WallBrite.exe
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\WallBrite.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\WallBrite.exe.config
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\WallBrite.exe
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\WallBrite.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Microsoft.Xaml.Behaviors.xml
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.csprojAssemblyReference.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\MainWindow.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\App.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\GeneratedInternalTypeHelper.g.cs
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite_MarkupCompile.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite_MarkupCompile.lref
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\MainWindow.baml
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.g.resources
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.Properties.Resources.resources
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.csproj.GenerateResource.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.csproj.CoreCompileInputs.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.csproj.Fody.CopyLocal.cache
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.csproj.CopyComplete
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.exe
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\WallBrite.pdb

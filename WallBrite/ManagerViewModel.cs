@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -29,19 +28,64 @@ namespace WallBrite
         private int _updateIntervalMins;
         private TimeSpan UpdateInterval;
 
-        private DispatcherTimer checkTimer;
-        private DispatcherTimer timerTracker;
+        private readonly DispatcherTimer checkTimer;
+        private readonly DispatcherTimer timerTracker;
         private DateTime checkTimerStart;
+
+        private DateTime _brightestTime;
+        private DateTime _darkestTime;
 
         private DateTime NextUpdateTime;
 
         private WBImage _currentImage;
 
-        private LibraryViewModel library;
+        private readonly LibraryViewModel library;
 
-        public DateTime DarkestTime { get; set; }
+        public DateTime DarkestTime
+        {
+            get { return _darkestTime; }
+            set
+            {
+                _darkestTime = value;
 
-        public DateTime BrightestTime { get; set; }
+                // Update current daylight value to reflect change
+                DateTime now = DateTime.Now;
+                CurrentDaylight = GetDaylightValue(now);
+
+                // Only update next update time if there are at least two wallpapers
+                if (library.LibraryList.Count > 1)
+                {
+                    // Update the update time (lol)
+                    NextUpdateTime = FindNextUpdateTime();
+                }
+
+                // Notify change on brightest time
+                NotifyPropertyChanged("DarkestTime");
+            }
+        }
+
+        public DateTime BrightestTime
+        {
+            get { return _brightestTime; }
+            set
+            {
+                _brightestTime = value;
+
+                // Update current daylight value to reflect change
+                DateTime now = DateTime.Now;
+                CurrentDaylight = GetDaylightValue(now);
+
+                // Only update next update time if there are at least two wallpapers
+                if (library.LibraryList.Count > 1)
+                {
+                    // Update the update time (lol)
+                    NextUpdateTime = FindNextUpdateTime();
+                }
+
+                // Notify change on brightest time
+                NotifyPropertyChanged("BrightestTime");
+            }
+        }
 
         public int UpdateIntervalHours
         {
@@ -102,7 +146,7 @@ namespace WallBrite
             }
         }
 
-        public double CurrentDaylightPercent { get; set; }
+        public double CurrentDaylight { get; set; }
 
         public string ProgressReport { get; private set; }
 
@@ -133,13 +177,11 @@ namespace WallBrite
             DarkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
 
             // Create timer thread for updating walls
-            checkTimer = new DispatcherTimer();
-            checkTimer.Interval = UpdateInterval;
+            checkTimer = new DispatcherTimer { Interval = UpdateInterval };
             checkTimer.Tick += (object s, EventArgs a) => CheckAndSetCurrentWall();
 
             // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
-            timerTracker = new DispatcherTimer();
-            timerTracker.Interval = new TimeSpan(0, 0, 0, 1);
+            timerTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
             timerTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
 
             // Set start time as now and start the timers
@@ -153,7 +195,7 @@ namespace WallBrite
             if (NextUpdateTime != DateTime.MinValue)
             {
                 DateTime now = DateTime.Now;
-                
+
                 // Find time elapsed since timer started
                 TimeSpan timeElapsed = now - checkTimerStart;
 
@@ -164,7 +206,7 @@ namespace WallBrite
                 TimeSpan timeRemaining = totalTime - timeElapsed;
 
                 // Get time elapsed as a percentage of total time before next update
-                Progress = Math.Round(timeElapsed.TotalSeconds / totalTime.TotalSeconds);
+                Progress = timeElapsed.TotalSeconds / totalTime.TotalSeconds;
 
                 // Create string to be used in front-end progress bar
                 ProgressReport = timeRemaining.ToString("%h") + " hr "
@@ -176,13 +218,14 @@ namespace WallBrite
 
         private void CheckAndSetCurrentWall()
         {
-            WBImage closestImage = null;
             DateTime now = DateTime.Now;
+
             // Only update the wall if there is at least one image in libraryto work with
             if (library.LibraryList.Count > 0)
             {
                 // Find closest image to current time's daylight value
-                closestImage = FindClosestImage(now);
+                CurrentDaylight = GetDaylightValue(now);
+                WBImage closestImage = FindClosestImage(now);
                 if (closestImage != null && closestImage != _currentImage)
                 {
                     // Set wallpaper to this image
@@ -195,9 +238,7 @@ namespace WallBrite
                     CurrentWallFileName = Path.GetFileName(closestImage.Path);
                     _currentImage = closestImage;
 
-                    CurrentDaylightPercent = GetDaylightValue(now);
-
-                    // Only change the next (actual) update time if there are at least two images in lib 
+                    // Only change the next (actual) update time if there are at least two images in lib
                     // i.e. only when there is a possible other wallpaper to switch to at update time
                     if (library.LibraryList.Count > 1)
                     {
@@ -258,8 +299,9 @@ namespace WallBrite
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
                     library.LibraryList.Aggregate((x, y) =>
-                                                           Math.Abs(x.AverageBrightness - daylightAtTime)
+                                                           (Math.Abs(x.AverageBrightness - daylightAtTime)
                                                             < Math.Abs(y.AverageBrightness - daylightAtTime)
+                                                              || !y.IsEnabled)
                                                            && x.IsEnabled
                                                            ? x : y);
                 return closestImage;

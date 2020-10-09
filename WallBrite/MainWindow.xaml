@@ -58,18 +58,28 @@
             </StackPanel>
         </Expander>
         <Expander DockPanel.Dock="Bottom" Header="Automation Settings">
+            <Expander.Resources>
+                <local:PercentConverter x:Key="PercentConverter" />
+            </Expander.Resources>
             <StackPanel x:Name="BottomPanel"  Background="GhostWhite">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="260"></ColumnDefinition>
+                        <ColumnDefinition Width="265"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                            <StackPanel.ToolTip>
+                                <TextBlock Width="300" TextWrapping="Wrap">
+                                    This sets the time between each "check" for a wallpaper update. Each time this happens,
+                                    WallBrite will check whether the time of day has changed sufficiently since the last check for
+                                    there to be a wallpaper update.
+                                </TextBlock>
+                            </StackPanel.ToolTip>
                             <StackPanel.Resources>
                                 <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
                             </StackPanel.Resources>
-                            <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Update Every:</TextBlock>
+                            <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Check for update every:</TextBlock>
                             <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
                             <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
                             <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
@@ -89,19 +99,27 @@
                             </xctk:IntegerUpDown>
                             <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
                         </StackPanel>
-                        <Grid Width="260" HorizontalAlignment="Left">
-                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
+                        <Grid Width="265" HorizontalAlignment="Left">
+                            <Grid.ToolTip>
+                                <TextBlock Width="300" TextWrapping="Wrap">
+                                    This is the time until the wallpaper will update using current library and check settings. If this is too long, it means WallBrite is
+                                    not checking for updates often enough, or there are not enough wallpapers in the library with a brightness
+                                    level similar to the current daylight level. In this case, try having WallBrite check more often or add more
+                                    wallpapers to the library with more varied brightness levels.
+                                </TextBlock>
+                            </Grid.ToolTip>
+                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
                             <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                         <Button Margin="0 5 0 0" Command="{Binding UpdateCommand}">Update Now</Button>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="0 0 20 0">
                                 <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
-                                <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="120" Margin="0 0 0 3" HorizontalAlignment="Left"></xctk:TimePicker>
+                                <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="122" Margin="0 0 0 3" HorizontalAlignment="Left"></xctk:TimePicker>
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
-                                <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Margin="0 0 0 3" Width="120" HorizontalAlignment="Left"></xctk:TimePicker>
+                                <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Margin="0 0 0 3" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -115,35 +133,35 @@
                             </StackPanel>
                             <Grid Height="100" VerticalAlignment="Top">
                                 <StackPanel VerticalAlignment="Center">
-                                <Grid Width="160" HorizontalAlignment="Left" Margin="5 0 5 5">
-                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylightPercent}"></ProgressBar>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="Current Daylight: {0}%">
-                                                <Binding Path="CurrentDaylightPercent"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </Grid>
-                                <Grid Width="160" HorizontalAlignment="Left" Margin="5 0">
+                                    <Grid Width="160" HorizontalAlignment="Left" Margin="5 0 5 5">
+                                        <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylight}"></ProgressBar>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="Current Daylight: {0}%">
+                                                    <Binding Path="CurrentDaylight" Converter="{StaticResource PercentConverter}" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Width="160" HorizontalAlignment="Left" Margin="5 0">
                                         <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentWallBrightness}"></ProgressBar>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="Wallpaper Brightness: {0}%">
+                                                    <Binding Path="CurrentWallBrightness" Converter="{StaticResource PercentConverter}" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Grid>
+                                    <TextBlock Width="160" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 5">
                                         <TextBlock.Text>
-                                            <MultiBinding StringFormat="Wallpaper Brightness: {0}%">
-                                                <Binding Path="ClosestImageBrightnessPercent"/>
+                                            <MultiBinding StringFormat="Filename: {0}">
+                                                <Binding Path="CurrentWallFileName" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
-                                </Grid>
-                                <TextBlock Width="160" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 5">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="Filename: {0}">
-                                                <Binding Path="CurrentWallFileName"/>
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
-                        </Grid>
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
