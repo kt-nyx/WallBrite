@@ -90,7 +90,7 @@
                             <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
                         </StackPanel>
                         <Grid Width="260" HorizontalAlignment="Left">
-                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
+                            <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Progress}" x:Name="timeProgress"></ProgressBar>
                             <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                         <Button Margin="0 5 0 0" Command="{Binding UpdateCommand}">Update Now</Button>
@@ -108,15 +108,15 @@
                     <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                             <StackPanel>
-                                <Border Height="101" Width="300" BorderBrush="Black" BorderThickness="1" Background="{Binding ClosestImageBack}">
-                                    <Image Height="100" Source="{Binding ClosestImageThumb}"></Image>
+                                <Border Height="101" Width="300" BorderBrush="Black" BorderThickness="1" Background="{Binding CurrentWallBack}">
+                                    <Image Height="100" Source="{Binding CurrentWallThumb}"></Image>
                                 </Border>
                                 <TextBlock Margin="0 3" HorizontalAlignment="Center">Current Wallpaper</TextBlock>
                             </StackPanel>
                             <Grid Height="100" VerticalAlignment="Top">
                                 <StackPanel VerticalAlignment="Center">
                                 <Grid Width="160" HorizontalAlignment="Left" Margin="5 0 5 5">
-                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding CurrentDaylightPercent}"></ProgressBar>
+                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylightPercent}"></ProgressBar>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="Current Daylight: {0}%">
@@ -126,7 +126,7 @@
                                     </TextBlock>
                                 </Grid>
                                 <Grid Width="160" HorizontalAlignment="Left" Margin="5 0">
-                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ClosestImageBrightnessPercent}"></ProgressBar>
+                                        <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentWallBrightness}"></ProgressBar>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="Wallpaper Brightness: {0}%">
@@ -138,7 +138,7 @@
                                 <TextBlock Width="160" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 5">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="Filename: {0}">
-                                            <Binding Path="ClosestImageFilename"/>
+                                                <Binding Path="CurrentWallFileName"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>

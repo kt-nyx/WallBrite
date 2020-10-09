@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Threading;
-using System.Windows.Threading;
 using System.Windows.Media;
-using System.IO;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace WallBrite
 {
@@ -29,11 +29,16 @@ namespace WallBrite
         private int _updateIntervalMins;
         private TimeSpan UpdateInterval;
 
-        private DispatcherTimer managerTimer;
+        private DispatcherTimer checkTimer;
         private DispatcherTimer timerTracker;
-        private TimeSpan managerTimeRemaining;
-        private DateTime managerStartTime;
-        
+        private DateTime checkTimerStart;
+
+        private DateTime NextUpdateTime;
+
+        private WBImage _currentImage;
+
+        private LibraryViewModel library;
+
         public DateTime DarkestTime { get; set; }
 
         public DateTime BrightestTime { get; set; }
@@ -45,17 +50,32 @@ namespace WallBrite
             {
                 _updateIntervalHours = value;
 
-                // Prevent user from setting interval to 0 hours 0 mins
+                // Prevent user from setting interval to 0 hours if already at 0 mins
                 if (_updateIntervalMins == 0)
                 {
+                    // Manually set mins to 1
                     _updateIntervalMins = 1;
-                    NotifyPropertyChanged("UpdateIntervalMins");
+
+                    // Create new update interval with new hours and 1 min
                     UpdateInterval = new TimeSpan(UpdateIntervalHours, 1, 0);
+
+                    // Notify change on mins
+                    NotifyPropertyChanged("UpdateIntervalMins");
                 }
-                else {
+                // Otherwise just set the hours
+                else
+                {
                     UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
                 }
-                
+
+                // Only update next update time if there are at least two wallpapers
+                if (library.LibraryList.Count > 1)
+                {
+                    // Update the update time (lol)
+                    NextUpdateTime = FindNextUpdateTime();
+                }
+
+                // Notify change on hours
                 NotifyPropertyChanged("UpdateIntervalHours");
             }
         }
@@ -66,7 +86,18 @@ namespace WallBrite
             set
             {
                 _updateIntervalMins = value;
+
+                // Create new interval with previously set hours and new mins
                 UpdateInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
+
+                // Only update next update time if there are at least two wallpapers
+                if (library.LibraryList.Count > 1)
+                {
+                    // Update the update time (lol)
+                    NextUpdateTime = FindNextUpdateTime();
+                }
+
+                // Notify change on mins
                 NotifyPropertyChanged("UpdateIntervalMins");
             }
         }
@@ -77,18 +108,21 @@ namespace WallBrite
 
         public double Progress { get; set; }
 
-        public BitmapImage ClosestImageThumb { get; private set; }
+        public BitmapImage CurrentWallThumb { get; private set; }
 
-        public SolidColorBrush ClosestImageBack { get; private set; }
+        public SolidColorBrush CurrentWallBack { get; private set; }
 
-        public double ClosestImageBrightnessPercent { get; set; }
+        public double CurrentWallBrightness { get; set; }
 
-        public string ClosestImageFilename { get; set; }
+        public string CurrentWallFileName { get; set; }
 
         public ManagerViewModel(LibraryViewModel library)
         {
             // Create command(s)
-            UpdateCommand = new RelayCommand((object s) => UpdateWall(library));
+            UpdateCommand = new RelayCommand((object s) => CheckAndSetCurrentWall());
+
+            // Set assigned library
+            this.library = library;
 
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
@@ -99,68 +133,149 @@ namespace WallBrite
             DarkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
 
             // Create timer thread for updating walls
-            managerTimer = new DispatcherTimer();
-            managerTimer.Interval = UpdateInterval;
-            managerTimer.Tick += (object s, EventArgs a) => UpdateWall(library);
+            checkTimer = new DispatcherTimer();
+            checkTimer.Interval = UpdateInterval;
+            checkTimer.Tick += (object s, EventArgs a) => CheckAndSetCurrentWall();
 
-            // Create timer that keeps track of time remaining on this ^^^ timer (checks every second)
+            // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
             timerTracker = new DispatcherTimer();
-            timerTracker.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            timerTracker.Tick += UpdateTimer;
+            timerTracker.Interval = new TimeSpan(0, 0, 0, 1);
+            timerTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
 
             // Set start time as now and start the timers
-            managerStartTime = DateTime.Now;
-            managerTimer.Start();
+            checkTimerStart = DateTime.Now;
+            checkTimer.Start();
             timerTracker.Start();
         }
 
-        private void UpdateTimer(object sender, EventArgs e)
+        private void UpdateTimerProgress()
         {
-            TimeSpan timeElapsed = DateTime.Now - managerStartTime;
-            managerTimeRemaining = UpdateInterval.Subtract(timeElapsed);
+            if (NextUpdateTime != DateTime.MinValue)
+            {
+                DateTime now = DateTime.Now;
+                
+                // Find time elapsed since timer started
+                TimeSpan timeElapsed = now - checkTimerStart;
 
-            Progress = Math.Round(timeElapsed.TotalSeconds / UpdateInterval.TotalSeconds * 100);
+                // Get total length of time between timer's start and next actual wall update
+                TimeSpan totalTime = NextUpdateTime - checkTimerStart;
 
-            ProgressReport = managerTimeRemaining.ToString("%h") + " hr "
-                             + managerTimeRemaining.ToString("%m") + " min " 
-                             + managerTimeRemaining.ToString("%s") 
-                             + " sec before next update";
+                // Set time remaining to time of next update minus the time already elapsed
+                TimeSpan timeRemaining = totalTime - timeElapsed;
+
+                // Get time elapsed as a percentage of total time before next update
+                Progress = Math.Round(timeElapsed.TotalSeconds / totalTime.TotalSeconds);
+
+                // Create string to be used in front-end progress bar
+                ProgressReport = timeRemaining.ToString("%h") + " hr "
+                                 + timeRemaining.ToString("%m") + " min "
+                                 + timeRemaining.ToString("%s")
+                                 + " sec before next update";
+            }
         }
 
-        private void UpdateWall(LibraryViewModel library)
+        private void CheckAndSetCurrentWall()
         {
-            // Only do wallpaper management if there are wallpapers in the library
+            WBImage closestImage = null;
+            DateTime now = DateTime.Now;
+            // Only update the wall if there is at least one image in libraryto work with
+            if (library.LibraryList.Count > 0)
+            {
+                // Find closest image to current time's daylight value
+                closestImage = FindClosestImage(now);
+                if (closestImage != null && closestImage != _currentImage)
+                {
+                    // Set wallpaper to this image
+                    SetWall(closestImage);
+
+                    // Update current closest's thumb, background color, and front-end brightness value
+                    CurrentWallThumb = closestImage.Thumbnail;
+                    CurrentWallBack = closestImage.BackgroundColor;
+                    CurrentWallBrightness = closestImage.AverageBrightness;
+                    CurrentWallFileName = Path.GetFileName(closestImage.Path);
+                    _currentImage = closestImage;
+
+                    CurrentDaylightPercent = GetDaylightValue(now);
+
+                    // Only change the next (actual) update time if there are at least two images in lib 
+                    // i.e. only when there is a possible other wallpaper to switch to at update time
+                    if (library.LibraryList.Count > 1)
+                    {
+                        // Find the next time when wallpaper will actually change
+                        NextUpdateTime = FindNextUpdateTime();
+                    }
+                }
+
+                // Restart the timer
+                checkTimerStart = DateTime.Now;
+                checkTimer.Start();
+            }
+        }
+
+        private DateTime FindNextUpdateTime()
+        {
+            DateTime nextCheckTime = checkTimerStart.AddMinutes(UpdateInterval.TotalMinutes);
+
+            // Continue looping until intervals have looped around back to the same time on the next day
+            // I.e. the check time has the same date as the timer's start time, or the checktime has looped
+            // over to the next day but is still before the timer's start time on that day
+            // I.e. exits when check time passes the timer's start time but on the following day
+            while (nextCheckTime.Date == checkTimerStart.Date
+                    || (nextCheckTime.Date == checkTimerStart.AddDays(1).Date
+                          && nextCheckTime.TimeOfDay.CompareTo(checkTimerStart.TimeOfDay) <= 0))
+            {
+                // Next image that will be set as wall when brightness is checked
+
+                WBImage nextCheckImage = FindClosestImage(nextCheckTime);
+
+                // Return if the image will actually be different at this check time (i.e. it will actually
+                // update to a different wall when checked)
+                if (_currentImage != nextCheckImage)
+                {
+                    return nextCheckTime;
+                }
+                // Otherwise start the loop again, checking at the time after the next interval
+                else
+                {
+                    nextCheckTime = nextCheckTime.AddMinutes(UpdateInterval.TotalMinutes);
+                }
+            }
+
+            // If looped all the way around with no update, then there won't ever be any actual wall change
+            // with the current library/automation settings
+            // Occurs when only one image in library, for example
+            throw new InvalidOperationException("Can't find next update time; the wallpaper will not update" +
+                "with current library/automation settings");
+        }
+
+        private WBImage FindClosestImage(DateTime time)
+        {
+            // Only search for closest if there are images in the library
             if (library.LibraryList.Count > 0)
             {
                 // Get current daylight value
-                double currentDaylight = UpdateCurrentDaylightSettings();
-                CurrentDaylightPercent = Math.Round(currentDaylight * 100);
+                double daylightAtTime = GetDaylightValue(time);
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
                     library.LibraryList.Aggregate((x, y) =>
-                                                           Math.Abs(x.AverageBrightness - currentDaylight)
-                                                            < Math.Abs(y.AverageBrightness - currentDaylight)
+                                                           Math.Abs(x.AverageBrightness - daylightAtTime)
+                                                            < Math.Abs(y.AverageBrightness - daylightAtTime)
                                                            && x.IsEnabled
                                                            ? x : y);
-                // Set wallpaper to this image
-                SetWall(closestImage);
-
-                // Update current closest's thumb, background color, and front-end brightness value
-                ClosestImageThumb = closestImage.Thumbnail;
-                ClosestImageBack = closestImage.BackgroundColor;
-                ClosestImageBrightnessPercent = Math.Round(closestImage.AverageBrightness * 100);
-                ClosestImageFilename = Path.GetFileName(closestImage.Path);
+                return closestImage;
             }
-
-            // Restart the timer
-            managerStartTime = DateTime.Now;
-            managerTimer.Start();
+            // Otherwise throw an exception
+            else
+            {
+                throw new InvalidOperationException("Can't find closest image in library at given time; " +
+                                                    "No images in library");
+            }
         }
 
-        private double UpdateCurrentDaylightSettings()
+        private double GetDaylightValue(DateTime time)
         {
             // Get the current time in minutes since midnight
-            double now = DateTime.Now.TimeOfDay.TotalMinutes;
+            double now = time.TimeOfDay.TotalMinutes;
 
             // Get BrightestTime in minutes since midnight
             double brightestInMins = BrightestTime.TimeOfDay.TotalMinutes;
@@ -279,6 +394,7 @@ namespace WallBrite
             // TODO: add try catch
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
         }
+
         protected void NotifyPropertyChanged(String info)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));

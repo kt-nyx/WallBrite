@@ -50,24 +50,25 @@ namespace WallBrite
         public WBImage(Stream stream, string path)
         {
             // Create bitmap using image from given stream
-            Bitmap image = new Bitmap(stream);
+            // Free up this bitmap memory after using it to create the WBImage
+            using (Bitmap image = new Bitmap(stream)) {
+                // Create thumbnail, maintaining aspect ratio but staying within a 200 * 200 box:
+                // If image width larger than height; set width of thumbnail to 200 and reduce height
+                // proportionally
+                if (image.Width >= image.Height)
+                    Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
+                                                         200 * image.Height / image.Width,
+                                                         null, IntPtr.Zero));
 
-            // Create thumbnail, maintaining aspect ratio but staying within a 200 * 200 box:
-            // If image width larger than height; set width of thumbnail to 200 and reduce height
-            // proportionally
-            if (image.Width >= image.Height)
-                Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
-                                                     200 * image.Height / image.Width,
-                                                     null, IntPtr.Zero));
+                // If image height larger than width; set height of thumbnail to 200 and reduce width
+                // proportionally
+                else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
+                                                          200,
+                                                          null, IntPtr.Zero));
 
-            // If image height larger than width; set height of thumbnail to 200 and reduce width
-            // proportionally
-            else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
-                                                      200,
-                                                      null, IntPtr.Zero));
-
-            // Calculate and set average brightness of this WBImage
-            CalculateAverageBrightness(image);
+                // Calculate and set average brightness of this WBImage
+                CalculateAverageBrightness(image);
+            }
 
             // Set background color for UI
             int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
