@@ -212,7 +212,7 @@ namespace WallBrite
                 ProgressReport = timeRemaining.ToString("%h") + " hr "
                                  + timeRemaining.ToString("%m") + " min "
                                  + timeRemaining.ToString("%s")
-                                 + " sec before next update";
+                                 + " sec before next change";
             }
         }
 
@@ -342,7 +342,7 @@ namespace WallBrite
             // For use in case calculations
             double minutesCovered;
             double brightestToDarkest;
-            bool invertedBrightness;
+            bool approachingDarkest;
 
             // Case 1: Now is between brightest time and darkest time (respectively)
             if (brightestInMins < now && now < darkestInMins)
@@ -354,7 +354,7 @@ namespace WallBrite
 
                 // Since approaching the darkest time, brightness value will be inverted (should be
                 // approaching 0 rather than 1
-                invertedBrightness = true;
+                approachingDarkest = true;
             }
             // Case 2: Now is between darkest time and brightest time (respectively)
             else if (darkestInMins < now && now < brightestInMins)
@@ -366,7 +366,7 @@ namespace WallBrite
 
                 // Since approaching the brightest time, brightness value will be proportional to the
                 // percentage of the time already covered (should be approaching 1 rather than 0)
-                invertedBrightness = false;
+                approachingDarkest = false;
             }
             // Case 3: Now is before brightest time and brightest time is before darkest time
             else if (now < brightestInMins && brightestInMins < darkestInMins)
@@ -379,7 +379,7 @@ namespace WallBrite
                 // then around again from midnight to brightest time)
                 brightestToDarkest = (minutesInDay - darkestInMins) + brightestInMins;
 
-                invertedBrightness = false;
+                approachingDarkest = false;
             }
             // Case 4: Now is before darkest time and darkest time is before brightest time
             else if (now < darkestInMins && darkestInMins < brightestInMins)
@@ -388,7 +388,7 @@ namespace WallBrite
 
                 brightestToDarkest = (minutesInDay - brightestInMins) + darkestInMins;
 
-                invertedBrightness = true;
+                approachingDarkest = true;
             }
             // Case 5: Brightest time is before darkest time and darkest time is before now
             else if (brightestInMins < darkestInMins && darkestInMins < now)
@@ -397,7 +397,7 @@ namespace WallBrite
 
                 brightestToDarkest = (minutesInDay - darkestInMins) + brightestInMins;
 
-                invertedBrightness = false;
+                approachingDarkest = false;
             }
             // Case 6: Darkest time is before brightest time and brightest time is before now
             else if (darkestInMins < brightestInMins && brightestInMins < now)
@@ -406,7 +406,7 @@ namespace WallBrite
 
                 brightestToDarkest = (minutesInDay - brightestInMins) + darkestInMins;
 
-                invertedBrightness = true;
+                approachingDarkest = true;
             }
             else
             {
@@ -418,7 +418,7 @@ namespace WallBrite
 
             double daylightSetting;
             // If brightness setting should be inverted relative to the percent covered, do so
-            if (invertedBrightness)
+            if (approachingDarkest)
             {
                 daylightSetting = 1 - percentCovered;
             }

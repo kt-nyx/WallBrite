@@ -17,17 +17,9 @@ namespace WallBrite
             //TODO: make autosave?
 
         //TODO: AUTOMATION UI CLEANUP
-            //TODO: change progress bar to show PROGRESS TO NEXT ACTUALLLL UPDATE
-                //TODO: simulate the change at the next update time?
-                //TODO: store result to increase processing efficiency for next actual update?
-            //TODO: change update to check?
             //TODO: add tooltip(s)
             //TODO: change layout to be less cluttered; use horizontal space
             //TODO: add alert when wallpaper did/did not change on update
-            //TODO: add progress bar between brightest/darkest time of day
-                //TODO: make them switch places depending on whether approaching brightest or darkest 
-                //TODO: use invertedbrightness to check; change the name of this to approachingDark or
-                //TODO: something
             //TODO: add NEXT wallpaper?
             
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
