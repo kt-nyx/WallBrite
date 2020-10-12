@@ -177,7 +177,7 @@
                                 <TextBlock Width="160" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0 5 0 0">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="Filename: {0}">
-                                            <Binding Path="CurrentWallFileName" />
+                                            <Binding Path="CurrentWallFileName"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
@@ -211,9 +211,20 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
-                        <Border BorderBrush="Black">
-                            <Image Width="200" Height="200" Source="{Binding Thumbnail}" />
-                        </Border>
+                        <Grid>
+                            <Image Panel.ZIndex="0" Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                            <TextBlock Panel.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Medium" FontSize="40">
+                                <TextBlock.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Opacity, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Value="0.5">
+                                                <Setter Property="Text" Value="Disabled"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Resources>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
