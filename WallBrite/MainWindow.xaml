@@ -180,8 +180,8 @@
                             <Border Grid.Column="0" HorizontalAlignment="Right" Margin="0 0 5 0" Height="75" Width="150" BorderBrush="Black" BorderThickness="1" Background="{Binding CurrentWallBack}">
                                 <Image HorizontalAlignment="Center" MaxHeight="75" Source="{Binding CurrentWallThumb}"></Image>
                             </Border>
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                <Grid Width="160" Margin="5 0 0 0">
+                            <StackPanel Margin="5 0 0 0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Grid Width="160" HorizontalAlignment="Left">
                                     <Grid.ToolTip>
                                         Currently set wallpaper's brightness (as a percentage of the maximum possible brightness of an image).
                                     </Grid.ToolTip>
@@ -194,7 +194,7 @@
                                         </TextBlock.Text>
                                     </TextBlock>
                                 </Grid>
-                                <TextBlock Width="160" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0 5 0 0">
+                                <TextBlock Width="160" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" HorizontalAlignment="Left">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="Filename: {0}">
                                             <Binding Path="CurrentWallFileName" />

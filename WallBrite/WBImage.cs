@@ -14,7 +14,7 @@ namespace WallBrite
         /// <summary>
         /// Average brightness calculated (or manually set) for this image
         /// </summary>
-        public float AverageBrightness { get; set; }
+        public float AverageBrightness { get; private set; }
 
         /// <summary>
         /// Whether this WBImage will show up in the library

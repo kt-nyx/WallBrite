@@ -16,9 +16,9 @@ namespace WallBrite
 {
     public class LibraryViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public ObservableCollection<WBImage> LibraryList { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand EnableCommand { get; set; }
         public ICommand DisableCommand { get; set; }

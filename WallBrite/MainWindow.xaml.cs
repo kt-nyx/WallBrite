@@ -38,28 +38,28 @@ namespace WallBrite
         
         //TODO: add manual set wallpaper button
 
-        private readonly LibraryViewModel library;
-        private readonly ManagerViewModel manager;
+        private readonly LibraryViewModel _library;
+        private readonly ManagerViewModel _manager;
 
         public MainWindow()
         {
-            library = new LibraryViewModel();
-            manager = new ManagerViewModel(library);
+            _library = new LibraryViewModel();
+            _manager = new ManagerViewModel(_library);
             InitializeComponent();
-            DataContext = library;
-            BottomPanel.DataContext = manager;
+            DataContext = _library;
+            BottomPanel.DataContext = _manager;
         }
 
         //TODO: make into command
         private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            library.SortTypeChanged(sender, imageGrid);
+            _library.SortTypeChanged(sender, imageGrid);
         }
 
         //TODO: make into command
         private void SortDirectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            library.SortDirectionChanged(sender, imageGrid);
+            _library.SortDirectionChanged(sender, imageGrid);
         }
     }
 }
