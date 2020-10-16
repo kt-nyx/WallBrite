@@ -17,33 +17,29 @@ namespace WallBrite
             //TODO: make autosave?
 
         //TODO: AUTOMATION UI CLEANUP
-            //TODO: add tooltip(s)
-            //TODO: change layout to be less cluttered; use horizontal space
+            //TODO: add help button(s)?
             //TODO: add alert when wallpaper did/did not change on update
-            //TODO: add NEXT wallpaper?
             
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
             //TODO: run in background
             //TODO: taskbar icon
+                //TODO: taskbar icon options?
     
         //TODO: ADDFILES SPEED + CLARITY
             //TODO: add progress bar when adding files
             //TODO: add cancel button
             //TODO: improve efficiency
-                //TODO: memory
                 //TODO: processing
 
-        //TODO: IMPROVE SORT EFFICIENCY; LAG HERE for some reason...
+        //TODO: IMPROVE SORT EFFICIENCY; lag here for some reason...
 
         //TODO: MAKE INSTALLER
             //TODO: remove fody dll thing?
         
         //TODO: add manual set wallpaper button
 
-        //TODO: add 'disabled' text over disabled walls
-
-        private LibraryViewModel library;
-        private ManagerViewModel manager;
+        private readonly LibraryViewModel library;
+        private readonly ManagerViewModel manager;
 
         public MainWindow()
         {

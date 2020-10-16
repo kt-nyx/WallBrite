@@ -58,22 +58,22 @@
                 </StackPanel>
             </StackPanel>
         </Expander>
-        <Expander ExpandDirection="Up" DockPanel.Dock="Bottom" Header="Automation Settings" Background="GhostWhite" >
+        <Expander ExpandDirection="Up" DockPanel.Dock="Bottom" Header="Automation Settings" Background="GhostWhite">
             <Expander.Resources>
                 <local:PercentConverter x:Key="PercentConverter" />
             </Expander.Resources>
-            <StackPanel x:Name="BottomPanel"  Background="GhostWhite">
-                <Grid Height="110" HorizontalAlignment="Stretch">
+            <Border BorderBrush="#FFABADB3" BorderThickness="1 0 0 1">
+                <Grid x:Name="BottomPanel"  Background="GhostWhite" Height="110" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" BorderThickness="0 0 1 0" BorderBrush="Black">
+                    <Border Grid.Column="0" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="3*"/>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="3*" />
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Wallpaper Change Settings</TextBlock>
 
@@ -125,7 +125,7 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <Border Grid.Column="1" BorderThickness="0 0 1 0" BorderBrush="Black">
+                    <Border Grid.Column="1" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3">
                         <Grid Margin="0 0 0 5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -205,7 +205,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </StackPanel>
+            </Border>
         </Expander>
         <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemsPanel>
