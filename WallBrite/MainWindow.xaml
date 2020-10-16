@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="1200"
         WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel x:Name="MainPanel">
-        <Expander ExpandDirection="Right" IsExpanded="True">
+        <Expander ExpandDirection="Right" IsExpanded="True" Background="GhostWhite">
             <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Background="GhostWhite" Width="105" Margin="0 0 5 0">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
@@ -58,12 +58,12 @@
                 </StackPanel>
             </StackPanel>
         </Expander>
-        <Expander DockPanel.Dock="Bottom" Header="Automation Settings">
+        <Expander ExpandDirection="Up" DockPanel.Dock="Bottom" Header="Automation Settings" Background="GhostWhite" >
             <Expander.Resources>
                 <local:PercentConverter x:Key="PercentConverter" />
             </Expander.Resources>
             <StackPanel x:Name="BottomPanel"  Background="GhostWhite">
-                <Grid HorizontalAlignment="Stretch">
+                <Grid Height="110" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -71,66 +71,72 @@
                     </Grid.ColumnDefinitions>
                     <Border Grid.Column="0" BorderThickness="0 0 1 0" BorderBrush="Black">
                         <Grid>
-                            <TextBlock HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Update Settings</TextBlock>
-                            <StackPanel VerticalAlignment="Bottom" Margin="10 0 10 5">
-                            <StackPanel Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
-                                <StackPanel.ToolTip>
-                                    <TextBlock Width="300" TextWrapping="Wrap">
-                                    This sets the time between each "check" for a wallpaper change. Each time this happens,
-                                    WallBrite will check whether the time of day has changed sufficiently to match the brightness of a different
-                                    image from the one currently set as the wallpaper.
-                                    </TextBlock>
-                                </StackPanel.ToolTip>
-                                <StackPanel.Resources>
-                                    <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
-                                </StackPanel.Resources>
-                                <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Check for change every:</TextBlock>
-                                <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
-                                <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
-                                <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
-                                    <xctk:IntegerUpDown.Style>
-                                        <Style TargetType="{x:Type xctk:IntegerUpDown}">
-                                            <Setter Property="Minimum" Value="1" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
-                                                    <Setter Property="Minimum" Value="0" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
-                                                    <Setter Property="Minimum" Value="1" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </xctk:IntegerUpDown.Style>
-                                </xctk:IntegerUpDown>
-                                <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="3*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Wallpaper Change Settings</TextBlock>
+
+                            <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10 0 10 5">
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
+                                    <StackPanel.ToolTip>
+                                        <TextBlock Width="300" TextWrapping="Wrap">
+                                            The time between each "check" for a wallpaper change. Each time this check happens,
+                                            WallBrite will see whether the time of day has changed sufficiently to match the brightness of a different
+                                            image from the one currently set as the wallpaper.
+                                        </TextBlock>
+                                    </StackPanel.ToolTip>
+                                    <StackPanel.Resources>
+                                        <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
+                                    </StackPanel.Resources>
+                                    <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Check for change every:</TextBlock>
+                                    <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
+                                    <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
+                                    <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
+                                        <xctk:IntegerUpDown.Style>
+                                            <Style TargetType="{x:Type xctk:IntegerUpDown}">
+                                                <Setter Property="Minimum" Value="1" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
+                                                        <Setter Property="Minimum" Value="0" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
+                                                        <Setter Property="Minimum" Value="1" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </xctk:IntegerUpDown.Style>
+                                    </xctk:IntegerUpDown>
+                                    <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
+                                </StackPanel>
+                                <Grid Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
+                                    <Grid.ToolTip>
+                                        <TextBlock Width="300" TextWrapping="Wrap">
+                                            The time until the next actual wallpaper change, using the current library and automation settings. If this is too long, try making WallBrite check for changes more often or add more
+                                            wallpapers to the library with more varied brightness levels.
+                                        </TextBlock>
+                                    </Grid.ToolTip>
+                                    <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
+                                    <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Grid>
+                                <Button x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
+                                    Check for change now
+                                </Button>
                             </StackPanel>
-                            <Grid Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
-                                <Grid.ToolTip>
-                                    <TextBlock Width="300" TextWrapping="Wrap">
-                                    This is the time until the wallpaper will change using the current library and automation settings. If this is too long, try having WallBrite check more often or add more
-                                    wallpapers to the library with more varied brightness levels.
-                                    </TextBlock>
-                                </Grid.ToolTip>
-                                <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
-                                <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Grid>
-                            <Button x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
-                                Check for change now
-                                <Button.ToolTip>
-                                    <TextBlock Width="300" TextWrapping="Wrap">
-                                    Check for a wallpaper change now. If the time of day has changed significantly since the last check and there is a wallpaper
-                                    in the library better matching the current time of day than the currently set wallpaper, the wallpaper will change.
-                                    </TextBlock>
-                                </Button.ToolTip>
-                            </Button>
-                        </StackPanel>
                         </Grid>
                     </Border>
                     <Border Grid.Column="1" BorderThickness="0 0 1 0" BorderBrush="Black">
                         <Grid Margin="0 0 0 5">
-                            <TextBlock HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Time of Day Settings</TextBlock>
-                            <StackPanel VerticalAlignment="Bottom">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="3*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Time of Day Settings</TextBlock>
+                            <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
                                 <Grid Width="265" HorizontalAlignment="Center" Margin="5 0 5 5">
+                                    <Grid.ToolTip>
+                                        The current daylight level (as a percentage of the max daylight level, at the brightest time of day)
+                                    </Grid.ToolTip>
                                     <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylight}"></ProgressBar>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock.Text>
@@ -142,10 +148,16 @@
                                 </Grid>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <StackPanel Margin="0 0 20 0">
+                                        <StackPanel.ToolTip>
+                                            At the brightest time of day, the daylight level will be 100%.
+                                        </StackPanel.ToolTip>
                                         <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
                                         <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
                                     </StackPanel>
                                     <StackPanel>
+                                        <StackPanel.ToolTip>
+                                            At the darkest time of day, the daylight level will be 0%.
+                                        </StackPanel.ToolTip>
                                         <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
                                         <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
                                     </StackPanel>
@@ -153,18 +165,26 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <Grid Grid.Column="2" Margin="10 0 0 0">
+                    <Grid Grid.Column="2">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="3*" />
                         </Grid.RowDefinitions>
-                        <TextBlock HorizontalAlignment="Center" FontWeight="Medium" Margin="0 5" VerticalAlignment="Top">Current Wallpaper</TextBlock>
-                        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="0 0 0 5">
-                            <Border HorizontalAlignment="Center" Padding="0 20" MaxWidth="200" BorderBrush="Black" BorderThickness="1" Background="{Binding CurrentWallBack}">
-                                <Image HorizontalAlignment="Center" MaxHeight="100" Source="{Binding CurrentWallThumb}"></Image>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" Margin="0 5" VerticalAlignment="Top"> Current Wallpaper</TextBlock>
+                        <Grid Grid.Row="1" Margin="10 0 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" HorizontalAlignment="Right" Margin="0 0 5 0" Height="75" Width="150" BorderBrush="Black" BorderThickness="1" Background="{Binding CurrentWallBack}">
+                                <Image HorizontalAlignment="Center" MaxHeight="75" Source="{Binding CurrentWallThumb}"></Image>
                             </Border>
-                            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                                <Grid Width="160" Margin="0 5 0 0">
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Grid Width="160" Margin="5 0 0 0">
+                                    <Grid.ToolTip>
+                                        Currently set wallpaper's brightness (as a percentage of the maximum possible brightness of an image).
+                                    </Grid.ToolTip>
                                     <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentWallBrightness}"></ProgressBar>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock.Text>
@@ -177,12 +197,12 @@
                                 <TextBlock Width="160" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0 5 0 0">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="Filename: {0}">
-                                            <Binding Path="CurrentWallFileName"/>
+                                            <Binding Path="CurrentWallFileName" />
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </StackPanel>
@@ -212,13 +232,13 @@
                 <DataTemplate>
                     <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
                         <Grid>
-                            <Image Panel.ZIndex="0" Width="200" Height="200" Source="{Binding Thumbnail}"/>
+                            <Image Panel.ZIndex="0" Width="200" Height="200" Source="{Binding Thumbnail}" />
                             <TextBlock Panel.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Medium" FontSize="40">
                                 <TextBlock.Resources>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Opacity, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Value="0.5">
-                                                <Setter Property="Text" Value="Disabled"/>
+                                                <Setter Property="Text" Value="Disabled" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

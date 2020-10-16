@@ -54,3 +54,21 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\ro\Xceed.Wpf.AvalonDock.r
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\ru\Xceed.Wpf.AvalonDock.resources.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\sv\Xceed.Wpf.AvalonDock.resources.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Microsoft.Xaml.Behaviors.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Xceed.Wpf.AvalonDock.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Xceed.Wpf.AvalonDock.Themes.Aero.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Xceed.Wpf.Toolkit.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Microsoft.Xaml.Behaviors.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll

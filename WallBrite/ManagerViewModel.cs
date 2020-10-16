@@ -212,7 +212,7 @@ namespace WallBrite
                 ProgressReport = timeRemaining.ToString("%h") + " hr "
                                  + timeRemaining.ToString("%m") + " min "
                                  + timeRemaining.ToString("%s")
-                                 + " sec before next change";
+                                 + " sec before next wallpaper change";
             }
         }
 
