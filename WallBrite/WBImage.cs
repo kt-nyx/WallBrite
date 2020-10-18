@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -29,6 +30,7 @@ namespace WallBrite
         /// <summary>
         /// Thumbnail image for use in library UI
         /// </summary>
+        [JsonIgnore]
         public BitmapImage Thumbnail { get; private set; }
 
         /// <summary>
@@ -83,6 +85,31 @@ namespace WallBrite
             IsEnabled = true;
 
             // Set the path
+            Path = path;
+        }
+
+        [JsonConstructor]
+        public WBImage(float averageBrightness, bool isEnabled, DateTime addedDate, SolidColorBrush backgroundColor, string path)
+        {
+            // TODO: handle exceptions
+            using (Image image = Image.FromFile(path))
+            {
+
+                if (image.Width >= image.Height)
+                    Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
+                                                         200 * image.Height / image.Width,
+                                                         null, IntPtr.Zero));
+
+                // If image height larger than width; set height of thumbnail to 200 and reduce width
+                // proportionally
+                else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
+                                                          200,
+                                                          null, IntPtr.Zero));
+            }
+            AverageBrightness = averageBrightness;
+            IsEnabled = isEnabled;
+            AddedDate = addedDate;
+            BackgroundColor = backgroundColor;
             Path = path;
         }
 

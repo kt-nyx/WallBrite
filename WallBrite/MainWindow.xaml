@@ -16,6 +16,10 @@
                         <Setter Property="Margin" Value="0, 2" />
                     </Style>
                 </StackPanel.Resources>
+
+                <Button Click="OpenLibrary">Open Library</Button>
+                <Button Command="{Binding SaveCommand}">Save Library</Button>
+
                 <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
 
                 <StackPanel>

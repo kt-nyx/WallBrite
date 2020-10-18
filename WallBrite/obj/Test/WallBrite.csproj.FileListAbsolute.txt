@@ -72,3 +72,5 @@ C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ro\Xceed.Wpf.AvalonDock.re
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.xml

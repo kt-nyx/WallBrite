@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,7 +41,7 @@ namespace WallBrite
         
         //TODO: add manual set wallpaper button
 
-        private readonly LibraryViewModel _library;
+        private LibraryViewModel _library;
         private readonly ManagerViewModel _manager;
 
         public MainWindow()
@@ -48,6 +51,41 @@ namespace WallBrite
             InitializeComponent();
             DataContext = _library;
             BottomPanel.DataContext = _manager;
+        }
+
+        private void OpenLibrary(object sender, RoutedEventArgs e)
+        {
+            // TODO: add errors for files already existing in library (addfile returns false in this case)
+            // Create OpenFileDialog to browse files
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                // Filter dialog to only show supported image types (or all files)
+                Filter = "WallBrite Library Files|*.json" +
+                            "|All Files|*.*",
+            };
+
+            // If user clicked OK (not Cancel) in file dialog
+            if (dialog.ShowDialog() == true)
+            {
+                // TODO: add try catch for possible exceptions
+                // Create stream from selected file
+                Stream fileStream = dialog.OpenFile();
+
+                var serializer = new JsonSerializer();
+
+                using (var streamReader = new StreamReader(fileStream))
+                    using (var jsonTextReader = new JsonTextReader(streamReader))
+                {
+                    // Deserialize WBImage array from file
+                    WBImage[] imageArray = (WBImage[]) serializer.Deserialize(jsonTextReader, typeof(WBImage[]));
+
+                    // Create new library VM using image array
+                    _library = new LibraryViewModel(imageArray);
+
+                    // Reset data context
+                    DataContext = _library;
+                }
+            }
         }
 
         //TODO: make into command

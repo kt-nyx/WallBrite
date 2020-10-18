@@ -1,12 +1,11 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -25,6 +24,7 @@ namespace WallBrite
         public ICommand RemoveCommand { get; set; }
         public ICommand AddFilesCommand { get; set; }
         public ICommand AddFolderCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
 
         public LibraryViewModel()
         {
@@ -32,13 +32,33 @@ namespace WallBrite
             LibraryList = new ObservableCollection<WBImage>();
 
             // Create commands
+            CreateCommands();
+        }
+
+        public LibraryViewModel(WBImage[] libraryList)
+        {
+            // Create library list from given
+            LibraryList = new ObservableCollection<WBImage>(libraryList);
+
+            // Create commands
+            CreateCommands();
+        }
+
+        private void CreateCommands()
+        {
             EnableCommand = new RelayCommand(Enable);
             DisableCommand = new RelayCommand(Disable);
             RemoveCommand = new RelayCommand(Remove);
             AddFilesCommand = new RelayCommand((object s) => AddFiles());
             AddFolderCommand = new RelayCommand((object s) => AddFolder());
+            SaveCommand = new RelayCommand((object s) => SaveLibrary());
         }
 
+        // TODO: change placeholder path to a relative? path
+        private void SaveLibrary()
+        {
+            File.WriteAllText(@"c:\cool.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+        }
         /// <summary>
         /// Adds given WBImage at given filePath to the library; or throws exception if image is
         /// already in the library
