@@ -84,6 +84,9 @@ namespace WallBrite
 
                     // Reset data context
                     DataContext = _library;
+
+                    // Update manager to use new library
+                    _manager.Library = _library;
                 }
             }
         }

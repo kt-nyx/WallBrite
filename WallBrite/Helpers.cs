@@ -32,5 +32,24 @@ namespace WallBrite
                 return bitmapImage;
             }
         }
+
+        /// <summary>
+        /// Converts BitmapImage (e.g. WBImage thumbnails) to a byte array for serialization
+        /// Mostly taken from https://stackoverflow.com/questions/6597676/bitmapimage-to-byte
+        /// </summary>
+        /// <param name="bitmapImage"></param>
+        /// <returns></returns>
+        public static byte[] BitmapSourcetoByteArray(BitmapImage bitmapImage)
+        {
+            byte[] data;
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                data = ms.ToArray();
+            }
+            return data;
+        }
     }
 }

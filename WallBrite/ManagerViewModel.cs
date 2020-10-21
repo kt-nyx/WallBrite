@@ -25,7 +25,6 @@ namespace WallBrite
 
         private readonly DispatcherTimer _updateTimer;
         private readonly DispatcherTimer _progressTracker;
-        private DateTime _checkTimerStart;
 
         private DateTime _brightestTime;
         private DateTime _darkestTime;
@@ -34,8 +33,6 @@ namespace WallBrite
         private DateTime _lastUpdateTime;
 
         private WBImage _currentImage;
-
-        private readonly LibraryViewModel library;
 
 
         public DateTime DarkestTime
@@ -100,7 +97,7 @@ namespace WallBrite
                 }
 
                 // Only update next update time if there are at least two wallpapers
-                if (library.LibraryList.Count > 1)
+                if (Library.LibraryList.Count > 1)
                 {
                     // Update the update time (lol)
                     _nextUpdateTime = FindNextUpdateTime();
@@ -122,7 +119,7 @@ namespace WallBrite
                 _checkInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
 
                 // Only update next update time if there are at least two wallpapers
-                if (library.LibraryList.Count > 1)
+                if (Library.LibraryList.Count > 1)
                 {
                     // Update the update time (lol)
                     _nextUpdateTime = FindNextUpdateTime();
@@ -142,6 +139,7 @@ namespace WallBrite
         public SolidColorBrush CurrentWallBack { get; private set; }
         public double CurrentWallBrightness { get; set; }
         public string CurrentWallFileName { get; set; }
+        public LibraryViewModel Library { get; set; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -154,7 +152,7 @@ namespace WallBrite
             UpdateCommand = new RelayCommand((object s) => CheckAndSetWall());
 
             // Set assigned library
-            this.library = library;
+            this.Library = library;
 
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
@@ -209,7 +207,7 @@ namespace WallBrite
             DateTime now = DateTime.Now;
 
             // Only update the wall if there is at least one image in libraryto work with
-            if (library.LibraryList.Count > 0)
+            if (Library.LibraryList.Count > 0)
             {
                 // Find closest image to current time's daylight value
                 CurrentDaylight = GetDaylightValue(now);
@@ -230,7 +228,7 @@ namespace WallBrite
 
                     // Only change the next (actual) update time if there are at least two images in lib
                     // i.e. only when there is a possible other wallpaper to switch to at update time
-                    if (library.LibraryList.Count > 1)
+                    if (Library.LibraryList.Count > 1)
                     {
                         // Find the next time when wallpaper will actually change
                         _nextUpdateTime = FindNextUpdateTime();
@@ -282,13 +280,13 @@ namespace WallBrite
         private WBImage FindClosestImage(DateTime time)
         {
             // Only search for closest if there are images in the library
-            if (library.LibraryList.Count > 0)
+            if (Library.LibraryList.Count > 0)
             {
                 // Get current daylight value
                 double daylightAtTime = GetDaylightValue(time);
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
-                    library.LibraryList.Aggregate((x, y) =>
+                    Library.LibraryList.Aggregate((x, y) =>
                                                            (Math.Abs(x.AverageBrightness - daylightAtTime)
                                                             < Math.Abs(y.AverageBrightness - daylightAtTime)
                                                               || !y.IsEnabled)

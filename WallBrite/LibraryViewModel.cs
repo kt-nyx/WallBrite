@@ -59,6 +59,7 @@ namespace WallBrite
         {
             File.WriteAllText(@"c:\cool.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
         }
+
         /// <summary>
         /// Adds given WBImage at given filePath to the library; or throws exception if image is
         /// already in the library

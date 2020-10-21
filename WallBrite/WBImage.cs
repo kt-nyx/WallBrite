@@ -30,7 +30,7 @@ namespace WallBrite
         /// <summary>
         /// Thumbnail image for use in library UI
         /// </summary>
-        [JsonIgnore]
+        [JsonConverter(typeof(ThumbnailConverter))]
         public BitmapImage Thumbnail { get; private set; }
 
         /// <summary>
@@ -89,23 +89,9 @@ namespace WallBrite
         }
 
         [JsonConstructor]
-        public WBImage(float averageBrightness, bool isEnabled, DateTime addedDate, SolidColorBrush backgroundColor, string path)
+        public WBImage(float averageBrightness, bool isEnabled, DateTime addedDate, BitmapImage thumbnail, SolidColorBrush backgroundColor, string path)
         {
-            // TODO: handle exceptions
-            using (Image image = Image.FromFile(path))
-            {
-
-                if (image.Width >= image.Height)
-                    Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
-                                                         200 * image.Height / image.Width,
-                                                         null, IntPtr.Zero));
-
-                // If image height larger than width; set height of thumbnail to 200 and reduce width
-                // proportionally
-                else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
-                                                          200,
-                                                          null, IntPtr.Zero));
-            }
+            Thumbnail = thumbnail;
             AverageBrightness = averageBrightness;
             IsEnabled = isEnabled;
             AddedDate = addedDate;
