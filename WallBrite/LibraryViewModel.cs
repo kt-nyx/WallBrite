@@ -57,7 +57,17 @@ namespace WallBrite
         // TODO: change placeholder path to a relative? path
         private void SaveLibrary()
         {
-            File.WriteAllText(@"c:\cool.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+            // Create file dialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "WallBrite Library File (*.json)|*.json"
+            };
+
+            // Open file dialof and only save if 'Save' is selected on the dialog
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+            }
         }
 
         /// <summary>
