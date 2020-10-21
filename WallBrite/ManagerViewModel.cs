@@ -152,7 +152,7 @@ namespace WallBrite
             UpdateCommand = new RelayCommand((object s) => CheckAndSetWall());
 
             // Set assigned library
-            this.Library = library;
+            Library = library;
 
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM

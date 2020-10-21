@@ -125,6 +125,7 @@
     <Compile Include="CutoffConverter.cs" />
     <Compile Include="LibraryViewModel.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="MainViewModel.cs" />
     <Compile Include="ManagerViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
