@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using JR.Utils.GUI.Forms;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -52,6 +54,39 @@ namespace WallBrite
             AddFilesCommand = new RelayCommand((object s) => AddFiles());
             AddFolderCommand = new RelayCommand((object s) => AddFolder());
             SaveCommand = new RelayCommand((object s) => SaveLibrary());
+        }
+
+        public bool CheckMissing()
+        {
+            List<string> missingImages = new List<string>();
+            // Loop over each image in library
+            foreach (WBImage image in LibraryList.ToList()) {
+                // Check if image does not exist at WBImage's path (or no permissions to that file)
+                if (!File.Exists(image.Path)) {
+                    // Add this image's file name to the list of missing images
+                    missingImages.Add(Path.GetFileName(image.Path));
+
+                    // Remove this WBImage from the library
+                    RemoveImage(image);
+                }
+            }
+
+            // If missing images found, show message box explaining this to user
+            if (missingImages.Count > 0)
+            {
+                string message = "The following image files are missing and were removed from the library:\n\n";
+                foreach (string filename in missingImages)
+                {
+                    message += filename + "\n";
+                }
+                message += "\nThese files may have been moved or deleted or WallBrite may not have permission to access them. If you're sure " +
+                    "the files are still where they were, try running WallBrite as administrator to make sure it has permissions to access them.";
+
+                FlexibleMessageBox.Show(message, "Missing Files", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Warning);
+                return true;
+            }
+
+            return false;
         }
 
         // TODO: change placeholder path to a relative? path

@@ -15,8 +15,7 @@ namespace WallBrite
     public partial class MainWindow : Window
     {
         //TODO: ADD SAVING
-        //TODO: add new, open, save library buttons
-        //TODO: add Library header, make "library controls" non-bold
+        //TODO: add new library button
         //TODO: make autosave?
 
         //TODO: AUTOMATION UI CLEANUP

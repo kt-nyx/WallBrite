@@ -204,11 +204,16 @@ namespace WallBrite
 
         private void CheckAndSetWall()
         {
-            DateTime now = DateTime.Now;
+            
 
             // Only update the wall if there is at least one image in libraryto work with
             if (Library.LibraryList.Count > 0)
             {
+                // First check for (and remove) any missing images
+                Library.CheckMissing();
+
+                DateTime now = DateTime.Now;
+
                 // Find closest image to current time's daylight value
                 CurrentDaylight = GetDaylightValue(now);
                 WBImage closestImage = FindClosestImage(now);
@@ -396,9 +401,10 @@ namespace WallBrite
 
                 approachingDarkest = true;
             }
+            // In this case, brightest time of day is equal to darkest; just set daylight % to 0
             else
             {
-                throw new InvalidOperationException("The darkest time, brightest time, or current time is invalid");
+                return 0;
             }
 
             // Get percent of time between brightest and darkest times which has already been covered

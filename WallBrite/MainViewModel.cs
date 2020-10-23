@@ -59,6 +59,9 @@ namespace WallBrite
 
                     // Update manager to use new library
                     Manager.Library = Library;
+
+                    // Check for missing files in opened library
+                    Library.CheckMissing();
                 }
             }
         }

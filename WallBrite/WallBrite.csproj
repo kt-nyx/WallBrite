@@ -123,6 +123,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CutoffConverter.cs" />
+    <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="LibraryViewModel.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="MainViewModel.cs" />
