@@ -17,17 +17,23 @@
                     </Style>
                 </StackPanel.Resources>
 
-                <Button Command="{Binding OpenCommand}">Open Library</Button>
-                <Button Command="{Binding Library.SaveCommand}">Save Library</Button>
-
                 <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
+
+                <StackPanel Margin="0 0 0 5">
+                    <Button Command="{Binding NewCommand}">New Library</Button>
+                    <Button Command="{Binding OpenCommand}">Open Library</Button>
+                    <Button Command="{Binding Library.SaveCommand}">Save Library</Button>
+                </StackPanel>
+
+                <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
+
 
                 <StackPanel>
                     <Button Command="{Binding Library.AddFilesCommand}">Add Files</Button>
                     <Button Command="{Binding Library.AddFolderCommand}">Add Folder</Button>
                 </StackPanel>
 
-                <StackPanel Margin="0 5">
+                <StackPanel Margin="0 5 0 8">
                     <TextBlock>Sort By:</TextBlock>
                     <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content" SelectedIndex="1">
                         <ComboBoxItem>Brightness</ComboBoxItem>
@@ -40,7 +46,11 @@
                         <ComboBoxItem>Ascending</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Margin="0 10">
+
+                <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
+                
+                
+                <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="Button">
                             <Setter Property="Margin" Value="0 2" />
@@ -187,7 +197,7 @@
                             <StackPanel Margin="5 0 0 0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <Grid Width="160" HorizontalAlignment="Left">
                                     <Grid.ToolTip>
-                                        Currently set wallpaper's brightness (as a percentage of the maximum possible brightness of an image).
+                                        Currently set wallpaper's brightness (as a percentage of the maximum possible brightness of an all white-pixel image).
                                     </Grid.ToolTip>
                                     <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentWallBrightness}"></ProgressBar>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">

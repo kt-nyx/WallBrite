@@ -186,7 +186,7 @@ namespace WallBrite
                     // If there was no change, inform user with toast notification
                     else
                     {
-                        _notifier.ShowInformation("Not enough daylight change detected: wallpaper was not changed.");
+                        _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
                     }
                 }
             );
@@ -212,6 +212,18 @@ namespace WallBrite
 
             // Set start time as now and start the timers
             _lastUpdateTime = DateTime.Now;
+            _updateTimer.Start();
+            _progressTracker.Start();
+        }
+
+        public void ResetTimers()
+        {
+            _updateTimer.Stop();
+            _progressTracker.Stop();
+            _nextUpdateTime = DateTime.MinValue;
+            _lastUpdateTime = DateTime.MinValue;
+            Progress = 0;
+            ProgressReport = null;
             _updateTimer.Start();
             _progressTracker.Start();
         }

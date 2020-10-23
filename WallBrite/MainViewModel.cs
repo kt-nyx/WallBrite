@@ -19,6 +19,7 @@ namespace WallBrite
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OpenCommand { get; set; }
+        public ICommand NewCommand { get; set; }
 
         public MainViewModel()
         {
@@ -26,6 +27,16 @@ namespace WallBrite
             Manager = new ManagerViewModel(Library);
 
             OpenCommand = new RelayCommand((object s) => OpenLibrary());
+            NewCommand = new RelayCommand((object s) => NewLibrary());
+
+        }
+
+
+        private void NewLibrary()
+        {
+            Library = new LibraryViewModel();
+            Manager.Library = Library;
+            Manager.ResetTimers();
         }
 
         private void OpenLibrary()
@@ -63,6 +74,7 @@ namespace WallBrite
                     // Check for missing files in opened library
                     Library.CheckMissing();
                 }
+                Manager.ResetTimers();
             }
         }
     }

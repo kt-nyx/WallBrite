@@ -20,7 +20,6 @@ namespace WallBrite
 
         //TODO: AUTOMATION UI CLEANUP
         //TODO: add help button(s)?
-        //TODO: add alert when wallpaper did/did not change on update
         //TODO: add details for selected image on left panel?
 
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
