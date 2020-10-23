@@ -3,10 +3,16 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
+using ToastNotifications.Utilities;
 
 namespace WallBrite
 {
@@ -34,6 +40,8 @@ namespace WallBrite
 
         private WBImage _currentImage;
 
+        private Notifier _notifier;
+
 
         public DateTime DarkestTime
         {
@@ -46,7 +54,7 @@ namespace WallBrite
                 DateTime now = DateTime.Now;
                 CurrentDaylight = GetDaylightValue(now);
 
-                CheckAndSetWall();
+                CheckandUpdate();
 
                 // Notify change on brightest time
                 NotifyPropertyChanged("DarkestTime");
@@ -64,7 +72,8 @@ namespace WallBrite
                 DateTime now = DateTime.Now;
                 CurrentDaylight = GetDaylightValue(now);
 
-                CheckAndSetWall();
+                CheckandUpdate();
+                
 
                 // Notify change on brightest time
                 NotifyPropertyChanged("BrightestTime");
@@ -148,8 +157,39 @@ namespace WallBrite
 
         public ManagerViewModel(LibraryViewModel library)
         {
+            // Create notifier for use with toast notifications
+            _notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new WindowPositionProvider(
+                    parentWindow: Application.Current.MainWindow,
+                    corner: Corner.TopRight,
+                    offsetX: 10,
+                    offsetY: 10);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    notificationLifetime: TimeSpan.FromSeconds(3),
+                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+                cfg.Dispatcher = Application.Current.Dispatcher;
+            });
+
             // Create command(s)
-            UpdateCommand = new RelayCommand((object s) => CheckAndSetWall());
+            UpdateCommand = new RelayCommand((object s) => 
+                {
+                    WBImage image = CheckforChange();
+
+                    // Update if there is change 
+                    if (image != null)
+                    {
+                        UpdateWall(image);
+                    }
+                    // If there was no change, inform user with toast notification
+                    else
+                    {
+                        _notifier.ShowInformation("Not enough daylight change detected: wallpaper was not changed.");
+                    }
+                }
+            );
 
             // Set assigned library
             Library = library;
@@ -164,7 +204,7 @@ namespace WallBrite
 
             // Create timer thread for updating walls
             _updateTimer = new DispatcherTimer { Interval = _checkInterval };
-            _updateTimer.Tick += (object s, EventArgs a) => CheckAndSetWall();
+            _updateTimer.Tick += (object s, EventArgs a) => CheckandUpdate();
 
             // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
             _progressTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
@@ -202,11 +242,30 @@ namespace WallBrite
             }
         }
 
-        private void CheckAndSetWall()
+        private void CheckandUpdate()
         {
-            
+            // Check for change in wall
+            WBImage image = CheckforChange();
 
-            // Only update the wall if there is at least one image in libraryto work with
+            // If there is change, update the wall to the new one
+            if (image != null)
+            {
+                UpdateWall(image);
+            }
+        }
+
+        /// <summary>
+        /// Checks whether there has been enough of a change in daylight setting to warrant a wallpaper change, and if there has been,
+        /// returns the new wallpaper image
+        /// </summary>
+        /// <returns>
+        /// WBImage: the new wallpaper, if there has been enough change in daylight setting to warrant a wallpaper change
+        /// null: if there has not been enough change in daylight setting to warrant wallpaper change;
+        ///         or there are no images in library
+        /// </returns>
+        private WBImage CheckforChange()
+        {
+            // Only update the wall if there is at least one image in library to work with; otherwise throw below
             if (Library.LibraryList.Count > 0)
             {
                 // First check for (and remove) any missing images
@@ -216,33 +275,48 @@ namespace WallBrite
 
                 // Find closest image to current time's daylight value
                 CurrentDaylight = GetDaylightValue(now);
-                WBImage closestImage = FindClosestImage(now);
-                if (closestImage != null && closestImage != _currentImage)
+                WBImage checkImage = FindClosestImage(now);
+
+                // If image is different from current, return it
+                if (checkImage != _currentImage)
                 {
-                    // Set wallpaper to this image
-                    SetWall(closestImage);
-
-                    // Update current closest's thumb, background color, and front-end brightness value
-                    CurrentWallThumb = closestImage.Thumbnail;
-                    CurrentWallBack = closestImage.BackgroundColor;
-                    CurrentWallBrightness = closestImage.AverageBrightness;
-                    CurrentWallFileName = Path.GetFileName(closestImage.Path);
-                    _currentImage = closestImage;
-
-                    _lastUpdateTime = now;
-
-                    // Only change the next (actual) update time if there are at least two images in lib
-                    // i.e. only when there is a possible other wallpaper to switch to at update time
-                    if (Library.LibraryList.Count > 1)
-                    {
-                        // Find the next time when wallpaper will actually change
-                        _nextUpdateTime = FindNextUpdateTime();
-
-                        // Restart the timer; now use time until next actual update as the 
-                        _updateTimer.Interval = _nextUpdateTime.Subtract(now);
-                        _updateTimer.Start();
-                    }
+                    return checkImage;
                 }
+                else return null;
+            }
+            // If no images in library, just return null
+            return null;
+        }
+
+        /// <summary>
+        /// Sets the desktop wallpaper to the given WBImage image and updates the timers and relevant fields
+        /// </summary>
+        /// <param name="image"></param>
+        private void UpdateWall(WBImage image)
+        {
+            // Set wallpaper to this image
+            SetWall(image);
+
+            // Update current closest's thumb, background color, and front-end brightness value
+            CurrentWallThumb = image.Thumbnail;
+            CurrentWallBack = image.BackgroundColor;
+            CurrentWallBrightness = image.AverageBrightness;
+            CurrentWallFileName = Path.GetFileName(image.Path);
+            _currentImage = image;
+
+            DateTime now = DateTime.Now;
+            _lastUpdateTime = now;
+
+            // Only change the next (actual) update time if there are at least two images in lib
+            // i.e. only when there is a possible other wallpaper to switch to at update time
+            if (Library.LibraryList.Count > 1)
+            {
+                // Find the next time when wallpaper will actually change
+                _nextUpdateTime = FindNextUpdateTime();
+
+                // Restart the timer; now use time until next actual update as the 
+                _updateTimer.Interval = _nextUpdateTime.Subtract(now);
+                _updateTimer.Start();
             }
         }
 

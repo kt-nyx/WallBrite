@@ -76,3 +76,6 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.dll
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.xml
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Newtonsoft.Json.xml
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ToastNotifications.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ToastNotifications.Messages.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\App.baml
