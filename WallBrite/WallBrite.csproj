@@ -128,12 +128,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddFileProgressWindow.xaml.cs">
+      <DependentUpon>AddFileProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddProgressViewModel.cs" />
     <Compile Include="CutoffConverter.cs" />
     <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="LibraryViewModel.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="ManagerViewModel.cs" />
+    <Page Include="AddFileProgressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

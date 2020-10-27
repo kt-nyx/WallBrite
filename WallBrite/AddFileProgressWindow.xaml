@@ -1,0 +1,17 @@
+﻿<Window x:Class="WallBrite.AddFileProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WallBrite"
+        mc:Ignorable="d"
+        Title="AddFileProgressWindow" Height="200" Width="400">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock HorizontalAlignment="Center">Adding Files:</TextBlock>
+        <Grid Width="200" HorizontalAlignment="Center">
+            <ProgressBar Height="25" Minimum="0" Maximum="100" Value="{Binding Path=Library.AddProgress}"></ProgressBar>
+            <TextBlock Text="{Binding Library.AddProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+        <Button>Cancel</Button>
+    </StackPanel>
+</Window>

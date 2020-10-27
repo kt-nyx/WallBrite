@@ -28,7 +28,6 @@ namespace WallBrite
 
             OpenCommand = new RelayCommand((object s) => OpenLibrary());
             NewCommand = new RelayCommand((object s) => NewLibrary());
-
         }
 
 

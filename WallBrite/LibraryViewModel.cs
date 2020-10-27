@@ -11,13 +11,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Position;
 using WinForms = System.Windows.Forms;
 
 namespace WallBrite
 {
     public class LibraryViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<WBImage> LibraryList { get; }
+        public ObservableCollection<WBImage> LibraryList { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,10 +31,18 @@ namespace WallBrite
         public ICommand AddFolderCommand { get; set; }
         public ICommand SaveCommand { get; set; }
 
+        public double AddProgress { get; set; }
+        public string AddProgressReport { get; set; }
+
+        private AddProgressViewModel _addProgressViewModel;
+        private Notifier _notifier;
+
         public LibraryViewModel()
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
+
+            CreateNotifier();
 
             // Create commands
             CreateCommands();
@@ -41,6 +52,8 @@ namespace WallBrite
         {
             // Create library list from given
             LibraryList = new ObservableCollection<WBImage>(libraryList);
+
+            CreateNotifier();
 
             // Create commands
             CreateCommands();
@@ -54,6 +67,25 @@ namespace WallBrite
             AddFilesCommand = new RelayCommand((object s) => AddFiles());
             AddFolderCommand = new RelayCommand((object s) => AddFolder());
             SaveCommand = new RelayCommand((object s) => SaveLibrary());
+        }
+
+        private void CreateNotifier()
+        {
+            // Create notifier for use with toast notifications
+            _notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new WindowPositionProvider(
+                    parentWindow: Application.Current.MainWindow,
+                    corner: Corner.TopRight,
+                    offsetX: 10,
+                    offsetY: 10);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    notificationLifetime: TimeSpan.FromSeconds(3),
+                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+                cfg.Dispatcher = Application.Current.Dispatcher;
+            });
         }
 
         public bool CheckMissing()
@@ -115,10 +147,10 @@ namespace WallBrite
         /// Thrown when image being added is already in library (its path matches the path of another image 
         /// already in the library)
         /// </exception>
-        public void AddImage(WBImage image, string filePath)
+        public void AddImage(WBImage image)
         {
             // Return false and don't add this image if it's already in the library
-            if (LibraryList.Any(checkImage => checkImage.Path.Equals(filePath)))
+            if (LibraryList.Any(checkImage => checkImage.Path.Equals(image.Path)))
             {
                 throw new InvalidOperationException("This image is already in the library");
             }
@@ -206,20 +238,93 @@ namespace WallBrite
             // If user clicked OK (not Cancel) in file dialog
             if (dialog.ShowDialog() == true)
             {
-                // TODO: add try catch for possible exceptions
-                // Create streams from selected files
-                Stream[] fileStreams = dialog.OpenFiles();
-                string[] fileNames = dialog.FileNames;
+                // Create viewmodel (i.e. window) for the progress bar
+                _addProgressViewModel = new AddProgressViewModel(this);
 
-                // Create the WBImage object for each image file and add it to library
-                for (int i = 0; i < fileStreams.Length; i++)
+                // Create background worker that will add the files
+                BackgroundWorker worker = new BackgroundWorker
                 {
-                    Stream stream = fileStreams[i];
-                    string filePath = fileNames[i];
-                    WBImage image = new WBImage(stream, filePath);
-                    AddImage(image, filePath);
-                }
+                    WorkerReportsProgress = true
+                };
+                worker.DoWork += AddFilesWork;
+                worker.ProgressChanged += UpdateAddProgress;
+                worker.RunWorkerCompleted += AddFilesComplete;
+
+                // Run worker
+                worker.RunWorkerAsync(dialog);
             }
+        }
+
+        private void AddFilesWork(object sender, DoWorkEventArgs e)
+        {
+            // TODO: add try catches for possible exceptions
+
+            OpenFileDialog dialog = (OpenFileDialog)e.Argument;
+
+            // Create streams from selected files
+            Stream[] fileStreams = dialog.OpenFiles();
+            List<string>filePaths = new List<string>(dialog.FileNames);
+
+            // Create list for results
+            List<WBImage> imageList = new List<WBImage>();
+
+            // For keeping track of progress
+            int numFiles = filePaths.Count;
+            int progress;
+
+            // Create the WBImage object for each image file and add it to library
+            for (int i = 0; i < fileStreams.Length; i++)
+            {
+                // Get stream, path, and filename for current file
+                Stream stream = fileStreams[i];
+                string filePath = filePaths[i];
+                string fileName = Path.GetFileName(filePath);
+
+                string progressString = string.Format("{0}|{1}|{2}",
+                                                       fileName,
+                                                       i + 1,
+                                                       numFiles);
+
+                // Get current progress as percentage of total files 
+                progress = Convert.ToInt32((double)i / numFiles * 100);
+
+                // Report progress and current file being worked on
+                (sender as BackgroundWorker).ReportProgress(progress, progressString);
+
+                WBImage image = new WBImage(stream, filePath);
+
+                // Create the WBImage for this file and add it to the results list
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    WBImage frontImage = 
+                    imageList.Add(frontImage);
+                });
+                image = null;
+            }
+            e.Result = imageList;
+        }
+
+        private void UpdateAddProgress(object sender, ProgressChangedEventArgs e)
+        {
+            // Update front-end progress percentage
+            AddProgress = e.ProgressPercentage;
+
+            // Parse arguments from UserState
+            string[] args = (e.UserState as string).Split('|');
+            string currentFile = args[0];
+            string fileNumber = args[1];
+            string numFiles = args[2];
+
+            // Update front-end progress string
+            AddProgressReport = string.Format("Adding file {0} of {1}: {2}",
+                                                fileNumber,
+                                                numFiles,
+                                                currentFile);
+        }
+
+        private void AddFilesComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _addProgressViewModel.CloseWindow();
         }
 
         /// <summary>
@@ -260,7 +365,7 @@ namespace WallBrite
 
                     // Create WBImage for that file and add it to library
                     WBImage image = new WBImage(stream, filePath);
-                    AddImage(image, filePath);
+                    AddImage(image);
                 }
             }
         }

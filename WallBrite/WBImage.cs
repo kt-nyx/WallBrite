@@ -3,11 +3,13 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
+    [Serializable]
     public class WBImage : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,7 +33,7 @@ namespace WallBrite
         /// Thumbnail image for use in library UI
         /// </summary>
         [JsonConverter(typeof(ThumbnailConverter))]
-        public BitmapImage Thumbnail { get; private set; }
+        public BitmapImage Thumbnail { get; set; }
 
         /// <summary>
         /// Background color for use in library UI
@@ -97,6 +99,18 @@ namespace WallBrite
             AddedDate = addedDate;
             BackgroundColor = backgroundColor;
             Path = path;
+        }
+
+        public WBImage DeepClone()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Position = 0;
+
+                return (WBImage)formatter.Deserialize(ms);
+            }
         }
 
         /// <summary>
