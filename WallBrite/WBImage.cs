@@ -33,7 +33,7 @@ namespace WallBrite
         /// Thumbnail image for use in library UI
         /// </summary>
         [JsonConverter(typeof(ThumbnailConverter))]
-        public BitmapImage Thumbnail { get; set; }
+        public BitmapImage Thumbnail { get; private set; }
 
         /// <summary>
         /// Background color for use in library UI
@@ -56,38 +56,37 @@ namespace WallBrite
             // Create bitmap using image from given stream
             // Free up this bitmap memory after using it to create the WBImage
             using (Bitmap image = new Bitmap(stream)) {
-                // Create thumbnail, maintaining aspect ratio but staying within a 200 * 200 box:
-                // If image width larger than height; set width of thumbnail to 200 and reduce height
-                // proportionally
-                if (image.Width >= image.Height)
-                    Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200,
-                                                         200 * image.Height / image.Width,
-                                                         null, IntPtr.Zero));
 
-                // If image height larger than width; set height of thumbnail to 200 and reduce width
-                // proportionally
-                else Thumbnail = Helpers.ImagetoBitmapSource(image.GetThumbnailImage(200 * image.Width / image.Height,
-                                                          200,
-                                                          null, IntPtr.Zero));
+                // Create and set the thumbnail
+                Thumbnail = Helpers.GetThumbnailFromBitmap(image);
 
-                // Calculate and set average brightness of this WBImage
-                CalculateAverageBrightness(image);
+                // Calculate and set average brightness of this image
+                AverageBrightness = CalculateAverageBrightness(image);
             }
 
-            // Set background color for UI
-            int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
-            BackgroundColor = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)backgroundBrightness,
-                                                  (byte)backgroundBrightness,
-                                                  (byte)backgroundBrightness));
-
-            // Set creation date
+            BackgroundColor = GetBackgroundColor();
             AddedDate = DateTime.Now;
-
-            // Set enabled true by default
-            IsEnabled = true;
-
-            // Set the path
             Path = path;
+
+            // Defaults to being enabled when created
+            IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Creates WBImage using data from externally created bitmap and given file path
+        /// Calculates its average brightness, creates a proportionate thumbnail, sets creation date, and
+        /// stores the given path to the original file
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <param name="path"></param>
+        public WBImage(Bitmap bitmap, string path)
+        {
+            Thumbnail = Helpers.GetThumbnailFromBitmap(bitmap);
+            AverageBrightness = CalculateAverageBrightness(bitmap);
+            BackgroundColor = GetBackgroundColor();
+            AddedDate = DateTime.Now;
+            Path = path;
+            IsEnabled = true;
         }
 
         [JsonConstructor]
@@ -101,18 +100,14 @@ namespace WallBrite
             Path = path;
         }
 
-        public WBImage DeepClone()
+        public SolidColorBrush GetBackgroundColor()
         {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, this);
-                ms.Position = 0;
-
-                return (WBImage)formatter.Deserialize(ms);
-            }
+            int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
+            SolidColorBrush backgroundColor = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, (byte)backgroundBrightness,
+                                                  (byte)backgroundBrightness,
+                                                  (byte)backgroundBrightness));
+            return backgroundColor;
         }
-
         /// <summary>
         /// Sets and returns average brightness level (from fully black at 0.0 to fully white at 1.0) of this
         /// WBImage
@@ -122,7 +117,7 @@ namespace WallBrite
         public float CalculateAverageBrightness(Bitmap image)
         {
             // Brightness value to be summed and averaged
-            AverageBrightness = 0;
+            float averageBrightness = 0;
 
             // Get log of width and height of image; to be used when looping over pixels to
             // increase efficiency
@@ -139,14 +134,14 @@ namespace WallBrite
                     // For every sampled pixel, get the color value of the pixel and add its brightness to
                     // the running sum
                     System.Drawing.Color pixelColor = image.GetPixel(x, y);
-                    AverageBrightness += pixelColor.GetBrightness();
+                    averageBrightness += pixelColor.GetBrightness();
                 }
             }
 
             // Divide summed brightness by the number of pixels sampled to get the average
-            AverageBrightness /= (image.Width / widthLog) * (image.Height / heightLog);
+            averageBrightness /= (image.Width / widthLog) * (image.Height / heightLog);
 
-            return AverageBrightness;
+            return averageBrightness;
         }
     }
 }

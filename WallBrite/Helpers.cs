@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -7,6 +8,27 @@ namespace WallBrite
 {
     public static class Helpers
     {
+        public static BitmapImage GetThumbnailFromBitmap(Bitmap bitmap)
+        {
+            BitmapImage thumbnail;
+            // Create thumbnail, maintaining aspect ratio but staying within a 200 * 200 box:
+            // If image width larger than height; set width of thumbnail to 200 and reduce height
+            // proportionally
+            if (bitmap.Width >= bitmap.Height)
+                thumbnail = ImagetoBitmapSource(bitmap.GetThumbnailImage(200,
+                                                     200 * bitmap.Height / bitmap.Width,
+                                                     null, IntPtr.Zero));
+
+            // If image height larger than width; set height of thumbnail to 200 and reduce width
+            // proportionally
+            else thumbnail = ImagetoBitmapSource(bitmap.GetThumbnailImage(200 * bitmap.Width / bitmap.Height,
+                                                      200,
+                                                      null, IntPtr.Zero));
+
+            return thumbnail;
+        }
+
+
 
         /// <summary>
         /// Converts System.Drawing Image to a System.Windows.Media.Imaging BitmapImage, for use as an image

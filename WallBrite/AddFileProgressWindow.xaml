@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
-        Title="AddFileProgressWindow" Height="200" Width="400">
+        Title="AddFileProgressWindow" Height="200" Width="400"
+        WindowStartupLocation="CenterScreen">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock HorizontalAlignment="Center">Adding Files:</TextBlock>
         <Grid Width="200" HorizontalAlignment="Center">

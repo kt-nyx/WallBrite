@@ -81,3 +81,8 @@ C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\ToastNotifications.Message
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\App.baml
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.g.cs
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\ToastNotifications.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\ToastNotifications.Messages.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.g.cs
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\App.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.baml

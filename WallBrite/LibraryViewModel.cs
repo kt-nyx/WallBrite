@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -291,17 +292,19 @@ namespace WallBrite
                 // Report progress and current file being worked on
                 (sender as BackgroundWorker).ReportProgress(progress, progressString);
 
-                WBImage image = new WBImage(stream, filePath);
-
-                // Create the WBImage for this file and add it to the results list
-                Application.Current.Dispatcher.Invoke(() =>
+                // Creates the bitmap in the scope of the background worker (this is the performance intensive
+                // task for this whole process)
+                using (Bitmap bitmap = new Bitmap(stream))
                 {
-                    WBImage frontImage = 
-                    imageList.Add(frontImage);
-                });
-                image = null;
+                    // Create the WBImage for this file and add it to the results list (in the main thread
+                    // so that it doesn't get upset that UI-relevant objects were created in the background thread)
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        WBImage image = new WBImage(bitmap, filePath);
+                        LibraryList.Add(image);
+                    });
+                }
             }
-            e.Result = imageList;
         }
 
         private void UpdateAddProgress(object sender, ProgressChangedEventArgs e)
