@@ -253,7 +253,7 @@ namespace WallBrite
                 };
                 _worker.DoWork += AddFilesWork;
                 _worker.ProgressChanged += UpdateAddProgress;
-                _worker.RunWorkerCompleted += AddFilesComplete;
+                _worker.RunWorkerCompleted += AddComplete;
 
                 // Run worker
                 _worker.RunWorkerAsync(dialog);
@@ -267,18 +267,21 @@ namespace WallBrite
             OpenFileDialog dialog = (OpenFileDialog)e.Argument;
 
             // Create streams from selected files
-            Stream[] fileStreams = dialog.OpenFiles();
+            List<Stream> fileStreams = dialog.OpenFiles().ToList();
             List<string> filePaths = new List<string>(dialog.FileNames);
 
-            // Create list for results
-            List<WBImage> imageList = new List<WBImage>();
+            // Do actual adding in generalized function
+            AddWork(sender, fileStreams, filePaths);
+        }
 
+        private void AddWork(object sender, List<Stream> fileStreams, List<string> filePaths)
+        {
             // For keeping track of progress
             int numFiles = filePaths.Count;
             int progress;
 
             // Create the WBImage object for each image file and add it to library
-            for (int i = 0; i < fileStreams.Length; i++)
+            for (int i = 0; i < fileStreams.Count; i++)
             {
                 // If user cancelled then exit loop and return before adding next file
                 if (_worker.CancellationPending == true) return;
@@ -332,7 +335,7 @@ namespace WallBrite
                                                 currentFile);
         }
 
-        private void AddFilesComplete(object sender, RunWorkerCompletedEventArgs e)
+        private void AddComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             _addProgressViewModel.CloseWindow();
         }
@@ -349,35 +352,56 @@ namespace WallBrite
             // If user clicked OK (not Cancel) in folder dialog
             if (dialog.ShowDialog() == WinForms.DialogResult.OK)
             {
-                // Get path string from selected path
-                string folderPath = dialog.SelectedPath;
+                // Create viewmodel (i.e. window) for the progress bar
+                _addProgressViewModel = new AddProgressViewModel(this);
 
-                // TODO: add try catch for possible exceptions of getfiles; pathtoolong??
-                // Get paths of all supported image files in this folder and subfolders
-                IEnumerable<string> filePaths = Directory.EnumerateFiles(folderPath,
-                                                    "*.*",
-                                                    SearchOption.AllDirectories)
-                                     .Where(filePath => filePath.EndsWith(".jpg")
-                                                        || filePath.EndsWith(".jpeg")
-                                                        || filePath.EndsWith(".png")
-                                                        || filePath.EndsWith(".gif")
-                                                        || filePath.EndsWith(".bmp")
-                                                        || filePath.EndsWith(".exif")
-                                                        || filePath.EndsWith(".tiff"));
-
-                // Loop over each filePath in the array of filePaths (over each file in
-                // selected folder/subfolders)
-                foreach (string filePath in filePaths)
+                // Create background worker that will add the files
+                _worker = new BackgroundWorker
                 {
-                    // TODO: add try catch for possible exceptions
-                    // Open file stream for file at this path
-                    FileStream stream = File.Open(filePath, FileMode.Open);
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true
+                };
+                _worker.DoWork += AddFolderWork;
+                _worker.ProgressChanged += UpdateAddProgress;
+                _worker.RunWorkerCompleted += AddComplete;
 
-                    // Create WBImage for that file and add it to library
-                    WBImage image = new WBImage(stream, filePath);
-                    AddImage(image);
-                }
+                // Run worker
+                _worker.RunWorkerAsync(dialog);
             }
+        }
+
+        private void AddFolderWork(object sender, DoWorkEventArgs e)
+        {
+            WinForms.FolderBrowserDialog dialog = (WinForms.FolderBrowserDialog)e.Argument;
+            // Get path string from selected path
+            string folderPath = dialog.SelectedPath;
+
+            // TODO: add try catch for possible exceptions of getfiles; pathtoolong??
+            // Get paths of all supported image files in this folder and subfolders
+            List<string> filePaths = Directory.EnumerateFiles(folderPath,
+                                                "*.*",
+                                                SearchOption.AllDirectories)
+                                 .Where(filePath => filePath.EndsWith(".jpg")
+                                                    || filePath.EndsWith(".jpeg")
+                                                    || filePath.EndsWith(".png")
+                                                    || filePath.EndsWith(".gif")
+                                                    || filePath.EndsWith(".bmp")
+                                                    || filePath.EndsWith(".exif")
+                                                    || filePath.EndsWith(".tiff"))
+                                 .ToList();
+
+            List<Stream> fileStreams = new List<Stream>();
+            // Loop over each filePath in the array of filePaths (over each file in
+            // selected folder/subfolders)
+            foreach (string filePath in filePaths)
+            {
+                // TODO: add try catch for possible exceptions
+                // Open file stream for file at this path
+                FileStream file = File.OpenRead(filePath);
+                fileStreams.Add(file);
+            }
+
+            AddWork(sender, fileStreams, filePaths);
         }
 
         /// <summary>

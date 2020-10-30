@@ -14,10 +14,6 @@ namespace WallBrite
     /// </summary>
     public partial class MainWindow : Window
     {
-        //TODO: ADD SAVING
-        //TODO: add new library button
-        //TODO: make autosave?
-
         //TODO: AUTOMATION UI CLEANUP
         //TODO: add help button(s)?
         //TODO: add details for selected image on left panel?
@@ -26,12 +22,6 @@ namespace WallBrite
         //TODO: run in background
         //TODO: taskbar icon
         //TODO: taskbar icon options?
-
-        //TODO: ADDFILES SPEED + CLARITY
-        //TODO: add progress bar when adding files
-        //TODO: add cancel button
-        //TODO: improve efficiency
-        //TODO: processing
 
         //TODO: IMPROVE SORT EFFICIENCY; lag here for some reason...
 
