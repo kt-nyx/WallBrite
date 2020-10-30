@@ -11,7 +11,7 @@ namespace WallBrite
     {
         public LibraryViewModel Library { get; set; }
 
-        private AddFileProgressWindow _progressWindow;
+        private readonly AddFileProgressWindow _progressWindow;
         public AddProgressViewModel(LibraryViewModel library)
         {
             Library = library;

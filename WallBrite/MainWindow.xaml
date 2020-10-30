@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1200"
+        Title="WallBrite" Height="450" Width="1200"
         WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel x:Name="MainPanel">
         <Expander ExpandDirection="Right" IsExpanded="True" Background="GhostWhite">

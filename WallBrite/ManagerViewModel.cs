@@ -157,39 +157,9 @@ namespace WallBrite
 
         public ManagerViewModel(LibraryViewModel library)
         {
-            // Create notifier for use with toast notifications
-            _notifier = new Notifier(cfg =>
-            {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
-                    corner: Corner.TopRight,
-                    offsetX: 10,
-                    offsetY: 10);
+            CreateNotifier();
 
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(3),
-                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
-
-                cfg.Dispatcher = Application.Current.Dispatcher;
-            });
-
-            // Create command(s)
-            UpdateCommand = new RelayCommand((object s) => 
-                {
-                    WBImage image = CheckforChange();
-
-                    // Update if there is change 
-                    if (image != null)
-                    {
-                        UpdateWall(image);
-                    }
-                    // If there was no change, inform user with toast notification
-                    else
-                    {
-                        _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
-                    }
-                }
-            );
+            CreateCommands();
 
             // Set assigned library
             Library = library;
@@ -216,6 +186,45 @@ namespace WallBrite
             _progressTracker.Start();
         }
 
+
+        private void CreateCommands()
+        {
+            // Create command(s)
+            UpdateCommand = new RelayCommand((object s) =>
+            {
+                WBImage image = CheckforChange();
+
+                // Update if there is change 
+                if (image != null)
+                {
+                    UpdateWall(image);
+                }
+                // If there was no change, inform user with toast notification
+                else
+                {
+                    _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
+                }
+            }
+            );
+        }
+        private void CreateNotifier()
+        {
+            // Create notifier for use with toast notifications
+            _notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new WindowPositionProvider(
+                    parentWindow: Application.Current.MainWindow,
+                    corner: Corner.TopRight,
+                    offsetX: 25,
+                    offsetY: 10);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    notificationLifetime: TimeSpan.FromSeconds(3),
+                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+                cfg.Dispatcher = Application.Current.Dispatcher;
+            });
+        }
         public void ResetTimers()
         {
             _updateTimer.Stop();
@@ -364,6 +373,7 @@ namespace WallBrite
             // If looped all the way around with no update, then there won't ever be any actual wall change
             // with the current library/automation settings
             // Occurs when only one image in library, for example
+            //TODO: add catch for this case; managed to get it when it was 12:50:27PM, brightest time 12:00AM darkest time 11:00PM, interval 1min; full testwalls library
             throw new InvalidOperationException("Can't find next update time; the wallpaper will not update" +
                 "with current library/automation settings");
         }
@@ -388,6 +398,7 @@ namespace WallBrite
             // Otherwise throw an exception
             else
             {
+                //TODO: add try-catch for this somewhere
                 throw new InvalidOperationException("Can't find closest image in library at given time; " +
                                                     "No images in library");
             }

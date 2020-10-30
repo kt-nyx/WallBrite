@@ -17,6 +17,7 @@ namespace WallBrite
         //TODO: AUTOMATION UI CLEANUP
         //TODO: add help button(s)?
         //TODO: add details for selected image on left panel?
+        //TODO: add manual set wallpaper button
 
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
         //TODO: run in background
@@ -26,10 +27,7 @@ namespace WallBrite
         //TODO: IMPROVE SORT EFFICIENCY; lag here for some reason...
 
         //TODO: MAKE INSTALLER
-        //TODO: remove fody dll thing?
-
-        //TODO: add manual set wallpaper button
-
+        //TODO: remove fody dll thing
 
 
 
