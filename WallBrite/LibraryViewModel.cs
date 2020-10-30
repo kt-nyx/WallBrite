@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using WinForms = System.Windows.Forms;
 
@@ -31,12 +32,14 @@ namespace WallBrite
         public ICommand AddFilesCommand { get; set; }
         public ICommand AddFolderCommand { get; set; }
         public ICommand SaveCommand { get; set; }
+        public ICommand CancelCommand { get; set; }
 
         public double AddProgress { get; set; }
         public string AddProgressReport { get; set; }
 
         private AddProgressViewModel _addProgressViewModel;
         private Notifier _notifier;
+        private BackgroundWorker _worker;
 
         public LibraryViewModel()
         {
@@ -68,6 +71,7 @@ namespace WallBrite
             AddFilesCommand = new RelayCommand((object s) => AddFiles());
             AddFolderCommand = new RelayCommand((object s) => AddFolder());
             SaveCommand = new RelayCommand((object s) => SaveLibrary());
+            CancelCommand = new RelayCommand((object s) => CancelAdd());
         }
 
         private void CreateNotifier()
@@ -85,6 +89,8 @@ namespace WallBrite
                     notificationLifetime: TimeSpan.FromSeconds(3),
                     maximumNotificationCount: MaximumNotificationCount.FromCount(5));
 
+                cfg.DisplayOptions.TopMost = true;
+
                 cfg.Dispatcher = Application.Current.Dispatcher;
             });
         }
@@ -93,14 +99,16 @@ namespace WallBrite
         {
             List<string> missingImages = new List<string>();
             // Loop over each image in library
-            foreach (WBImage image in LibraryList.ToList()) {
+            foreach (WBImage image in LibraryList.ToList())
+            {
                 // Check if image does not exist at WBImage's path (or no permissions to that file)
-                if (!File.Exists(image.Path)) {
+                if (!File.Exists(image.Path))
+                {
                     // Add this image's file name to the list of missing images
                     missingImages.Add(Path.GetFileName(image.Path));
 
                     // Remove this WBImage from the library
-                    RemoveImage(image);
+                    LibraryList.Remove(image);
                 }
             }
 
@@ -144,16 +152,14 @@ namespace WallBrite
         /// </summary>
         /// <param name="image"></param>
         /// <param name="filePath"></param>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when image being added is already in library (its path matches the path of another image 
-        /// already in the library)
-        /// </exception>
         public void AddImage(WBImage image)
         {
-            // Return false and don't add this image if it's already in the library
+            // Give user message and don't add this image to library if it is already in library
             if (LibraryList.Any(checkImage => checkImage.Path.Equals(image.Path)))
             {
-                throw new InvalidOperationException("This image is already in the library");
+                _notifier.ShowInformation(string.Format("{0} was not added since it is already in the library",
+                                                         Path.GetFileName(image.Path)));
+                return;
             }
 
             // Add the image to the library and return true (if it's not already in the library)
@@ -161,16 +167,7 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="image"></param>
-        public void RemoveImage(WBImage image)
-        {
-            LibraryList.Remove(image);
-        }
-
-        /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="collection"></param>
         private void Remove(object collection)
@@ -182,15 +179,16 @@ namespace WallBrite
             // Remove each WBImage in the collection from the library
             foreach (WBImage image in selectedImages.ToList())
             {
-                RemoveImage(image);
+                LibraryList.Remove(image);
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="collection"></param>
-        private void Enable(object collection) {
+        private void Enable(object collection)
+        {
             // Cast the collection of controls to a collection of WBImages
             System.Collections.IList items = (System.Collections.IList)collection;
             var selectedImages = items.Cast<WBImage>();
@@ -203,7 +201,7 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="collection"></param>
         private void Disable(object collection)
@@ -219,8 +217,13 @@ namespace WallBrite
             }
         }
 
+        private void CancelAdd()
+        {
+            _worker.CancelAsync();
+        }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void AddFiles()
         {
@@ -243,16 +246,17 @@ namespace WallBrite
                 _addProgressViewModel = new AddProgressViewModel(this);
 
                 // Create background worker that will add the files
-                BackgroundWorker worker = new BackgroundWorker
+                _worker = new BackgroundWorker
                 {
-                    WorkerReportsProgress = true
+                    WorkerReportsProgress = true,
+                    WorkerSupportsCancellation = true
                 };
-                worker.DoWork += AddFilesWork;
-                worker.ProgressChanged += UpdateAddProgress;
-                worker.RunWorkerCompleted += AddFilesComplete;
+                _worker.DoWork += AddFilesWork;
+                _worker.ProgressChanged += UpdateAddProgress;
+                _worker.RunWorkerCompleted += AddFilesComplete;
 
                 // Run worker
-                worker.RunWorkerAsync(dialog);
+                _worker.RunWorkerAsync(dialog);
             }
         }
 
@@ -264,7 +268,7 @@ namespace WallBrite
 
             // Create streams from selected files
             Stream[] fileStreams = dialog.OpenFiles();
-            List<string>filePaths = new List<string>(dialog.FileNames);
+            List<string> filePaths = new List<string>(dialog.FileNames);
 
             // Create list for results
             List<WBImage> imageList = new List<WBImage>();
@@ -276,6 +280,9 @@ namespace WallBrite
             // Create the WBImage object for each image file and add it to library
             for (int i = 0; i < fileStreams.Length; i++)
             {
+                // If user cancelled then exit loop and return before adding next file
+                if (_worker.CancellationPending == true) return;
+
                 // Get stream, path, and filename for current file
                 Stream stream = fileStreams[i];
                 string filePath = filePaths[i];
@@ -286,7 +293,7 @@ namespace WallBrite
                                                        i + 1,
                                                        numFiles);
 
-                // Get current progress as percentage of total files 
+                // Get current progress as percentage of total files
                 progress = Convert.ToInt32((double)i / numFiles * 100);
 
                 // Report progress and current file being worked on
@@ -301,7 +308,7 @@ namespace WallBrite
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         WBImage image = new WBImage(bitmap, filePath);
-                        LibraryList.Add(image);
+                        AddImage(image);
                     });
                 }
             }
@@ -331,7 +338,7 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void AddFolder()
         {
@@ -374,11 +381,11 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="imageGrid"></param>
-        public void SortTypeChanged (object sender, ListView imageGrid)
+        public void SortTypeChanged(object sender, ListView imageGrid)
         {
             ComboBox box = (ComboBox)sender;
 
@@ -422,7 +429,7 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="imageGrid"></param>
