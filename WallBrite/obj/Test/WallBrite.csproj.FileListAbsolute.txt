@@ -86,3 +86,7 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\ToastNotifications.Messag
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.g.cs
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\App.baml
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\AddFileProgressWindow.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.pdb
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.xml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\Resources.baml

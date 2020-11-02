@@ -20,14 +20,32 @@ namespace WallBrite
 
         public ICommand OpenCommand { get; set; }
         public ICommand NewCommand { get; set; }
+        public ICommand ExitCommand { get; set; }
+        public ICommand OpenWindowCommand { get; set; }
 
-        public MainViewModel()
+        private readonly MainWindow _window;
+
+        public MainViewModel(MainWindow mainWindow)
         {
             Library = new LibraryViewModel();
             Manager = new ManagerViewModel(Library);
+            _window = mainWindow;
 
             OpenCommand = new RelayCommand((object s) => OpenLibrary());
             NewCommand = new RelayCommand((object s) => NewLibrary());
+            ExitCommand = new RelayCommand((object s) => Exit());
+            OpenWindowCommand = new RelayCommand((object s) => OpenWindow());
+        }
+
+
+        private void Exit()
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void OpenWindow()
+        {
+            _window.Show();
         }
 
 

@@ -20,8 +20,6 @@ namespace WallBrite
         //TODO: add manual set wallpaper button
 
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
-        //TODO: run in background
-        //TODO: taskbar icon
         //TODO: taskbar icon options?
 
         //TODO: IMPROVE SORT EFFICIENCY; lag here for some reason...
@@ -36,10 +34,26 @@ namespace WallBrite
 
         public MainWindow()
         {
-            _mainViewModel = new MainViewModel();
+            _mainViewModel = new MainViewModel(this);
             InitializeComponent();
             DataContext = _mainViewModel;
+
+            //TODO: remove
             BottomPanel.DataContext = _mainViewModel.Manager;
+        }
+
+        //TODO: find way to move this?
+        /// <summary>
+        /// Minimizes to tray when trying to close application (user exits from tray icon menu instead)
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // setting cancel to true will cancel the close request
+            // so the application is not closed
+            e.Cancel = true;
+            Hide();
+            base.OnClosing(e);
         }
 
         //TODO: make into command

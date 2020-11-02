@@ -4,143 +4,161 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:WallBrite"
         mc:Ignorable="d"
         Title="WallBrite" Height="450" Width="1200"
-        WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Icon="pack://application:,,,/WallBrite;component/Icon/test.ico">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <DockPanel x:Name="MainPanel">
-        <Expander ExpandDirection="Right" IsExpanded="True" Background="GhostWhite">
-            <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Background="GhostWhite" Width="105" Margin="0 0 5 0">
-                <StackPanel.Resources>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="0, 2" />
-                    </Style>
-                </StackPanel.Resources>
+        <tb:TaskbarIcon IconSource="{StaticResource trayIcon}" ToolTipText="WallBrite" MenuActivation="LeftOrRightClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open" Command="{Binding OpenWindowCommand}"/>
+                    <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
 
-                <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
-
-                <StackPanel Margin="0 0 0 5">
-                    <Button Command="{Binding NewCommand}">New Library</Button>
-                    <Button Command="{Binding OpenCommand}">Open Library</Button>
-                    <Button Command="{Binding Library.SaveCommand}">Save Library</Button>
-                </StackPanel>
-
-                <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
-
-
-                <StackPanel>
-                    <Button Command="{Binding Library.AddFilesCommand}">Add Files</Button>
-                    <Button Command="{Binding Library.AddFolderCommand}">Add Folder</Button>
-                </StackPanel>
-
-                <StackPanel Margin="0 5 0 8">
-                    <TextBlock>Sort By:</TextBlock>
-                    <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content" SelectedIndex="1">
-                        <ComboBoxItem>Brightness</ComboBoxItem>
-                        <ComboBoxItem>Date Added</ComboBoxItem>
-                        <ComboBoxItem>Enabled</ComboBoxItem>
-                    </ComboBox>
-                    <TextBlock>Sort Direction:</TextBlock>
-                    <ComboBox x:Name="SortDirectionBox" SelectionChanged="SortDirectionChanged" SelectedValuePath="Content" SelectedIndex="1">
-                        <ComboBoxItem>Descending</ComboBoxItem>
-                        <ComboBoxItem>Ascending</ComboBoxItem>
-                    </ComboBox>
-                </StackPanel>
-
-                <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
-                
-                
-                <StackPanel>
+        <Border BorderBrush="#FFABADB3" BorderThickness="0 0 1 0">
+            <Expander ExpandDirection="Right" IsExpanded="True" Background="GhostWhite">
+                <StackPanel x:Name="SidePanel" DockPanel.Dock="Left" Background="GhostWhite" Width="105" Margin="0 0 5 0">
                     <StackPanel.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Margin" Value="0 2" />
-                            <Style.Triggers>
-                                <DataTrigger
-                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}"
-                                        Value="0">
-                                    <Setter Property="Button.IsEnabled" Value="false" />
-                                </DataTrigger>
-                            </Style.Triggers>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="0, 2" />
                         </Style>
                     </StackPanel.Resources>
-                    <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
-                    <Button x:Name="EnableButton" Command="{Binding Library.EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
-                    <Button x:Name="DisableButton" Command="{Binding Library.DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
-                    <Button x:Name="RemoveButton" Command="{Binding Library.RemoveCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
-                    </Button>
+
+                    <TextBlock FontWeight="Bold" FontSize="14" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0 5">Library Controls</TextBlock>
+
+                    <StackPanel Margin="0 0 0 5">
+                        <Button Command="{Binding NewCommand}">New Library</Button>
+                        <Button Command="{Binding OpenCommand}">Open Library</Button>
+                        <Button Command="{Binding Library.SaveCommand}">Save Library</Button>
+                    </StackPanel>
+
+                    <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
+
+                    <StackPanel>
+                        <Button Command="{Binding Library.AddFilesCommand}">Add Files</Button>
+                        <Button Command="{Binding Library.AddFolderCommand}">Add Folder</Button>
+                    </StackPanel>
+
+                    <StackPanel Margin="0 5 0 8">
+                        <TextBlock>Sort By:</TextBlock>
+                        <ComboBox x:Name="SortTypeBox" SelectionChanged="SortTypeChanged" SelectedValuePath="Content" SelectedIndex="1">
+                            <ComboBoxItem>Brightness</ComboBoxItem>
+                            <ComboBoxItem>Date Added</ComboBoxItem>
+                            <ComboBoxItem>Enabled</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock>Sort Direction:</TextBlock>
+                        <ComboBox x:Name="SortDirectionBox" SelectionChanged="SortDirectionChanged" SelectedValuePath="Content" SelectedIndex="1">
+                            <ComboBoxItem>Descending</ComboBoxItem>
+                            <ComboBoxItem>Ascending</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>
+
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Margin" Value="0 2" />
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}"
+                                        Value="0">
+                                        <Setter Property="Button.IsEnabled" Value="false" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
+                        <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
+                        <Button x:Name="EnableButton" Command="{Binding Library.EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
+                        <Button x:Name="DisableButton" Command="{Binding Library.DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
+                        <Button x:Name="RemoveButton" Command="{Binding Library.RemoveCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </Expander>
-        <Expander ExpandDirection="Up" DockPanel.Dock="Bottom" Header="Automation Settings" Background="GhostWhite">
-            <Expander.Resources>
-                <local:PercentConverter x:Key="PercentConverter" />
-            </Expander.Resources>
-            <Border BorderBrush="#FFABADB3" BorderThickness="1 0 0 1">
+            </Expander>
+        </Border>
+        <Border BorderBrush="#FFABADB3" BorderThickness="0 1 0 0" DockPanel.Dock="Bottom">
+            <Expander ExpandDirection="Up" IsExpanded="False" Header="Automation Settings" Background="GhostWhite">
+                <Expander.Resources>
+                    <local:PercentConverter x:Key="PercentConverter" />
+                </Expander.Resources>
                 <Grid x:Name="BottomPanel"  Background="GhostWhite" Height="110" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="1"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="1"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="3*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Wallpaper Change Settings</TextBlock>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="3*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Wallpaper Change Settings</TextBlock>
 
-                            <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10 0 10 5">
-                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
-                                    <StackPanel.ToolTip>
-                                        <TextBlock Width="300" TextWrapping="Wrap">
+                        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10 0 10 5">
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
+                                <StackPanel.ToolTip>
+                                    <TextBlock Width="300" TextWrapping="Wrap">
                                             The time between each "check" for a wallpaper change. Each time this check happens,
                                             WallBrite will see whether the time of day has changed sufficiently to match the brightness of a different
                                             image from the one currently set as the wallpaper.
-                                        </TextBlock>
-                                    </StackPanel.ToolTip>
-                                    <StackPanel.Resources>
-                                        <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
-                                    </StackPanel.Resources>
-                                    <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Check for change every:</TextBlock>
-                                    <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
-                                    <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
-                                    <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
-                                        <xctk:IntegerUpDown.Style>
-                                            <Style TargetType="{x:Type xctk:IntegerUpDown}">
-                                                <Setter Property="Minimum" Value="1" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
-                                                        <Setter Property="Minimum" Value="0" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
-                                                        <Setter Property="Minimum" Value="1" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </xctk:IntegerUpDown.Style>
-                                    </xctk:IntegerUpDown>
-                                    <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
-                                </StackPanel>
-                                <Grid Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
-                                    <Grid.ToolTip>
-                                        <TextBlock Width="300" TextWrapping="Wrap">
-                                            The time until the next actual wallpaper change, using the current library and automation settings. If this is too long, try making WallBrite check for changes more often or add more
-                                            wallpapers to the library with more varied brightness levels.
-                                        </TextBlock>
-                                    </Grid.ToolTip>
-                                    <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
-                                    <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Grid>
-                                <Button x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
-                                    Check for change now
-                                </Button>
+                                    </TextBlock>
+                                </StackPanel.ToolTip>
+                                <StackPanel.Resources>
+                                    <local:CutoffConverter x:Key="HoursConverter" Cutoff="0" />
+                                </StackPanel.Resources>
+                                <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Check for change every:</TextBlock>
+                                <xctk:IntegerUpDown x:Name="updateHours" Maximum="23" Minimum="0" Value="{Binding UpdateIntervalHours}"></xctk:IntegerUpDown>
+                                <TextBlock Margin="2 0 5 0" VerticalAlignment="Center">hrs</TextBlock>
+                                <xctk:IntegerUpDown x:Name="updateMins" Value="{Binding UpdateIntervalMins}">
+                                    <xctk:IntegerUpDown.Style>
+                                        <Style TargetType="{x:Type xctk:IntegerUpDown}">
+                                            <Setter Property="Minimum" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
+                                                    <Setter Property="Minimum" Value="0" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="false">
+                                                    <Setter Property="Minimum" Value="1" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </xctk:IntegerUpDown.Style>
+                                </xctk:IntegerUpDown>
+                                <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
                             </StackPanel>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Column="1" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3">
-                        <Grid Margin="0 0 0 5">
+                            <Grid Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
+                                <Grid.ToolTip>
+                                    <TextBlock Width="300" TextWrapping="Wrap">
+                                            The time until the next actual wallpaper change using the current library and automation settings. If this is too long, try making WallBrite check for changes more often or add more
+                                            wallpapers to the library with more varied brightness levels.
+                                    </TextBlock>
+                                </Grid.ToolTip>
+                                <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
+                                <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+                            <Button x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
+                                Check for change now
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Border Grid.Column="1" Margin="0 5" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3"/>
+                    <Grid Grid.Column="2" Margin="0 0 0 5">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="3*" />
@@ -178,8 +196,8 @@
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                    </Border>
-                    <Grid Grid.Column="2">
+                    <Border Grid.Column="3" Margin="0 5" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3"/>
+                    <Grid Grid.Column="4">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="3*" />
@@ -219,12 +237,12 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </Border>
-        </Expander>
-        <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            </Expander>
+        </Border>
+        <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel />
+                    <WrapPanel HorizontalAlignment="Center"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>

@@ -120,7 +120,7 @@ namespace WallBrite
                 {
                     message += filename + "\n";
                 }
-                message += "\nThese files may have been moved or deleted or WallBrite may not have permission to access them. If you're sure " +
+                message += "\nThese files may have been moved or deleted, or WallBrite may not have permission to access them. If you're sure " +
                     "the files are still where they were, try running WallBrite as administrator to make sure it has permissions to access them.";
 
                 FlexibleMessageBox.Show(message, "Missing Files", WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Warning);
