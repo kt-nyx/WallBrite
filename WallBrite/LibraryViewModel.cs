@@ -37,7 +37,7 @@ namespace WallBrite
         public double AddProgress { get; set; }
         public string AddProgressReport { get; set; }
 
-        private AddProgressViewModel _addProgressViewModel;
+        private AddFileProgressViewModel _addProgressViewModel;
         private Notifier _notifier;
         private BackgroundWorker _worker;
 
@@ -243,7 +243,7 @@ namespace WallBrite
             if (dialog.ShowDialog() == true)
             {
                 // Create viewmodel (i.e. window) for the progress bar
-                _addProgressViewModel = new AddProgressViewModel(this);
+                _addProgressViewModel = new AddFileProgressViewModel(this);
 
                 // Create background worker that will add the files
                 _worker = new BackgroundWorker
@@ -353,7 +353,7 @@ namespace WallBrite
             if (dialog.ShowDialog() == WinForms.DialogResult.OK)
             {
                 // Create viewmodel (i.e. window) for the progress bar
-                _addProgressViewModel = new AddProgressViewModel(this);
+                _addProgressViewModel = new AddFileProgressViewModel(this);
 
                 // Create background worker that will add the files
                 _worker = new BackgroundWorker

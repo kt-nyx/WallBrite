@@ -90,3 +90,7 @@ D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNoti
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.pdb
 D:\Visual Studio Projects\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.xml
 D:\Visual Studio Projects\WallBrite\WallBrite\obj\Test\Resources.baml
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Test\Hardcodet.Wpf.TaskbarNotification.xml
+C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Test\Resources.baml

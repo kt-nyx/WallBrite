@@ -134,7 +134,7 @@
     <Compile Include="AddFileProgressWindow.xaml.cs">
       <DependentUpon>AddFileProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AddProgressViewModel.cs" />
+    <Compile Include="AddFileProgressViewModel.cs" />
     <Compile Include="CutoffConverter.cs" />
     <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="LibraryViewModel.cs" />

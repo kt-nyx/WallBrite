@@ -7,12 +7,12 @@ using System.Windows;
 
 namespace WallBrite
 {
-    public class AddProgressViewModel
+    public class AddFileProgressViewModel
     {
         public LibraryViewModel Library { get; set; }
 
         private readonly AddFileProgressWindow _progressWindow;
-        public AddProgressViewModel(LibraryViewModel library)
+        public AddFileProgressViewModel(LibraryViewModel library)
         {
             Library = library;
 
