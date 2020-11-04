@@ -154,6 +154,7 @@ namespace WallBrite
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand UpdateCommand { get; set; }
+        public ICommand ManualSetCommand { get; set; }
 
         public ManagerViewModel(LibraryViewModel library)
         {
@@ -206,6 +207,8 @@ namespace WallBrite
                 }
             }
             );
+
+            ManualSetCommand = new RelayCommand(Set);
         }
         private void CreateNotifier()
         {
@@ -520,6 +523,14 @@ namespace WallBrite
             }
 
             return daylightSetting;
+        }
+
+        private void Set(object collection)
+        {
+            // Cast selected image and set it as wall
+            System.Collections.IList items = (System.Collections.IList)collection;
+            WBImage selectedImage = (WBImage)items[0];
+            SetWall(selectedImage);
         }
 
         private void SetWall(WBImage image)

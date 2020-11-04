@@ -69,24 +69,42 @@
 
                     <StackPanel>
                         <StackPanel.Resources>
-                            <Style TargetType="Button">
-                                <Setter Property="Margin" Value="0 2" />
+                            <local:CutoffConverter x:Key="ManualSetConverter" Cutoff="1" />
+                            <Style x:Key="SidePanelButtonStyle">
+                                <Setter Property="Button.Margin" Value="0 2" />
                                 <Style.Triggers>
                                     <DataTrigger
                                         Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}"
                                         Value="0">
-                                        <Setter Property="Button.IsEnabled" Value="false" />
+                                        <Setter Property="Button.IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style x:Key="ManualSetButtonStyle">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count}"
+                                        Value="0">
+                                        <Setter Property="Button.IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding ="{Binding ElementName=imageGrid, Path=SelectedItems.Count, Converter={StaticResource ManualSetConverter}}" 
+                                        Value="true">
+                                        <Setter Property="Button.IsEnabled" Value="False" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
                         <TextBlock TextAlignment="Center" FontWeight="Medium">Selection:</TextBlock>
-                        <Button x:Name="EnableButton" Command="{Binding Library.EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
-                        <Button x:Name="DisableButton" Command="{Binding Library.DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
-                        <Button x:Name="RemoveButton" Command="{Binding Library.RemoveCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
+                        <Button x:Name="EnableButton" Style="{StaticResource SidePanelButtonStyle}" Command="{Binding Library.EnableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Enable</Button>
+                        <Button x:Name="DisableButton" Style="{StaticResource SidePanelButtonStyle}" Command="{Binding Library.DisableCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">Disable</Button>
+                        <Button x:Name="RemoveButton" Style="{StaticResource SidePanelButtonStyle}" Command="{Binding Library.RemoveCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
                         </Button>
-                    </StackPanel>
+                        <Button x:Name="ManualSetButton" Style="{StaticResource ManualSetButtonStyle}" Command="{Binding Manager.ManualSetCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Center">Set as Wallpaper (Manual)</TextBlock>
+                        </Button>
+                        </StackPanel>
                 </StackPanel>
             </Expander>
         </Border>
