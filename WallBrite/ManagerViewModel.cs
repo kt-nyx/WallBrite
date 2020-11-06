@@ -213,7 +213,7 @@ namespace WallBrite
             );
 
             ManualSetCommand = new RelayCommand(Set);
-            StartupSetCommand = new RelayCommand((object s) => SetStartup());
+            StartupSetCommand = new RelayCommand((object s) => SetStartupKey());
         }
         private void CreateNotifier()
         {
@@ -245,14 +245,14 @@ namespace WallBrite
             _progressTracker.Start();
         }
 
-        private void SetStartup()
+        private void SetStartupKey()
         {
             // Add or remove the registry key to start on startup depending on new flag setting
             RegistryKey rk = Registry.CurrentUser.OpenSubKey
             ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
             if (StartsOnStartup)
-                rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location);
+                rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location + " -minimized");
             else
                 rk.DeleteValue("WallBrite", false);
         }
