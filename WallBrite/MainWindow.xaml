@@ -22,6 +22,7 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Open" Command="{Binding OpenWindowCommand}"/>
+                    <MenuItem Header="Run at Startup" IsCheckable="True" IsChecked="{Binding Manager.StartsOnStartup}" Command="{Binding Manager.StartupSetCommand}"/>
                     <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
@@ -102,7 +103,8 @@
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Remove from Library</TextBlock>
                         </Button>
                         <Button x:Name="ManualSetButton" Style="{StaticResource ManualSetButtonStyle}" Command="{Binding Manager.ManualSetCommand}" CommandParameter="{Binding ElementName=imageGrid, Path=SelectedItems}">
-                                <TextBlock TextWrapping="Wrap" TextAlignment="Center">Set as Wallpaper (Manual)</TextBlock>
+                            <Button.ToolTip>Manually set the selected image as wallpaper. Note that this will be overriden during the next scheduled wallpaper update!</Button.ToolTip>
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center">Set as Wallpaper (Manual)</TextBlock>
                         </Button>
                         </StackPanel>
                 </StackPanel>

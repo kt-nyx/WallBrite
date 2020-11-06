@@ -18,6 +18,9 @@ namespace WallBrite
         //TODO: add help button(s)?
         //TODO: add details for selected image on left panel?
 
+        //TODO: attempt to open last used library on launch (setting)
+        //TODO: run on startup setting
+
         //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
         //TODO: taskbar icon options?
 

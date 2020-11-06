@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -149,12 +150,15 @@ namespace WallBrite
         public double CurrentWallBrightness { get; set; }
         public string CurrentWallFileName { get; set; }
         public LibraryViewModel Library { get; set; }
+        public bool StartsOnStartup { get; set; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand UpdateCommand { get; set; }
         public ICommand ManualSetCommand { get; set; }
+
+        public ICommand StartupSetCommand { get; set; }
 
         public ManagerViewModel(LibraryViewModel library)
         {
@@ -209,6 +213,7 @@ namespace WallBrite
             );
 
             ManualSetCommand = new RelayCommand(Set);
+            StartupSetCommand = new RelayCommand((object s) => SetStartup());
         }
         private void CreateNotifier()
         {
@@ -238,6 +243,18 @@ namespace WallBrite
             ProgressReport = null;
             _updateTimer.Start();
             _progressTracker.Start();
+        }
+
+        private void SetStartup()
+        {
+            // Add or remove the registry key to start on startup depending on new flag setting
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey
+            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            if (StartsOnStartup)
+                rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location);
+            else
+                rk.DeleteValue("WallBrite", false);
         }
 
         private void UpdateTimerProgress()
