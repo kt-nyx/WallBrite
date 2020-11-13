@@ -131,13 +131,13 @@
                         <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Wallpaper Change Settings</TextBlock>
 
                         <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10 0 10 5">
-                            <StackPanel Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
+                            <StackPanel ToolTipService.ShowDuration="15000" Orientation="Horizontal" Margin="0 0 0 5" HorizontalAlignment="Center">
                                 <StackPanel.ToolTip>
                                     <TextBlock Width="300" TextWrapping="Wrap">
-                                            Sets the time between each "check" for a wallpaper change. Each time this happens,
-                                            WallBrite will check whether the time of day has changed sufficiently to better match the brightness of a different
-                                            image from the one currently set as the wallpaper. If it has, the wallpaper will change to the one which better matches
-                                            the current daylight level.
+                                            Sets the time between each "check" for a wallpaper change. During each check, WallBrite will
+                                            try to set a wallpaper which best matches the current daylight amount. If there is no better-suited
+                                            wallpaper than the current one, there will be no change. In effect this sets the amount of time before
+                                            a wallpaper change can possibly occur.
                                     </TextBlock>
                                 </StackPanel.ToolTip>
                                 <StackPanel.Resources>
@@ -145,7 +145,7 @@
                                 </StackPanel.Resources>
                                 <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">
                                     <TextBlock.Inlines>
-                                        <Run Text="Update wallpaper at" />
+                                        <Run Text="Change wallpaper at" />
                                         <Run FontWeight="Medium" Text="most" />
                                         <Run Text="every:"/>
                                     </TextBlock.Inlines>
@@ -169,7 +169,7 @@
                                 </xctk:IntegerUpDown>
                                 <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">mins</TextBlock>
                             </StackPanel>
-                            <Grid Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
+                            <Grid ToolTipService.ShowDuration="15000" Width="{Binding ElementName=checkNowButton, Path=ActualWidth}" HorizontalAlignment="Left">
                                 <Grid.ToolTip>
                                     <TextBlock Width="300" TextWrapping="Wrap">
                                             The time until the next wallpaper change using the current library and automation settings. If this is too long, try changing the setting above to a shorter interval, or add more
@@ -179,11 +179,12 @@
                                 <ProgressBar VerticalAlignment="Bottom" Height="25" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Path=Progress, Converter={StaticResource PercentConverter}}" x:Name="timeProgress"></ProgressBar>
                                 <TextBlock Text="{Binding ProgressReport}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
-                            <Button x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
+                            <Button ToolTipService.ShowDuration="15000" x:Name="checkNowButton" Margin="0 5 0 0" Command="{Binding UpdateCommand}">
                                 <Button.ToolTip>
-                                    This button overrides the automated checks and makes WallBrite try to change the wallpaper now. The wallpaper will only actually change
-                                    if the time of day has changed sufficiently to better match the brightness of a different
-                                    image from the one currently set as the wallpaper
+                                    <TextBlock Width="300" TextWrapping="Wrap">
+                                        Overrides the automated checks and tries to change the wallpaper now. The wallpaper will only actually change
+                                        if the time of day has changed sufficiently to better match a different wallpaper than the one currently set.
+                                    </TextBlock>
                                 </Button.ToolTip>
                                 Change wallpaper now
                             </Button>
