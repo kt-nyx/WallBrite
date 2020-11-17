@@ -16,15 +16,8 @@ namespace WallBrite
     {
         //TODO: AUTOMATION UI CLEANUP
         //TODO: add help button(s)?
-        //TODO: add details for selected image on left panel?
 
-        //TODO: attempt to open last used library on launch (setting)
-        //TODO: run on startup setting
-
-        //TODO: MAKE INTO BACKGROUND PROCESS WHEN CLOSED
-        //TODO: taskbar icon options?
-
-        //TODO: IMPROVE SORT EFFICIENCY; lag here for some reason...
+        //TODO: attempt to open last used library on launch
 
         //TODO: MAKE INSTALLER
         //TODO: remove fody dll thing
@@ -32,16 +25,16 @@ namespace WallBrite
 
 
         //FIXME: remove this reference and make sorttype events into commands inside the main vm
-        private MainViewModel _mainViewModel;
+        public MainViewModel mainViewModel { get; private set; }
 
         public MainWindow()
         {
-            _mainViewModel = new MainViewModel(this);
+            mainViewModel = new MainViewModel(this);
             InitializeComponent();
-            DataContext = _mainViewModel;
+            DataContext = mainViewModel;
 
             //TODO: remove
-            BottomPanel.DataContext = _mainViewModel.Manager;
+            BottomPanel.DataContext = mainViewModel.Manager;
         }
 
         //TODO: find way to move this?
@@ -61,13 +54,13 @@ namespace WallBrite
         //TODO: make into command
         private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            _mainViewModel.Library.SortTypeChanged(sender, imageGrid);
+            mainViewModel.Library.SortTypeChanged(sender, imageGrid);
         }
 
         //TODO: make into command
         private void SortDirectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           _mainViewModel.Library.SortDirectionChanged(sender, imageGrid);
+            mainViewModel.Library.SortDirectionChanged(sender, imageGrid);
         }
     }
 }

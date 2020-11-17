@@ -13,9 +13,11 @@ namespace WallBrite
     /// </summary>
     public partial class App : Application
     {
+        private MainWindow _mainWindow;
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow wnd = new MainWindow();
+            _mainWindow = new MainWindow();
 
             // Check for any arguments
             if (e.Args.Length > 0)
@@ -23,17 +25,25 @@ namespace WallBrite
                 // Check for start minimized argument
                 if (Array.Exists(e.Args, element => element == "-minimized"))
                 {
-                    wnd.Hide();
+                    _mainWindow.Hide();
                 } else
                 {
-                    wnd.Show();
+                    _mainWindow.Show();
                 }
             }
             // Default startup (no arguments)
             else
             {
-                wnd.Show();
+                _mainWindow.Show();
             }
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // Save current library as last library before exiting
+            _mainWindow.mainViewModel.Library.SaveLastLibrary();
+        }
+
+
     }
 }

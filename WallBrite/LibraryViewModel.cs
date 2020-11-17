@@ -130,6 +130,19 @@ namespace WallBrite
             return false;
         }
 
+        public void SaveLastLibrary()
+        {
+            string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
+
+            // Create folder for storing last library used (if folder doesn't exist already)
+            if (!Directory.Exists(lastLibraryDirectory))
+            {
+                Directory.CreateDirectory(lastLibraryDirectory);
+            }
+            // Create library file in lastLib directory and save current library to it
+            File.WriteAllText(lastLibraryDirectory + "\\lastLibrary.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+        }
+
         // TODO: change placeholder path to a relative? path
         private void SaveLibrary()
         {
@@ -144,6 +157,9 @@ namespace WallBrite
             {
                 File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
             }
+
+            // Save this as last library as well
+            SaveLastLibrary();
         }
 
         /// <summary>
@@ -198,6 +214,9 @@ namespace WallBrite
             {
                 image.IsEnabled = true;
             }
+
+            // Save changes to last library file
+            SaveLastLibrary();
         }
 
         /// <summary>
@@ -215,11 +234,17 @@ namespace WallBrite
             {
                 image.IsEnabled = false;
             }
+
+            // Save changes to last library file
+            SaveLastLibrary();
         }
 
         private void CancelAdd()
         {
             _worker.CancelAsync();
+
+            // Save changes to last library file
+            SaveLastLibrary();
         }
 
         /// <summary>
@@ -338,6 +363,9 @@ namespace WallBrite
         private void AddComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             _addProgressViewModel.CloseWindow();
+
+            // Save changes to last library file
+            SaveLastLibrary();
         }
 
         /// <summary>

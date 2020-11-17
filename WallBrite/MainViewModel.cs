@@ -31,10 +31,35 @@ namespace WallBrite
             Manager = new ManagerViewModel(Library);
             _window = mainWindow;
 
+            CreateCommands();
+
+            OpenLastLibrary();
+        }
+
+        private void CreateCommands()
+        {
             OpenCommand = new RelayCommand((object s) => OpenLibrary());
             NewCommand = new RelayCommand((object s) => NewLibrary());
             ExitCommand = new RelayCommand((object s) => Exit());
             OpenWindowCommand = new RelayCommand((object s) => OpenWindow());
+        }
+
+        private void OpenLastLibrary()
+        {
+            string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
+
+            // Create folder for storing last library used (if folder doesn't exist already)
+            if (!Directory.Exists(lastLibraryDirectory))
+            {
+                Directory.CreateDirectory(lastLibraryDirectory);
+            }
+            // Check if there is library file in the lastLib directory
+            if (File.Exists(lastLibraryDirectory + "\\lastLibrary.json"))
+            {
+                // If so, then open that library file
+                using (FileStream fileStream = File.OpenRead(lastLibraryDirectory + "\\lastLibrary.json"))
+                    OpenLibrary(fileStream);
+            }
         }
 
 
@@ -72,27 +97,34 @@ namespace WallBrite
             {
                 // TODO: add try catch for possible exceptions
                 // Create stream from selected file
-                Stream fileStream = dialog.OpenFile();
+                using (Stream fileStream = dialog.OpenFile())
 
-                var serializer = new JsonSerializer();
-
-                using (var streamReader = new StreamReader(fileStream))
-                using (var jsonTextReader = new JsonTextReader(streamReader))
-                {
-                    // Deserialize WBImage array from file
-                    WBImage[] imageArray = (WBImage[])serializer.Deserialize(jsonTextReader, typeof(WBImage[]));
-
-                    // Create new library VM using image array
-                    Library = new LibraryViewModel(imageArray);
-
-                    // Update manager to use new library
-                    Manager.Library = Library;
-
-                    // Check for missing files in opened library
-                    Library.CheckMissing();
-                }
-                Manager.ResetTimers();
+                // Open library using this stream
+                OpenLibrary(fileStream);
             }
+        }
+
+        private void OpenLibrary(Stream fileStream)
+        {
+            var serializer = new JsonSerializer();
+
+            // Use json serializer to read library file and create a new libary
+            using (var streamReader = new StreamReader(fileStream))
+            using (var jsonTextReader = new JsonTextReader(streamReader))
+            {
+                // Deserialize WBImage array from file
+                WBImage[] imageArray = (WBImage[])serializer.Deserialize(jsonTextReader, typeof(WBImage[]));
+
+                // Create new library VM using image array
+                Library = new LibraryViewModel(imageArray);
+
+                // Update manager to use new library
+                Manager.Library = Library;
+
+                // Check for missing files in opened library
+                Library.CheckMissing();
+            }
+            Manager.ResetTimers();
         }
     }
 }
