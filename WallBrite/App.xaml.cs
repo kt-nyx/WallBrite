@@ -29,19 +29,21 @@ namespace WallBrite
                 } else
                 {
                     _mainWindow.Show();
+                    _mainWindow.MainViewModel.OpenLastLibrary();
                 }
             }
             // Default startup (no arguments)
             else
             {
                 _mainWindow.Show();
+                _mainWindow.MainViewModel.OpenLastLibrary();
             }
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             // Save current library as last library before exiting
-            _mainWindow.mainViewModel.Library.SaveLastLibrary();
+            _mainWindow.MainViewModel.Library.SaveLastLibrary();
         }
 
 

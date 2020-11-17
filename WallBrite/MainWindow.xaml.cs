@@ -25,16 +25,16 @@ namespace WallBrite
 
 
         //FIXME: remove this reference and make sorttype events into commands inside the main vm
-        public MainViewModel mainViewModel { get; private set; }
+        public MainViewModel MainViewModel { get; private set; }
 
         public MainWindow()
         {
-            mainViewModel = new MainViewModel(this);
+            MainViewModel = new MainViewModel(this);
             InitializeComponent();
-            DataContext = mainViewModel;
+            DataContext = MainViewModel;
 
             //TODO: remove
-            BottomPanel.DataContext = mainViewModel.Manager;
+            BottomPanel.DataContext = MainViewModel.Manager;
         }
 
         //TODO: find way to move this?
@@ -54,13 +54,13 @@ namespace WallBrite
         //TODO: make into command
         private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            mainViewModel.Library.SortTypeChanged(sender, imageGrid);
+            MainViewModel.Library.SortTypeChanged(sender, imageGrid);
         }
 
         //TODO: make into command
         private void SortDirectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            mainViewModel.Library.SortDirectionChanged(sender, imageGrid);
+            MainViewModel.Library.SortDirectionChanged(sender, imageGrid);
         }
     }
 }

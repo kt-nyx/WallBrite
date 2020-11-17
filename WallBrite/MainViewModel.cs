@@ -7,7 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
 
 namespace WallBrite
 {
@@ -24,6 +29,7 @@ namespace WallBrite
         public ICommand OpenWindowCommand { get; set; }
 
         private readonly MainWindow _window;
+        private Notifier _notifier;
 
         public MainViewModel(MainWindow mainWindow)
         {
@@ -32,8 +38,7 @@ namespace WallBrite
             _window = mainWindow;
 
             CreateCommands();
-
-            OpenLastLibrary();
+            CreateNotifier();
         }
 
         private void CreateCommands()
@@ -44,7 +49,28 @@ namespace WallBrite
             OpenWindowCommand = new RelayCommand((object s) => OpenWindow());
         }
 
-        private void OpenLastLibrary()
+        private void CreateNotifier()
+        {
+            // Create notifier for use with toast notifications
+            _notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new WindowPositionProvider(
+                    parentWindow: Application.Current.MainWindow,
+                    corner: Corner.TopRight,
+                    offsetX: 25,
+                    offsetY: 10);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    notificationLifetime: TimeSpan.FromSeconds(3),
+                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+                cfg.DisplayOptions.TopMost = true;
+
+                cfg.Dispatcher = Application.Current.Dispatcher;
+            });
+        }
+
+        public void OpenLastLibrary()
         {
             string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
 
@@ -57,8 +83,18 @@ namespace WallBrite
             if (File.Exists(lastLibraryDirectory + "\\lastLibrary.json"))
             {
                 // If so, then open that library file
-                using (FileStream fileStream = File.OpenRead(lastLibraryDirectory + "\\lastLibrary.json"))
-                    OpenLibrary(fileStream);
+                try
+                {
+                    using (FileStream fileStream = File.OpenRead(lastLibraryDirectory + "\\lastLibrary.json"))
+                        OpenLibrary(fileStream);
+
+                    _notifier.ShowInformation("Successfully loaded last used WallBrite library");
+                } catch
+                {
+                    _notifier.ShowError("Failed to load last used WallBrite library");
+                }
+
+                
             }
         }
 
