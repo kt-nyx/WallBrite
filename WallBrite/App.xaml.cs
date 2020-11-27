@@ -26,17 +26,18 @@ namespace WallBrite
                 if (Array.Exists(e.Args, element => element == "-minimized"))
                 {
                     _mainWindow.Hide();
+                    _mainWindow.MainViewModel.OpenLastLibrary(true);
                 } else
                 {
                     _mainWindow.Show();
-                    _mainWindow.MainViewModel.OpenLastLibrary();
+                    _mainWindow.MainViewModel.OpenLastLibrary(false);
                 }
             }
             // Default startup (no arguments)
             else
             {
                 _mainWindow.Show();
-                _mainWindow.MainViewModel.OpenLastLibrary();
+                _mainWindow.MainViewModel.OpenLastLibrary(false);
             }
         }
 

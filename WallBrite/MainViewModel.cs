@@ -70,7 +70,7 @@ namespace WallBrite
             });
         }
 
-        public void OpenLastLibrary()
+        public void OpenLastLibrary(bool startingMinimized)
         {
             string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
 
@@ -88,13 +88,15 @@ namespace WallBrite
                     using (FileStream fileStream = File.OpenRead(lastLibraryDirectory + "\\lastLibrary.json"))
                         OpenLibrary(fileStream);
 
-                    _notifier.ShowInformation("Successfully loaded last used WallBrite library");
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowInformation("Successfully loaded last used WallBrite library");
                 } catch
                 {
-                    _notifier.ShowError("Failed to load last used WallBrite library");
-                }
-
-                
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowError("Failed to load last used WallBrite library");
+                }  
             }
         }
 
