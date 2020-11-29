@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -30,8 +31,8 @@ namespace WallBrite
         private int _updateIntervalMins;
         private TimeSpan _checkInterval;
 
-        private readonly DispatcherTimer _updateTimer;
-        private readonly DispatcherTimer _progressTracker;
+        private DispatcherTimer _updateTimer;
+        private DispatcherTimer _progressTracker;
 
         private DateTime _brightestTime;
         private DateTime _darkestTime;
@@ -55,7 +56,7 @@ namespace WallBrite
                 DateTime now = DateTime.Now;
                 CurrentDaylight = GetDaylightValue(now);
 
-                CheckandUpdate();
+                CheckAndUpdate();
 
                 // Notify change on brightest time
                 NotifyPropertyChanged("DarkestTime");
@@ -73,7 +74,7 @@ namespace WallBrite
                 DateTime now = DateTime.Now;
                 CurrentDaylight = GetDaylightValue(now);
 
-                CheckandUpdate();
+                CheckAndUpdate();
                 
 
                 // Notify change on brightest time
@@ -160,9 +161,9 @@ namespace WallBrite
 
         public ICommand StartupSetCommand { get; set; }
 
-        public ManagerViewModel(LibraryViewModel library)
+        public ManagerViewModel(LibraryViewModel library, Notifier notifier)
         {
-            CreateNotifier();
+            _notifier = notifier;
 
             CreateCommands();
 
@@ -171,24 +172,36 @@ namespace WallBrite
 
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
-            UpdateIntervalHours = 0;
-            UpdateIntervalMins = 1;
+            _updateIntervalHours = 0;
+            _updateIntervalMins = 1;
+            _checkInterval = new TimeSpan(_updateIntervalMins, _updateIntervalHours, 0);
             DateTime now = DateTime.Now;
-            BrightestTime = new DateTime(now.Year, now.Month, now.Day, 13, 0, 0);
-            DarkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
+            _brightestTime = new DateTime(now.Year, now.Month, now.Day, 13, 0, 0);
+            _darkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
+            StartsOnStartup = false;
 
-            // Create timer thread for updating walls
-            _updateTimer = new DispatcherTimer { Interval = _checkInterval };
-            _updateTimer.Tick += (object s, EventArgs a) => CheckandUpdate();
+            CreateTimers();
+            CheckAndUpdate();
+        }
 
-            // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
-            _progressTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
-            _progressTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
+        public ManagerViewModel(LibraryViewModel library, ManagerSettings settings, Notifier notifier)
+        {
+            _notifier = notifier;
 
-            // Set start time as now and start the timers
-            _lastUpdateTime = DateTime.Now;
-            _updateTimer.Start();
-            _progressTracker.Start();
+            CreateCommands();
+
+            Library = library;
+
+            // Pull settings from the settings object
+            _updateIntervalHours = settings.UpdateIntervalHours;
+            _updateIntervalMins = settings.UpdateIntervalMins;
+            _checkInterval = new TimeSpan(_updateIntervalMins, _updateIntervalHours, 0);
+            _brightestTime = settings.BrightestTime;
+            _darkestTime = settings.DarkestTime;
+            StartsOnStartup = settings.StartsOnStartup;
+
+            CreateTimers();
+            CheckAndUpdate();
         }
 
 
@@ -215,23 +228,21 @@ namespace WallBrite
             ManualSetCommand = new RelayCommand(Set);
             StartupSetCommand = new RelayCommand((object s) => SetStartupKey());
         }
-        private void CreateNotifier()
+
+        private void CreateTimers()
         {
-            // Create notifier for use with toast notifications
-            _notifier = new Notifier(cfg =>
-            {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
-                    corner: Corner.TopRight,
-                    offsetX: 25,
-                    offsetY: 10);
+            // Create timer thread for updating walls
+            _updateTimer = new DispatcherTimer { Interval = _checkInterval };
+            _updateTimer.Tick += (object s, EventArgs a) => CheckAndUpdate();
 
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(3),
-                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+            // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
+            _progressTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
+            _progressTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
 
-                cfg.Dispatcher = Application.Current.Dispatcher;
-            });
+            // Set start time as now and start the timers
+            _lastUpdateTime = DateTime.Now;
+            _updateTimer.Start();
+            _progressTracker.Start();
         }
         public void ResetTimers()
         {
@@ -255,6 +266,30 @@ namespace WallBrite
                 rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location + " -minimized");
             else
                 rk.DeleteValue("WallBrite", false);
+        }
+
+        public void SaveSettings()
+        {
+            string wallBriteAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite";
+
+            // Create folder for storing settings (if folder doesn't exist already)
+            if (!Directory.Exists(wallBriteAppDataDirectory))
+            {
+                Directory.CreateDirectory(wallBriteAppDataDirectory);
+            }
+
+            // Create settings object to be serialized
+            ManagerSettings settings = new ManagerSettings
+            {
+                UpdateIntervalHours = _updateIntervalHours,
+                UpdateIntervalMins = _updateIntervalMins,
+                BrightestTime = _brightestTime,
+                DarkestTime = _darkestTime,
+                StartsOnStartup = StartsOnStartup
+            };
+
+            // Create settings file in directory and serialize settings object to it
+            File.WriteAllText(wallBriteAppDataDirectory + "\\Settings.json", JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
 
         private void UpdateTimerProgress()
@@ -283,7 +318,7 @@ namespace WallBrite
             }
         }
 
-        private void CheckandUpdate()
+        private void CheckAndUpdate()
         {
             // Check for change in wall
             WBImage image = CheckforChange();

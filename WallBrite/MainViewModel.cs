@@ -31,14 +31,36 @@ namespace WallBrite
         private readonly MainWindow _window;
         private Notifier _notifier;
 
-        public MainViewModel(MainWindow mainWindow)
+        public MainViewModel(MainWindow mainWindow, bool startingMinimized)
         {
-            Library = new LibraryViewModel();
-            Manager = new ManagerViewModel(Library);
+            CreateNotifier();
+
+            if (!startingMinimized)
+                mainWindow.Show();
+
+            // Try to pull library from last lib file
+            LibraryViewModel libraryFromFile = GetLibraryFromLastLibFile(startingMinimized);
+
+            // If successful, use the library from file
+            if (libraryFromFile != null)
+                Library = libraryFromFile;
+            // Otherwise create new empty library
+            else
+                Library = new LibraryViewModel(_notifier);
+
+            // Try to pull new manager from settings file
+            ManagerViewModel managerFromFile = GetManagerFromSettingsFile(startingMinimized);
+
+            // If successful, use the manager from file
+            if (managerFromFile != null) 
+                Manager = managerFromFile;
+            // If unsuccessful (e.g. no settings file exists), just create new manager with default settings
+            else 
+                Manager = new ManagerViewModel(Library, _notifier);
+
             _window = mainWindow;
 
             CreateCommands();
-            CreateNotifier();
         }
 
         private void CreateCommands()
@@ -70,40 +92,9 @@ namespace WallBrite
             });
         }
 
-        public void OpenLastLibrary(bool startingMinimized)
-        {
-            string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
-
-            // Create folder for storing last library used (if folder doesn't exist already)
-            if (!Directory.Exists(lastLibraryDirectory))
-            {
-                Directory.CreateDirectory(lastLibraryDirectory);
-            }
-            // Check if there is library file in the lastLib directory
-            if (File.Exists(lastLibraryDirectory + "\\lastLibrary.json"))
-            {
-                // If so, then open that library file
-                try
-                {
-                    using (FileStream fileStream = File.OpenRead(lastLibraryDirectory + "\\lastLibrary.json"))
-                        OpenLibrary(fileStream);
-
-                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
-                    if (!startingMinimized)
-                        _notifier.ShowInformation("Successfully loaded last used WallBrite library");
-                } catch
-                {
-                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
-                    if (!startingMinimized)
-                        _notifier.ShowError("Failed to load last used WallBrite library");
-                }  
-            }
-        }
-
-
         private void Exit()
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void OpenWindow()
@@ -111,12 +102,74 @@ namespace WallBrite
             _window.Show();
         }
 
-
         private void NewLibrary()
         {
-            Library = new LibraryViewModel();
-            Manager.Library = Library;
-            Manager.ResetTimers();
+            Library = new LibraryViewModel(_notifier);
+            UpdateManagerLibrary(Library);
+        }
+
+        public ManagerViewModel GetManagerFromSettingsFile(bool startingMinimized)
+        {
+            string wallBriteAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite";
+
+            // Check if there is settings file in the appdata directory; if not just skip loading settings file
+            if (File.Exists(wallBriteAppDataDirectory + "\\Settings.json"))
+            {
+                // If so, then open that settings file
+                try
+                {
+                    ManagerViewModel newManager;
+                    using (FileStream fileStream = File.OpenRead(wallBriteAppDataDirectory + "\\Settings.json"))
+                        newManager = new ManagerViewModel(Library, OpenManagerSettingsFile(fileStream), _notifier);
+
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowInformation("Successfully loaded last used WallBrite settings");
+
+                    return newManager;
+                }
+                catch (IOException)
+                {
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowError("Failed to load last used WallBrite settings: file corrupted or in use by another program");
+
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public LibraryViewModel GetLibraryFromLastLibFile(bool startingMinimized)
+        {
+            string wallBriteAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite";
+
+            // Check if there is library file in the appdata directory; if not just skip loading the last used lib
+            if (File.Exists(wallBriteAppDataDirectory + "\\LastLibrary.json"))
+            {
+                // If so, then open that library file
+                try
+                {
+                    LibraryViewModel newLibrary;
+                    using (FileStream fileStream = File.OpenRead(wallBriteAppDataDirectory + "\\LastLibrary.json"))
+                        newLibrary = OpenLibraryFromStream(fileStream);
+
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowInformation("Successfully loaded last used WallBrite library");
+
+                    return newLibrary;
+                }
+                catch (IOException)
+                {
+                    // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
+                    if (!startingMinimized)
+                        _notifier.ShowError("Failed to load last used WallBrite library: file corrupted or in use by another program");
+
+                    return null;
+                }
+            }
+            return null;
         }
 
         private void OpenLibrary()
@@ -136,17 +189,18 @@ namespace WallBrite
                 // TODO: add try catch for possible exceptions
                 // Create stream from selected file
                 using (Stream fileStream = dialog.OpenFile())
+                    // Open library using this stream
+                    Library = OpenLibraryFromStream(fileStream);
 
-                // Open library using this stream
-                OpenLibrary(fileStream);
+                UpdateManagerLibrary(Library);
             }
         }
 
-        private void OpenLibrary(Stream fileStream)
+        private LibraryViewModel OpenLibraryFromStream(Stream fileStream)
         {
             var serializer = new JsonSerializer();
 
-            // Use json serializer to read library file and create a new libary
+            // Use json serializer to read library file and create a new library
             using (var streamReader = new StreamReader(fileStream))
             using (var jsonTextReader = new JsonTextReader(streamReader))
             {
@@ -154,14 +208,31 @@ namespace WallBrite
                 WBImage[] imageArray = (WBImage[])serializer.Deserialize(jsonTextReader, typeof(WBImage[]));
 
                 // Create new library VM using image array
-                Library = new LibraryViewModel(imageArray);
-
-                // Update manager to use new library
-                Manager.Library = Library;
+                LibraryViewModel newLibrary = new LibraryViewModel(imageArray, _notifier);
 
                 // Check for missing files in opened library
-                Library.CheckMissing();
+                newLibrary.CheckMissing();
+
+                return newLibrary;
             }
+        }
+
+        private ManagerSettings OpenManagerSettingsFile(Stream fileStream)
+        {
+            var serializer = new JsonSerializer();
+
+            // Use json serializer to read library file and create a new library
+            using (var streamReader = new StreamReader(fileStream))
+            using (var jsonTextReader = new JsonTextReader(streamReader))
+            {
+                ManagerSettings settings = (ManagerSettings)serializer.Deserialize(jsonTextReader, typeof(ManagerSettings));
+                return settings;
+            }
+        }
+
+        private void UpdateManagerLibrary(LibraryViewModel library)
+        {
+            Manager.Library = library;
             Manager.ResetTimers();
         }
     }

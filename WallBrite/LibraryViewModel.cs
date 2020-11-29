@@ -41,23 +41,23 @@ namespace WallBrite
         private Notifier _notifier;
         private BackgroundWorker _worker;
 
-        public LibraryViewModel()
+        public LibraryViewModel(Notifier notifier)
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
 
-            CreateNotifier();
+            _notifier = notifier;
 
             // Create commands
             CreateCommands();
         }
 
-        public LibraryViewModel(WBImage[] libraryList)
+        public LibraryViewModel(WBImage[] libraryList, Notifier notifier)
         {
             // Create library list from given
             LibraryList = new ObservableCollection<WBImage>(libraryList);
 
-            CreateNotifier();
+            _notifier = notifier;
 
             // Create commands
             CreateCommands();
@@ -72,27 +72,6 @@ namespace WallBrite
             AddFolderCommand = new RelayCommand((object s) => AddFolder());
             SaveCommand = new RelayCommand((object s) => SaveLibrary());
             CancelCommand = new RelayCommand((object s) => CancelAdd());
-        }
-
-        private void CreateNotifier()
-        {
-            // Create notifier for use with toast notifications
-            _notifier = new Notifier(cfg =>
-            {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
-                    corner: Corner.TopRight,
-                    offsetX: 25,
-                    offsetY: 10);
-
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(3),
-                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
-
-                cfg.DisplayOptions.TopMost = true;
-
-                cfg.Dispatcher = Application.Current.Dispatcher;
-            });
         }
 
         public bool CheckMissing()
@@ -132,15 +111,16 @@ namespace WallBrite
 
         public void SaveLastLibrary()
         {
-            string lastLibraryDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite\\lastLibrary";
+            string wallBriteAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite";
 
             // Create folder for storing last library used (if folder doesn't exist already)
-            if (!Directory.Exists(lastLibraryDirectory))
+            if (!Directory.Exists(wallBriteAppDataDirectory))
             {
-                Directory.CreateDirectory(lastLibraryDirectory);
+                Directory.CreateDirectory(wallBriteAppDataDirectory);
             }
-            // Create library file in lastLib directory and save current library to it
-            File.WriteAllText(lastLibraryDirectory + "\\lastLibrary.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+
+            // Create library file in directory and save current library to it
+            File.WriteAllText(wallBriteAppDataDirectory + "\\LastLibrary.json", JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
         }
 
         // TODO: change placeholder path to a relative? path

@@ -27,9 +27,9 @@ namespace WallBrite
         //FIXME: remove this reference and make sorttype events into commands inside the main vm
         public MainViewModel MainViewModel { get; private set; }
 
-        public MainWindow()
+        public MainWindow(bool startingMinimized)
         {
-            MainViewModel = new MainViewModel(this);
+            MainViewModel = new MainViewModel(this, startingMinimized);
             InitializeComponent();
             DataContext = MainViewModel;
 
