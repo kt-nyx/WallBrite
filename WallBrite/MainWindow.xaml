@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel x:Name="MainPanel">
-        <tb:TaskbarIcon IconSource="{StaticResource trayIcon}" ToolTipText="WallBrite" MenuActivation="LeftOrRightClick">
+        <tb:TaskbarIcon IconSource="{StaticResource trayIcon}" ToolTipText="WallBrite" MenuActivation="LeftOrRightClick" DoubleClickCommand="{Binding OpenWindowCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Open" Command="{Binding OpenWindowCommand}"/>

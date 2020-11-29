@@ -25,7 +25,6 @@ namespace WallBrite
             } else
             {
                 _mainWindow = new MainWindow(false);
-                _mainWindow.Show();
             }
         }
 
