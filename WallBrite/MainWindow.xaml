@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="WallBrite" Height="450" Width="1200"
         WindowStartupLocation="CenterScreen" WindowState="Maximized"
-        Icon="pack://application:,,,/WallBrite;component/Icon/test.ico">
+        Icon="pack://application:,,,/WallBrite;component/Icon.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -106,7 +106,7 @@
                             <Button.ToolTip>Manually set the selected image as wallpaper. Note that this will be overriden during the next scheduled wallpaper update!</Button.ToolTip>
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center">Set as Wallpaper (Manual)</TextBlock>
                         </Button>
-                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </Expander>
         </Border>
@@ -192,43 +192,43 @@
                     </Grid>
                     <Border Grid.Column="1" Margin="0 5" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3"/>
                     <Grid Grid.Column="2" Margin="0 0 0 5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="3*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Time of Day Settings</TextBlock>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
-                                <Grid Width="265" HorizontalAlignment="Center" Margin="5 0 5 5">
-                                    <Grid.ToolTip>
-                                        The current daylight level (as a percentage of the max daylight level, at the brightest time of day)
-                                    </Grid.ToolTip>
-                                    <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylight}"></ProgressBar>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="Current Daylight: {0}%">
-                                                <Binding Path="CurrentDaylight" Converter="{StaticResource PercentConverter}" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </Grid>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <StackPanel Margin="0 0 20 0">
-                                        <StackPanel.ToolTip>
-                                            At the brightest time of day, the daylight level will be 100%.
-                                        </StackPanel.ToolTip>
-                                        <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
-                                        <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
-                                    </StackPanel>
-                                    <StackPanel>
-                                        <StackPanel.ToolTip>
-                                            At the darkest time of day, the daylight level will be 0%.
-                                        </StackPanel.ToolTip>
-                                        <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
-                                        <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
-                                    </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="3*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" FontWeight="Medium" VerticalAlignment="Top" Margin="0 5 0 0">Time of Day Settings</TextBlock>
+                        <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                            <Grid Width="265" HorizontalAlignment="Center" Margin="5 0 5 5">
+                                <Grid.ToolTip>
+                                    The current daylight level (as a percentage of the max daylight level, at the brightest time of day)
+                                </Grid.ToolTip>
+                                <ProgressBar Height="25" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding CurrentDaylight}"></ProgressBar>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="Current Daylight: {0}%">
+                                            <Binding Path="CurrentDaylight" Converter="{StaticResource PercentConverter}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Margin="0 0 20 0">
+                                    <StackPanel.ToolTip>
+                                        At the brightest time of day, the daylight level will be 100%.
+                                    </StackPanel.ToolTip>
+                                    <TextBlock Margin="0 3">Brightest Time of Day</TextBlock>
+                                    <xctk:TimePicker x:Name="brightestPicker" Value="{Binding BrightestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel.ToolTip>
+                                        At the darkest time of day, the daylight level will be 0%.
+                                    </StackPanel.ToolTip>
+                                    <TextBlock Margin="0 3">Darkest Time of Day</TextBlock>
+                                    <xctk:TimePicker x:Name="darkestPicker" Value="{Binding DarkestTime}" Width="122" HorizontalAlignment="Left"></xctk:TimePicker>
                                 </StackPanel>
                             </StackPanel>
-                        </Grid>
+                        </StackPanel>
+                    </Grid>
                     <Border Grid.Column="3" Margin="0 5" BorderThickness="0 0 1 0" BorderBrush="#FFABADB3"/>
                     <Grid Grid.Column="4">
                         <Grid.RowDefinitions>
@@ -272,47 +272,77 @@
                 </Grid>
             </Expander>
         </Border>
-        <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel HorizontalAlignment="Center"/>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
-                            <Setter Property="Opacity" Value="0.5" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.DataContext>
-                <CollectionViewSource Source="{Binding Library.LibraryList}">
-                    <CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource.SortDescriptions>
-                </CollectionViewSource>
-            </ListView.DataContext>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
-                        <Grid>
-                            <Image Panel.ZIndex="0" Width="200" Height="200" Source="{Binding Thumbnail}" />
-                            <TextBlock Panel.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Medium" FontSize="40">
-                                <TextBlock.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Opacity, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Value="0.5">
-                                                <Setter Property="Text" Value="Disabled" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Resources>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid>
+            <Grid Grid.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="253*"/>
+                    <ColumnDefinition Width="204*"/>
+                </Grid.ColumnDefinitions>
+                <Image VerticalAlignment="Top" Source="/WallBrite;component/Icon.png" Width="100" Grid.ColumnSpan="2" Margin="178,-102,178.667,0"></Image>
+                <TextBlock VerticalAlignment="Bottom" TextAlignment="Center" Margin="0,0,-0.333,14" Grid.ColumnSpan="2">
+                    <TextBlock.Resources>
+                        <local:CutoffConverter x:Key="LibraryCountConverter" Cutoff="0" />
+                    </TextBlock.Resources>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding ="{Binding Library.LibraryList.Count, Converter={StaticResource LibraryCountConverter}}" 
+                                            Value="true">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    <TextBlock.Inlines>
+                        <Span FontSize="40" FontWeight="Bold">Welcome to WallBrite!</Span>
+                        <LineBreak/>
+                        <Span>WallBrite manages your desktop wallpapers by matching them up with the time of day</Span>
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </Grid>
+            <ListView x:Name="imageGrid" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.DataContext>
+                    <CollectionViewSource Source="{Binding Library.LibraryList}">
+                        <CollectionViewSource.SortDescriptions>
+                        </CollectionViewSource.SortDescriptions>
+                    </CollectionViewSource>
+                </ListView.DataContext>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="imageBorder" BorderBrush="Black" BorderThickness="1" Margin="5" Background="{Binding BackgroundColor}">
+                            <Grid>
+                                <Image Panel.ZIndex="0" Width="200" Height="200" Source="{Binding Thumbnail}" />
+                                <TextBlock Panel.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Medium" FontSize="40">
+                                    <TextBlock.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Opacity, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" Value="0.5">
+                                                    <Setter Property="Text" Value="Disabled" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Resources>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </DockPanel>
 </Window>
