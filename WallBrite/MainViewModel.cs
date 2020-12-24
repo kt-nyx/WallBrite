@@ -201,6 +201,7 @@ namespace WallBrite
                     Library = OpenLibraryFromStream(fileStream);
 
                 Manager.UpdateLibrary(Library);
+                Manager.CheckAndUpdate();
             }
         }
 
