@@ -10,28 +10,53 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WallBrite Installer", "WallBrite Installer\WallBrite Installer.wixproj", "{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 		Test|Any CPU = Test|Any CPU
 		Test|x64 = Test|x64
+		Test|x86 = Test|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|x64.ActiveCfg = Debug|x64
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|x64.Build.0 = Debug|x64
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Debug|x86.Build.0 = Debug|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|x64.ActiveCfg = Release|x64
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|x64.Build.0 = Release|x64
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Release|x86.Build.0 = Release|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|Any CPU.Build.0 = Test|Any CPU
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|x64.ActiveCfg = Test|x64
 		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|x64.Build.0 = Test|x64
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|x86.ActiveCfg = Test|Any CPU
+		{D64215F3-1CE8-485F-B359-AB8BD027D5C5}.Test|x86.Build.0 = Test|Any CPU
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Debug|x64.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Debug|x86.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Debug|x86.Build.0 = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Release|Any CPU.ActiveCfg = Release|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Release|x64.ActiveCfg = Release|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Release|x86.ActiveCfg = Release|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Release|x86.Build.0 = Release|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|Any CPU.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|Any CPU.Build.0 = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|x64.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|x64.Build.0 = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|x86.ActiveCfg = Debug|x86
+		{49FB5277-38DF-45B3-91A1-624F5CB0A6DD}.Test|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -44,6 +44,7 @@ namespace WallBrite
 
         private Notifier _notifier;
 
+        private LibraryViewModel _library;
 
         public DateTime DarkestTime
         {
@@ -108,7 +109,7 @@ namespace WallBrite
                 }
 
                 // Only update next update time if there are at least two wallpapers
-                if (Library.LibraryList.Count > 1)
+                if (_library.LibraryList.Count > 1)
                 {
                     // Update the update time (lol)
                     _nextUpdateTime = FindNextUpdateTime();
@@ -130,7 +131,7 @@ namespace WallBrite
                 _checkInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
 
                 // Only update next update time if there are at least two wallpapers
-                if (Library.LibraryList.Count > 1)
+                if (_library.LibraryList.Count > 1)
                 {
                     // Update the update time (lol)
                     _nextUpdateTime = FindNextUpdateTime();
@@ -150,7 +151,7 @@ namespace WallBrite
         public SolidColorBrush CurrentWallBack { get; private set; }
         public double CurrentWallBrightness { get; set; }
         public string CurrentWallFileName { get; set; }
-        public LibraryViewModel Library { get; set; }
+
         public bool StartsOnStartup { get; set; }
 
 
@@ -168,7 +169,7 @@ namespace WallBrite
             CreateCommands();
 
             // Set assigned library
-            Library = library;
+            _library = library;
 
             // Set default property values
             // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
@@ -190,7 +191,7 @@ namespace WallBrite
 
             CreateCommands();
 
-            Library = library;
+            _library = library;
 
             // Pull settings from the settings object
             _updateIntervalHours = settings.UpdateIntervalHours;
@@ -210,18 +211,10 @@ namespace WallBrite
             // Create command(s)
             UpdateCommand = new RelayCommand((object s) =>
             {
-                WBImage image = CheckforChange();
+                bool changed = CheckAndUpdate();
 
-                // Update if there is change 
-                if (image != null)
-                {
-                    UpdateWall(image);
-                }
-                // If there was no change, inform user with toast notification
-                else
-                {
+                if (!changed)
                     _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
-                }
             }
             );
 
@@ -318,8 +311,10 @@ namespace WallBrite
             }
         }
 
-        private void CheckAndUpdate()
+        public bool CheckAndUpdate()
         {
+            bool changed = false;
+
             // Check for change in wall
             WBImage image = CheckforChange();
 
@@ -327,7 +322,22 @@ namespace WallBrite
             if (image != null)
             {
                 UpdateWall(image);
+                changed = true;
             }
+
+            // Only change the next (actual) update time if there are at least two images in lib
+            // i.e. only when there is a possible other wallpaper to switch to at update time
+            if (_library.LibraryList.Count > 1)
+            {
+                // Find the next time when wallpaper will actually change
+                _nextUpdateTime = FindNextUpdateTime();
+
+                // Restart the timer; now use time until next actual update as the 
+                _updateTimer.Interval = _nextUpdateTime.Subtract(DateTime.Now);
+                _updateTimer.Start();
+            }
+
+            return changed;
         }
 
         /// <summary>
@@ -342,10 +352,10 @@ namespace WallBrite
         private WBImage CheckforChange()
         {
             // Only update the wall if there is at least one image in library to work with; otherwise throw below
-            if (Library.LibraryList.Count > 0)
+            if (_library.LibraryList.Count > 0)
             {
                 // First check for (and remove) any missing images
-                Library.CheckMissing();
+                _library.CheckMissing();
 
                 DateTime now = DateTime.Now;
 
@@ -380,20 +390,7 @@ namespace WallBrite
             CurrentWallFileName = Path.GetFileName(image.Path);
             _currentImage = image;
 
-            DateTime now = DateTime.Now;
-            _lastUpdateTime = now;
-
-            // Only change the next (actual) update time if there are at least two images in lib
-            // i.e. only when there is a possible other wallpaper to switch to at update time
-            if (Library.LibraryList.Count > 1)
-            {
-                // Find the next time when wallpaper will actually change
-                _nextUpdateTime = FindNextUpdateTime();
-
-                // Restart the timer; now use time until next actual update as the 
-                _updateTimer.Interval = _nextUpdateTime.Subtract(now);
-                _updateTimer.Start();
-            }
+            _lastUpdateTime = DateTime.Now;
         }
 
         private DateTime FindNextUpdateTime()
@@ -436,13 +433,13 @@ namespace WallBrite
         private WBImage FindClosestImage(DateTime time)
         {
             // Only search for closest if there are images in the library
-            if (Library.LibraryList.Count > 0)
+            if (_library.LibraryList.Count > 0)
             {
                 // Get current daylight value
                 double daylightAtTime = GetDaylightValue(time);
                 // Find (enabled) image with brightness value closest to current daylight value
                 WBImage closestImage =
-                    Library.LibraryList.Aggregate((x, y) =>
+                    _library.LibraryList.Aggregate((x, y) =>
                                                            (Math.Abs(x.AverageBrightness - daylightAtTime)
                                                             < Math.Abs(y.AverageBrightness - daylightAtTime)
                                                               || !y.IsEnabled)
@@ -589,6 +586,11 @@ namespace WallBrite
         {
             // TODO: add try catch
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
+        }
+
+        public void UpdateLibrary(LibraryViewModel library)
+        {
+            _library = library;
         }
 
         protected void NotifyPropertyChanged(String info)

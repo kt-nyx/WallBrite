@@ -46,7 +46,7 @@ namespace WallBrite
                 Library = libraryFromFile;
             // Otherwise create new empty library
             else
-                Library = new LibraryViewModel(_notifier);
+                Library = new LibraryViewModel(Manager, _notifier);
 
             // Try to pull new manager from settings file
             ManagerViewModel managerFromFile = GetManagerFromSettingsFile(startingMinimized);
@@ -57,6 +57,13 @@ namespace WallBrite
             // If unsuccessful (e.g. no settings file exists), just create new manager with default settings
             else 
                 Manager = new ManagerViewModel(Library, _notifier);
+
+            // Update after both manager and library created
+            Library.UpdateManager(Manager);
+            Manager.UpdateLibrary(Library);
+
+            // Check and update before displaying
+            Manager.CheckAndUpdate();
 
             _window = mainWindow;
 
@@ -104,8 +111,9 @@ namespace WallBrite
 
         private void NewLibrary()
         {
-            Library = new LibraryViewModel(_notifier);
-            UpdateManagerLibrary(Library);
+            Library = new LibraryViewModel(Manager, _notifier);
+            Manager.UpdateLibrary(Library);
+            Manager.ResetTimers();
         }
 
         public ManagerViewModel GetManagerFromSettingsFile(bool startingMinimized)
@@ -192,7 +200,7 @@ namespace WallBrite
                     // Open library using this stream
                     Library = OpenLibraryFromStream(fileStream);
 
-                UpdateManagerLibrary(Library);
+                Manager.UpdateLibrary(Library);
             }
         }
 
@@ -208,7 +216,7 @@ namespace WallBrite
                 WBImage[] imageArray = (WBImage[])serializer.Deserialize(jsonTextReader, typeof(WBImage[]));
 
                 // Create new library VM using image array
-                LibraryViewModel newLibrary = new LibraryViewModel(imageArray, _notifier);
+                LibraryViewModel newLibrary = new LibraryViewModel(imageArray, Manager, _notifier);
 
                 // Check for missing files in opened library
                 newLibrary.CheckMissing();
@@ -228,12 +236,6 @@ namespace WallBrite
                 ManagerSettings settings = (ManagerSettings)serializer.Deserialize(jsonTextReader, typeof(ManagerSettings));
                 return settings;
             }
-        }
-
-        private void UpdateManagerLibrary(LibraryViewModel library)
-        {
-            Manager.Library = library;
-            Manager.ResetTimers();
         }
     }
 }

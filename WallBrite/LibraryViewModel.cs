@@ -41,10 +41,14 @@ namespace WallBrite
         private Notifier _notifier;
         private BackgroundWorker _worker;
 
-        public LibraryViewModel(Notifier notifier)
+        private ManagerViewModel _manager;
+
+        public LibraryViewModel(ManagerViewModel manager, Notifier notifier)
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
+
+            _manager = manager;
 
             _notifier = notifier;
 
@@ -52,10 +56,12 @@ namespace WallBrite
             CreateCommands();
         }
 
-        public LibraryViewModel(WBImage[] libraryList, Notifier notifier)
+        public LibraryViewModel(WBImage[] libraryList, ManagerViewModel manager, Notifier notifier)
         {
             // Create library list from given
             LibraryList = new ObservableCollection<WBImage>(libraryList);
+
+            _manager = manager;
 
             _notifier = notifier;
 
@@ -107,6 +113,11 @@ namespace WallBrite
             }
 
             return false;
+        }
+
+        public void UpdateManager(ManagerViewModel manager)
+        {
+            _manager = manager;
         }
 
         public void SaveLastLibrary()
@@ -177,6 +188,12 @@ namespace WallBrite
             {
                 LibraryList.Remove(image);
             }
+
+            // Save changes to last library file
+            SaveLastLibrary();
+
+            // Update manager
+            _manager.CheckAndUpdate();
         }
 
         /// <summary>
@@ -197,6 +214,9 @@ namespace WallBrite
 
             // Save changes to last library file
             SaveLastLibrary();
+
+            // Update manager
+            _manager.CheckAndUpdate();
         }
 
         /// <summary>
@@ -217,6 +237,9 @@ namespace WallBrite
 
             // Save changes to last library file
             SaveLastLibrary();
+
+            // Update manager
+            _manager.CheckAndUpdate();
         }
 
         private void CancelAdd()
@@ -225,6 +248,9 @@ namespace WallBrite
 
             // Save changes to last library file
             SaveLastLibrary();
+
+            // Update manager
+            _manager.CheckAndUpdate();
         }
 
         /// <summary>
@@ -346,6 +372,9 @@ namespace WallBrite
 
             // Save changes to last library file
             SaveLastLibrary();
+
+            // Update manager
+            _manager.CheckAndUpdate();
         }
 
         /// <summary>

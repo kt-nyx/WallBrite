@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" UpgradeCode="08E5CBC3-8159-44F4-99E1-1AD18CC6C7C6" Version="1.0.0.0" Language="1033" Name="WallBrite" Manufacturer="Bradley the Baker">
+        <Package InstallerVersion="300" Compressed="yes"/>
+        <Media Id="1" Cabinet="wallbrite.cab" EmbedCab="yes" />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="APPLICATIONROOTDIRECTORY" Name="WallBrite"/>
+            </Directory>
+            <!-- Step 1: Define the directory structure -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="WallBrite"/>
+            </Directory>
+        </Directory>
+
+        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+            <Component Id="WallBrite.exe" Guid="9EAB0E7F-AF5B-40D3-B41E-573D551F794C">
+                <File Id="WallBrite.exe" Source="$(var.WallBrite.TargetPath)" KeyPath="yes" Checksum="yes"/>
+            </Component>
+        </DirectoryRef>
+
+        <!-- Step 2: Add the shortcut to your installer package -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="5E74688F-19C2-4D10-B109-F2C704ADF9A7">
+                <Shortcut Id="ApplicationStartMenuShortcut" 
+                     Name="WallBrite" 
+                   Description="My Application Description"
+                    Target="[#WallBrite.exe]"
+                          WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\BradleytheBaker\WallBrite" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+           </Component>
+        </DirectoryRef>
+
+        <Feature Id="MainApplication" Title="Main Application" Level="1">
+            <ComponentRef Id="WallBrite.exe" />
+            <!-- Step 3: Tell WiX to install the shortcut -->
+            <ComponentRef Id="ApplicationShortcut" />   
+        </Feature>
+    </Product>
+</Wix>
