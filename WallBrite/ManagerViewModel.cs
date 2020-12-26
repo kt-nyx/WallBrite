@@ -196,7 +196,7 @@ namespace WallBrite
             // Pull settings from the settings object
             _updateIntervalHours = settings.UpdateIntervalHours;
             _updateIntervalMins = settings.UpdateIntervalMins;
-            _checkInterval = new TimeSpan(_updateIntervalMins, _updateIntervalHours, 0);
+            _checkInterval = new TimeSpan(_updateIntervalHours, _updateIntervalMins, 0);
             _brightestTime = settings.BrightestTime;
             _darkestTime = settings.DarkestTime;
             StartsOnStartup = settings.StartsOnStartup;

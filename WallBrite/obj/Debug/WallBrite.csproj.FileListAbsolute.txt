@@ -72,12 +72,10 @@ C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\sv\Xceed.Wpf.AvalonDock.r
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\WallBrite.csproj.CopyComplete
-C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Costura.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\ToastNotifications.dll
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\ToastNotifications.Messages.dll
-C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Costura.xml
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.xml
 C:\Users\ranno\Documents\WallBrite\WallBrite\bin\Debug\Newtonsoft.Json.xml
