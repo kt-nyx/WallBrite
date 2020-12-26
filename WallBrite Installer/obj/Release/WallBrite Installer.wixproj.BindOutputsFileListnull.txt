@@ -1,0 +1,2 @@
+C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.msi
+C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.wixpdb

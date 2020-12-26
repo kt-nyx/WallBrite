@@ -1,6 +1,2 @@
-C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Debug\WallBrite_Installer.msi
-C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Debug\WallBrite_Installer.wixpdb
 obj\Debug\Product.wixobj
-obj\Debug\WallBrite Installer.wixproj.BindContentsFileListnull.txt
-obj\Debug\WallBrite Installer.wixproj.BindOutputsFileListnull.txt
-obj\Debug\WallBrite Installer.wixproj.BindBuiltOutputsFileListnull.txt
+obj\Debug\HeatGeneratedFileList.wixobj

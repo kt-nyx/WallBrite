@@ -42,7 +42,7 @@ namespace WallBrite
 
         private WBImage _currentImage;
 
-        private Notifier _notifier;
+        private readonly Notifier _notifier;
 
         private LibraryViewModel _library;
 
@@ -214,7 +214,12 @@ namespace WallBrite
                 bool changed = CheckAndUpdate();
 
                 if (!changed)
-                    _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
+                {
+                    if (_library.LibraryList.Count > 1)
+                        _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
+                    else
+                        _notifier.ShowInformation("Not enough images in library for wallpaper to change");
+                }
             }
             );
 
@@ -335,6 +340,11 @@ namespace WallBrite
                 // Restart the timer; now use time until next actual update as the 
                 _updateTimer.Interval = _nextUpdateTime.Subtract(DateTime.Now);
                 _updateTimer.Start();
+            } 
+            // Otherwise set the timers to blank
+            else
+            {
+                ResetTimers();
             }
 
             return changed;

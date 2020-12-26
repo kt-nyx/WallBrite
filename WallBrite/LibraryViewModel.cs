@@ -38,7 +38,7 @@ namespace WallBrite
         public string AddProgressReport { get; set; }
 
         private AddFileProgressViewModel _addProgressViewModel;
-        private Notifier _notifier;
+        private readonly Notifier _notifier;
         private BackgroundWorker _worker;
 
         private ManagerViewModel _manager;

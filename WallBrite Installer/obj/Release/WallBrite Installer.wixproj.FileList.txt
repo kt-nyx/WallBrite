@@ -1,0 +1,7 @@
+obj\Release\HeatGeneratedFileList.wixobj
+obj\Release\Product.wixobj
+C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.msi
+C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.wixpdb
+obj\Release\WallBrite Installer.wixproj.BindContentsFileListnull.txt
+obj\Release\WallBrite Installer.wixproj.BindOutputsFileListnull.txt
+obj\Release\WallBrite Installer.wixproj.BindBuiltOutputsFileListnull.txt

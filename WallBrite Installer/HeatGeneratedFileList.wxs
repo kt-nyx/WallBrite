@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+            <Component Id="cmpD1B634059A3C2D9AA1987FAA1237FC99" Guid="*">
+                <File Id="fil9DAB0D519CEA7213910E1F5660FAB73E" KeyPath="yes" Source="$(var.HarvestPath)\Hardcodet.Wpf.TaskbarNotification.dll" />
+            </Component>
+            <Component Id="cmp90522ADF9FE053DA3438D83A5D0F53BB" Guid="*">
+                <File Id="filF780EF67251FFC41E8CBE47158D57AD4" KeyPath="yes" Source="$(var.HarvestPath)\Hardcodet.Wpf.TaskbarNotification.pdb" />
+            </Component>
+            <Component Id="cmp9FAEB0D11944FAF54B89BB0A12980DED" Guid="*">
+                <File Id="filA4C0E26D15036D7F924697B110A107BD" KeyPath="yes" Source="$(var.HarvestPath)\Hardcodet.Wpf.TaskbarNotification.xml" />
+            </Component>
+            <Component Id="cmp1507A88C746D5D077E6B5BC1F44402C2" Guid="*">
+                <File Id="fil3379000A58640952BFAFC1D5FFD59793" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Xaml.Behaviors.dll" />
+            </Component>
+            <Component Id="cmp7C253D415F45417AFD4F7FB6CBB65B67" Guid="*">
+                <File Id="fil8CF6DC239EF73693AB4713E13A727181" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Xaml.Behaviors.pdb" />
+            </Component>
+            <Component Id="cmp8A86B4F976184E16AD0DEC8C433ECC59" Guid="*">
+                <File Id="filA8DCD04E9E15203D2C6EFE35E5E10ABF" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Xaml.Behaviors.xml" />
+            </Component>
+            <Component Id="cmpA7927FF61A499CF81EE0A562CDFEDEC7" Guid="*">
+                <File Id="filD7DC5F43B3964ACECD7725F05E664960" KeyPath="yes" Source="$(var.HarvestPath)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmpBD829AB59CCF1EF719A981AEB9CCC6F3" Guid="*">
+                <File Id="fil6277AA9147EACCBEA517D7967BB9819B" KeyPath="yes" Source="$(var.HarvestPath)\Newtonsoft.Json.xml" />
+            </Component>
+            <Component Id="cmpC547005329115BF1A4688EAD6879774A" Guid="*">
+                <File Id="fil6B6C5DEE58EA18D15A9ECCE8B828A996" KeyPath="yes" Source="$(var.HarvestPath)\ToastNotifications.dll" />
+            </Component>
+            <Component Id="cmp98F3AD510E224B94C5E56E650EBBC5A3" Guid="*">
+                <File Id="fil918160495D50A3B7D898A4CBFB30635D" KeyPath="yes" Source="$(var.HarvestPath)\ToastNotifications.Messages.dll" />
+            </Component>
+            <Component Id="cmp952979A1EA30F9712EF081B2E8CA4C89" Guid="*">
+                <File Id="filCD725F5A85C609F6F2F5BB292D69E6D4" KeyPath="yes" Source="$(var.HarvestPath)\WallBrite.exe" />
+            </Component>
+            <Component Id="cmpE4E1CC80D6A8BAE9A1EC369CA75ED8E6" Guid="*">
+                <File Id="fil4ECBCC0AC6251B3BA70628BCE259FB2C" KeyPath="yes" Source="$(var.HarvestPath)\WallBrite.exe.config" />
+            </Component>
+            <Component Id="cmp379E80207A54349122DEAEB917372F66" Guid="*">
+                <File Id="fil26093C3CB148B385941B8D8C426CD784" KeyPath="yes" Source="$(var.HarvestPath)\WallBrite.pdb" />
+            </Component>
+            <Component Id="cmpA60F8D332FFEFCB39143C1BCE291E69B" Guid="*">
+                <File Id="fil921D9BC3848E1B53C69D1ACED0B0B960" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.AvalonDock.dll" />
+            </Component>
+            <Component Id="cmp973591499CF3FDE1BBD6F169BF3BB268" Guid="*">
+                <File Id="filCBA800E08FAB7F784B0177C9C33508E0" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+            </Component>
+            <Component Id="cmp29DBBC0BF441C6AA7FC910CB87453E3B" Guid="*">
+                <File Id="fil935D00BC23CE7EAC548CDF75F433BBC0" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+            </Component>
+            <Component Id="cmp35D97CB639119C0A55EB8F6370086551" Guid="*">
+                <File Id="fil54A5296F4233C092BEB351C0C40C8222" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+            </Component>
+            <Component Id="cmpF40AEBF640B3159DE2CDC03C2DB9082B" Guid="*">
+                <File Id="filF936E3130DCC4A04A4D21871FE721553" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.Toolkit.dll" />
+            </Component>
+            <Directory Id="dir606C073443A482F3D0B43DF90F0C5BBE" Name="cs-CZ">
+                <Component Id="cmp7F1B5E3BFCF803E0D297A66F37CDBF3D" Guid="*">
+                    <File Id="filEB24D76F770B293AE43F00B69E6AF7C0" KeyPath="yes" Source="$(var.HarvestPath)\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir1C628EE15A29CD6ED08798D6B0A06B2F" Name="de">
+                <Component Id="cmp2F7387D983F2B9CFF9861417BCABB587" Guid="*">
+                    <File Id="filC692417969E0AB2E92581FE82CE49DFC" KeyPath="yes" Source="$(var.HarvestPath)\de\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir6B7DF5E7779A02DE589C2D4AABF889BA" Name="es">
+                <Component Id="cmpF611FFCD96C74DE86A4E088CC8711EF2" Guid="*">
+                    <File Id="filBD5FA53803A98F7FD60DDD8C90824A1E" KeyPath="yes" Source="$(var.HarvestPath)\es\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dirCCE997692B032DBDA6174416BFED255E" Name="fr">
+                <Component Id="cmp0A4ADA702A37B208838FA8781C05DE9A" Guid="*">
+                    <File Id="fil7726994E15BED3838D51301446A5EDA0" KeyPath="yes" Source="$(var.HarvestPath)\fr\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir7FBA217CC677B22183D1EDBF52877356" Name="hu">
+                <Component Id="cmp2F7A5D4E77DCFC0E519C815800120178" Guid="*">
+                    <File Id="fil9571E0D3EB1AECD7E2A8DF6C6D7A7266" KeyPath="yes" Source="$(var.HarvestPath)\hu\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dirC0620602576770B728F6D7CF835E4230" Name="it">
+                <Component Id="cmp246D3745775335CA59D2D1C88CA55A25" Guid="*">
+                    <File Id="filE6369C67CD5BD537795C83A5E8AC97BF" KeyPath="yes" Source="$(var.HarvestPath)\it\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir3EA1054A4A68F70CEF22E983B9D684DB" Name="pt-BR">
+                <Component Id="cmp76F907EC79F83B3CE386D93117250C44" Guid="*">
+                    <File Id="fil6AB4EEE52FA828A23FE689566D11C251" KeyPath="yes" Source="$(var.HarvestPath)\pt-BR\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir69649677425A4BC878D34EFE7E792401" Name="ro">
+                <Component Id="cmp4B5772535F0D50784E8250EE20E6A5F7" Guid="*">
+                    <File Id="filEEF06310CEC50BBB98E1E063C0495A18" KeyPath="yes" Source="$(var.HarvestPath)\ro\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dirF9A13AB290C9570B2C0CE7CB6EF9D86E" Name="ru">
+                <Component Id="cmpA9927BAB12E1C384D5C23173D2E3A4AF" Guid="*">
+                    <File Id="fil2CCED9BC4BBF11C0BF48CB1B8432CF37" KeyPath="yes" Source="$(var.HarvestPath)\ru\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dirBBD306FA33D57073FD02CF4EFC3A0326" Name="sv">
+                <Component Id="cmp4D286BCFF6B0A8ADFC13CB030807E539" Guid="*">
+                    <File Id="fil961CCAC94AA2CDCCE57E33134B4281F8" KeyPath="yes" Source="$(var.HarvestPath)\sv\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir64536EB28B048E57C7A61D43ADE1F57A" Name="zh-Hans">
+                <Component Id="cmp47CC0F6FCE0D714E9ECC70BD7B9A8C2A" Guid="*">
+                    <File Id="filAA41E4873DF3DEF96596E22F310D1FF9" KeyPath="yes" Source="$(var.HarvestPath)\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="HeatGenerated">
+            <ComponentRef Id="cmpD1B634059A3C2D9AA1987FAA1237FC99" />
+            <ComponentRef Id="cmp90522ADF9FE053DA3438D83A5D0F53BB" />
+            <ComponentRef Id="cmp9FAEB0D11944FAF54B89BB0A12980DED" />
+            <ComponentRef Id="cmp1507A88C746D5D077E6B5BC1F44402C2" />
+            <ComponentRef Id="cmp7C253D415F45417AFD4F7FB6CBB65B67" />
+            <ComponentRef Id="cmp8A86B4F976184E16AD0DEC8C433ECC59" />
+            <ComponentRef Id="cmpA7927FF61A499CF81EE0A562CDFEDEC7" />
+            <ComponentRef Id="cmpBD829AB59CCF1EF719A981AEB9CCC6F3" />
+            <ComponentRef Id="cmpC547005329115BF1A4688EAD6879774A" />
+            <ComponentRef Id="cmp98F3AD510E224B94C5E56E650EBBC5A3" />
+            <ComponentRef Id="cmp952979A1EA30F9712EF081B2E8CA4C89" />
+            <ComponentRef Id="cmpE4E1CC80D6A8BAE9A1EC369CA75ED8E6" />
+            <ComponentRef Id="cmp379E80207A54349122DEAEB917372F66" />
+            <ComponentRef Id="cmpA60F8D332FFEFCB39143C1BCE291E69B" />
+            <ComponentRef Id="cmp973591499CF3FDE1BBD6F169BF3BB268" />
+            <ComponentRef Id="cmp29DBBC0BF441C6AA7FC910CB87453E3B" />
+            <ComponentRef Id="cmp35D97CB639119C0A55EB8F6370086551" />
+            <ComponentRef Id="cmpF40AEBF640B3159DE2CDC03C2DB9082B" />
+            <ComponentRef Id="cmp7F1B5E3BFCF803E0D297A66F37CDBF3D" />
+            <ComponentRef Id="cmp2F7387D983F2B9CFF9861417BCABB587" />
+            <ComponentRef Id="cmpF611FFCD96C74DE86A4E088CC8711EF2" />
+            <ComponentRef Id="cmp0A4ADA702A37B208838FA8781C05DE9A" />
+            <ComponentRef Id="cmp2F7A5D4E77DCFC0E519C815800120178" />
+            <ComponentRef Id="cmp246D3745775335CA59D2D1C88CA55A25" />
+            <ComponentRef Id="cmp76F907EC79F83B3CE386D93117250C44" />
+            <ComponentRef Id="cmp4B5772535F0D50784E8250EE20E6A5F7" />
+            <ComponentRef Id="cmpA9927BAB12E1C384D5C23173D2E3A4AF" />
+            <ComponentRef Id="cmp4D286BCFF6B0A8ADFC13CB030807E539" />
+            <ComponentRef Id="cmp47CC0F6FCE0D714E9ECC70BD7B9A8C2A" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
