@@ -205,7 +205,7 @@
                                         if the time of day has changed sufficiently to better match a different wallpaper than the one currently set.
                                     </TextBlock>
                                 </Button.ToolTip>
-                                Change wallpaper now
+                                Try to change wallpaper now
                             </Button>
                         </StackPanel>
                     </Grid>
