@@ -48,17 +48,14 @@
                     <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5" ></Border>
 
                     <Border BorderBrush="SkyBlue">
-                        <Border.Resources>
-                            <local:CutoffConverter x:Key="LibraryCountConverter" Cutoff="0" />
-                        </Border.Resources>
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="BorderThickness" Value="2"/>
                                 <Setter Property="Padding" Value="2 0"/>
                                 <Style.Triggers>
                                     <DataTrigger
-                                    Binding ="{Binding Library.LibraryList.Count, Converter={StaticResource LibraryCountConverter}}" 
-                                            Value="true">
+                                    Binding ="{Binding Library.IsEmpty}" 
+                                            Value="false">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="0"/>
                                     </DataTrigger>
@@ -293,15 +290,12 @@
         </Border>
         <Grid>
             <TextBlock Grid.ZIndex="1" FontWeight="Medium" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="17" Width="250" Height="50" Margin="4,135,0,0" TextWrapping="Wrap">
-                <TextBlock.Resources>
-                    <local:CutoffConverter x:Key="LibraryCountConverter" Cutoff="0" />
-                </TextBlock.Resources>
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Style.Triggers>
                             <DataTrigger
-                                    Binding ="{Binding Library.LibraryList.Count, Converter={StaticResource LibraryCountConverter}}" 
-                                            Value="true">
+                                    Binding ="{Binding Library.IsEmpty}" 
+                                            Value="false">
                                 <Setter Property="Visibility" Value="Hidden" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -311,15 +305,12 @@
             </TextBlock>
             <Grid Grid.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Image VerticalAlignment="Top" Source="/WallBrite;component/Icon.png" Width="100" Margin="0, -102, 0 , 0">
-                    <Image.Resources>
-                        <local:CutoffConverter x:Key="LibraryCountConverter" Cutoff="0" />
-                    </Image.Resources>
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
                                 <DataTrigger
-                                    Binding ="{Binding Library.LibraryList.Count, Converter={StaticResource LibraryCountConverter}}" 
-                                            Value="true">
+                                    Binding ="{Binding Library.IsEmpty}" 
+                                            Value="false">
                                     <Setter Property="Visibility" Value="Hidden" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -327,15 +318,12 @@
                     </Image.Style>
                 </Image>
                 <TextBlock VerticalAlignment="Bottom" TextAlignment="Center" Grid.ColumnSpan="2">
-                    <TextBlock.Resources>
-                        <local:CutoffConverter x:Key="LibraryCountConverter" Cutoff="0" />
-                    </TextBlock.Resources>
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
                                 <DataTrigger
-                                    Binding ="{Binding Library.LibraryList.Count, Converter={StaticResource LibraryCountConverter}}" 
-                                            Value="true">
+                                    Binding ="{Binding Library.IsEmpty}" 
+                                            Value="false">
                                     <Setter Property="Visibility" Value="Hidden" />
                                 </DataTrigger>
                             </Style.Triggers>

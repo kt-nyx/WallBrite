@@ -4,22 +4,23 @@
     {
         public LibraryViewModel Library { get; set; }
 
-        private readonly AddFileProgressWindow _progressWindow;
+        public AddFileProgressWindow ProgressWindow { get; private set; }
+
         public AddFileProgressViewModel(LibraryViewModel library)
         {
             Library = library;
 
-            _progressWindow = new AddFileProgressWindow
+            ProgressWindow = new AddFileProgressWindow
             {
                 DataContext = this
             };
 
-            _progressWindow.Show();
+            ProgressWindow.Show();
         }
 
         public void CloseWindow()
         {
-            _progressWindow.Close();
+            ProgressWindow.Close();
         }
 
     }

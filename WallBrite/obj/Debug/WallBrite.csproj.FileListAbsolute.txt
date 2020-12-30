@@ -83,3 +83,14 @@ C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\AddFileProgressWindow.g.c
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\App.baml
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\AddFileProgressWindow.baml
 C:\Users\ranno\Documents\WallBrite\WallBrite\obj\Debug\Resources.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Newtonsoft.Json.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\ToastNotifications.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\ToastNotifications.Messages.dll
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Hardcodet.Wpf.TaskbarNotification.xml
+D:\Visual Studio Projects\WallBrite\WallBrite\bin\Debug\Newtonsoft.Json.xml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\AddFileProgressWindow.g.cs
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\App.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\AddFileProgressWindow.baml
+D:\Visual Studio Projects\WallBrite\WallBrite\obj\Debug\Resources.baml

@@ -36,6 +36,7 @@ namespace WallBrite
 
         public double AddProgress { get; set; }
         public string AddProgressReport { get; set; }
+        public bool IsEmpty { get; private set; }
 
         private AddFileProgressViewModel _addProgressViewModel;
         private readonly Notifier _notifier;
@@ -47,6 +48,9 @@ namespace WallBrite
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
+
+            // This library will be empty (it's new)
+            IsEmpty = true;
 
             _manager = manager;
 
@@ -60,6 +64,12 @@ namespace WallBrite
         {
             // Create library list from given
             LibraryList = new ObservableCollection<WBImage>(libraryList);
+
+            // Set empty flag
+            if (LibraryList.Count < 1)
+                IsEmpty = true;
+            else
+                IsEmpty = false;
 
             _manager = manager;
 
@@ -166,6 +176,7 @@ namespace WallBrite
             {
                 _notifier.ShowInformation(string.Format("{0} was not added since it is already in the library",
                                                          Path.GetFileName(image.Path)));
+
                 return;
             }
 
@@ -188,6 +199,10 @@ namespace WallBrite
             {
                 LibraryList.Remove(image);
             }
+
+            // Set empty flag if library is empty after removal
+            if (LibraryList.Count < 1)
+                IsEmpty = true;
 
             // Save changes to last library file
             SaveLastLibrary();
@@ -369,6 +384,14 @@ namespace WallBrite
         private void AddComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             _addProgressViewModel.CloseWindow();
+
+            // If library was empty before the add, give 'all set' notification to user and reset the empty
+            // flag
+            if (IsEmpty)
+            {
+                _notifier.ShowSuccess("All set! WallBrite will now synchronize your wallpapers with daylight levels.");
+                IsEmpty = false;
+            }
 
             // Save changes to last library file
             SaveLastLibrary();

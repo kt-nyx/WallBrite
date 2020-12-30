@@ -5,3 +5,5 @@ C:\Users\ranno\Documents\WallBrite\WallBrite Installer\bin\Release\WallBrite_Ins
 obj\Release\WallBrite Installer.wixproj.BindContentsFileListnull.txt
 obj\Release\WallBrite Installer.wixproj.BindOutputsFileListnull.txt
 obj\Release\WallBrite Installer.wixproj.BindBuiltOutputsFileListnull.txt
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.msi
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\Release\WallBrite_Installer.wixpdb

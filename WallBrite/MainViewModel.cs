@@ -83,14 +83,13 @@ namespace WallBrite
             // Create notifier for use with toast notifications
             _notifier = new Notifier(cfg =>
             {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
+                cfg.PositionProvider = new PrimaryScreenPositionProvider(
                     corner: Corner.TopRight,
-                    offsetX: 25,
-                    offsetY: 10);
+                    offsetX: 8,
+                    offsetY: 23);
 
                 cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(3),
+                    notificationLifetime: TimeSpan.FromSeconds(5),
                     maximumNotificationCount: MaximumNotificationCount.FromCount(5));
 
                 cfg.DisplayOptions.TopMost = true;
