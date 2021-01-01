@@ -14,16 +14,6 @@ namespace WallBrite
     /// </summary>
     public partial class MainWindow : Window
     {
-        //TODO: AUTOMATION UI CLEANUP
-        //TODO: add help button(s)?
-
-        //TODO: attempt to open last used library on launch
-
-        //TODO: MAKE INSTALLER
-        //TODO: remove fody dll thing
-
-
-
         //FIXME: remove this reference and make sorttype events into commands inside the main vm
         public MainViewModel MainViewModel { get; private set; }
 

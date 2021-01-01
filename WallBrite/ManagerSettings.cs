@@ -13,5 +13,6 @@ namespace WallBrite
         public DateTime BrightestTime { get; set; }
         public DateTime DarkestTime { get; set; }
         public bool StartsOnStartup { get; set; }
+        public string WallpaperStyle { get; set; }
     }
 }

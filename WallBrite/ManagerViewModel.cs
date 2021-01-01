@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,8 @@ namespace WallBrite
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
         private const int SPI_SETDESKWALLPAPER = 20;
-        private const int SPIF_UPDATEINIFILE = 1;
+        private const int SPIF_UPDATEINIFILE = 0x01;
+        private const int SPIF_SENDWININICHANGE = 0x02;
 
         private int _updateIntervalHours;
         private int _updateIntervalMins;
@@ -45,6 +47,7 @@ namespace WallBrite
         private readonly Notifier _notifier;
 
         private LibraryViewModel _library;
+        private string _wallpaperStyle;
 
         public DateTime DarkestTime
         {
@@ -142,24 +145,32 @@ namespace WallBrite
             }
         }
 
-        public double CurrentDaylight { get; set; }
+        public string WallpaperStyle
+        {
+            get { return _wallpaperStyle; }
+            set { 
+                _wallpaperStyle = value;
 
+                // Update current wallpaper to reflect style change (if current wall has been set already)
+                if (_currentImage != null)
+                    SetWall(_currentImage, _wallpaperStyle);
+            }
+        }
+
+        public double CurrentDaylight { get; set; }
         public string ProgressReport { get; private set; }
         public double Progress { get; set; }
-
         public BitmapImage CurrentWallThumb { get; private set; }
         public SolidColorBrush CurrentWallBack { get; private set; }
         public double CurrentWallBrightness { get; set; }
         public string CurrentWallFileName { get; set; }
-
+        public List<string> WallpaperStyles { get; set; }
         public bool StartsOnStartup { get; set; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         public ICommand UpdateCommand { get; set; }
         public ICommand ManualSetCommand { get; set; }
-
         public ICommand StartupSetCommand { get; set; }
 
         public ManagerViewModel(LibraryViewModel library, Notifier notifier)
@@ -180,6 +191,14 @@ namespace WallBrite
             _brightestTime = new DateTime(now.Year, now.Month, now.Day, 13, 0, 0);
             _darkestTime = new DateTime(now.Year, now.Month, now.Day, 23, 0, 0);
             StartsOnStartup = false;
+            WallpaperStyle = "Fill";
+
+            WallpaperStyles = new List<string>(){"Tiled",
+                                                "Centered",
+                                                "Stretched",
+                                                "Fill",
+                                                "Fit"};
+
 
             CreateTimers();
             CheckAndUpdate();
@@ -200,6 +219,13 @@ namespace WallBrite
             _brightestTime = settings.BrightestTime;
             _darkestTime = settings.DarkestTime;
             StartsOnStartup = settings.StartsOnStartup;
+            WallpaperStyle = settings.WallpaperStyle;
+
+            WallpaperStyles = new List<string>(){"Tiled",
+                                                "Centered",
+                                                "Stretched",
+                                                "Fill",
+                                                "Fit"};
 
             CreateTimers();
             CheckAndUpdate();
@@ -283,7 +309,8 @@ namespace WallBrite
                 UpdateIntervalMins = _updateIntervalMins,
                 BrightestTime = _brightestTime,
                 DarkestTime = _darkestTime,
-                StartsOnStartup = StartsOnStartup
+                StartsOnStartup = StartsOnStartup,
+                WallpaperStyle = WallpaperStyle
             };
 
             // Create settings file in directory and serialize settings object to it
@@ -326,7 +353,7 @@ namespace WallBrite
             // If there is change, update the wall to the new one
             if (image != null)
             {
-                UpdateWall(image);
+                SetWall(image, WallpaperStyle);
                 changed = true;
             }
 
@@ -382,25 +409,6 @@ namespace WallBrite
             }
             // If no images in library, just return null
             return null;
-        }
-
-        /// <summary>
-        /// Sets the desktop wallpaper to the given WBImage image and updates the timers and relevant fields
-        /// </summary>
-        /// <param name="image"></param>
-        private void UpdateWall(WBImage image)
-        {
-            // Set wallpaper to this image
-            SetWall(image);
-
-            // Update current closest's thumb, background color, and front-end brightness value
-            CurrentWallThumb = image.Thumbnail;
-            CurrentWallBack = image.BackgroundColor;
-            CurrentWallBrightness = image.AverageBrightness;
-            CurrentWallFileName = Path.GetFileName(image.Path);
-            _currentImage = image;
-
-            _lastUpdateTime = DateTime.Now;
         }
 
         private DateTime FindNextUpdateTime()
@@ -589,13 +597,58 @@ namespace WallBrite
             // Cast selected image and set it as wall
             System.Collections.IList items = (System.Collections.IList)collection;
             WBImage selectedImage = (WBImage)items[0];
-            SetWall(selectedImage);
+            SetWall(selectedImage, WallpaperStyle);
         }
 
-        private void SetWall(WBImage image)
+        private void SetWall(WBImage image, string style)
         {
-            // TODO: add try catch
-            SystemParametersInfo(SPI_SETDESKWALLPAPER, 1, image.Path, SPIF_UPDATEINIFILE);
+            // Taken partly from https://stackoverflow.com/questions/1061678/change-desktop-wallpaper-using-code-in-net,
+            // partly from https://stackoverflow.com/questions/19989906/how-to-set-wallpaper-style-fill-stretch-according-to-windows-version
+
+            // Open registry key used to set wallpaper style
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
+
+            // Set appropriate values on key depending on wallpaper style choice
+            if (style == "Tiled")
+            {
+                key.SetValue(@"WallpaperStyle", "0");
+                key.SetValue(@"TileWallpaper", "1");
+            }
+            else if (style == "Centered")
+            {
+                key.SetValue(@"WallpaperStyle", "0");
+                key.SetValue(@"TileWallpaper", "0");
+            }
+            else if (style == "Stretched")
+            {
+                key.SetValue(@"WallpaperStyle", "2");
+                key.SetValue(@"TileWallpaper", "0");
+            }
+            else if (style == "Fit")
+            {
+                key.SetValue(@"WallpaperStyle", "6");
+                key.SetValue(@"TileWallpaper", "0");
+            }
+            else if (style == "Fill")
+            {
+                key.SetValue(@"WallpaperStyle", "10");
+                key.SetValue(@"TileWallpaper", "0");
+            }
+
+            // Set the wallpaper via system parameter
+            SystemParametersInfo(SPI_SETDESKWALLPAPER,
+                0,
+                image.Path,
+                SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+
+            // Update current closest's thumb, background color, and front-end brightness value
+            CurrentWallThumb = image.Thumbnail;
+            CurrentWallBack = image.BackgroundColor;
+            CurrentWallBrightness = image.AverageBrightness;
+            CurrentWallFileName = Path.GetFileName(image.Path);
+            _currentImage = image;
+
+            _lastUpdateTime = DateTime.Now;
         }
 
         public void UpdateLibrary(LibraryViewModel library)
