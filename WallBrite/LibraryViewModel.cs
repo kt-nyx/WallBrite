@@ -469,16 +469,11 @@ namespace WallBrite
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="imageGrid"></param>
-        public void SortTypeChanged(object sender, ListView imageGrid)
+        public void SortTypeChanged(string selected, ListView imageGrid)
         {
-            ComboBox box = (ComboBox)sender;
-
             // Only do sort work if imageGrid already exists
             if (imageGrid != null)
             {
-                // Get selected sort type
-                string selected = box.SelectedValue.ToString();
-
                 // Get view for image grid
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
 
@@ -517,15 +512,11 @@ namespace WallBrite
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="imageGrid"></param>
-        public void SortDirectionChanged(object sender, ListView imageGrid)
+        public void SortDirectionChanged(string selected, ListView imageGrid)
         {
-            ComboBox box = (ComboBox)sender;
             // Only do sort work if imageGrid already exists
             if (imageGrid != null)
             {
-                // Get selected sort type
-                string selected = box.SelectedValue.ToString();
-
                 // Get view for image grid
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
 

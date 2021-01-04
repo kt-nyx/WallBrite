@@ -19,12 +19,9 @@ namespace WallBrite
 
         public MainWindow(bool startingMinimized)
         {
-            MainViewModel = new MainViewModel(this, startingMinimized);
+            MainViewModel = new MainViewModel(this, startingMinimized, imageGrid);
             InitializeComponent();
             DataContext = MainViewModel;
-
-            //TODO: remove
-            BottomPanel.DataContext = MainViewModel.Manager;
         }
 
         //TODO: find way to move this?
@@ -44,13 +41,13 @@ namespace WallBrite
         //TODO: make into command
         private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
         {
-            MainViewModel.Library.SortTypeChanged(sender, imageGrid);
+            //MainViewModel.Library.SortTypeChanged(sender, imageGrid);
         }
 
         //TODO: make into command
         private void SortDirectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MainViewModel.Library.SortDirectionChanged(sender, imageGrid);
+            //MainViewModel.Library.SortDirectionChanged(sender, imageGrid);
         }
     }
 }
