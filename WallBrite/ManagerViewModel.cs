@@ -44,8 +44,6 @@ namespace WallBrite
 
         private WBImage _currentImage;
 
-        private readonly Notifier _notifier;
-
         private LibraryViewModel _library;
         private string _wallpaperStyle;
 
@@ -164,9 +162,8 @@ namespace WallBrite
         public ICommand ManualSetCommand { get; set; }
         public ICommand StartupSetCommand { get; set; }
 
-        public ManagerViewModel(LibraryViewModel library, Notifier notifier)
+        public ManagerViewModel(LibraryViewModel library)
         {
-            _notifier = notifier;
 
             CreateCommands();
 
@@ -195,10 +192,8 @@ namespace WallBrite
             CheckAndUpdate();
         }
 
-        public ManagerViewModel(LibraryViewModel library, ManagerSettings settings, Notifier notifier)
+        public ManagerViewModel(LibraryViewModel library, ManagerSettings settings)
         {
-            _notifier = notifier;
-
             CreateCommands();
 
             _library = library;

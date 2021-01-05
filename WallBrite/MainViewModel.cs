@@ -68,7 +68,7 @@ namespace WallBrite
                 Manager = managerFromFile;
             // If unsuccessful (e.g. no settings file exists), just create new manager with default settings
             else
-                Manager = new ManagerViewModel(Library, _notifier);
+                Manager = new ManagerViewModel(Library);
 
             // Update after both manager and library created
             Library.UpdateManager(Manager);
@@ -140,7 +140,7 @@ namespace WallBrite
                 {
                     ManagerViewModel newManager;
                     using (FileStream fileStream = File.OpenRead(wallBriteAppDataDirectory + "\\Settings.json"))
-                        newManager = new ManagerViewModel(Library, OpenManagerSettingsFile(fileStream), _notifier);
+                        newManager = new ManagerViewModel(Library, OpenManagerSettingsFile(fileStream));
 
                     // Only show notification if not starting minimized (will crash otherwise since notifier can't tie to any window)
                     if (!startingMinimized)
