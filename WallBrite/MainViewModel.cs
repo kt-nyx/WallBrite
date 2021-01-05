@@ -125,6 +125,7 @@ namespace WallBrite
             Library = new LibraryViewModel(Manager, _notifier, _imageGrid);
             Manager.UpdateLibrary(Library);
             Manager.ResetTimers();
+            Manager.ProgressReport = null;
         }
 
         public ManagerViewModel GetManagerFromSettingsFile(bool startingMinimized)

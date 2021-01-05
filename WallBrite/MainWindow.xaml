@@ -177,6 +177,7 @@
                                     <xctk:IntegerUpDown.Style>
                                         <Style TargetType="{x:Type xctk:IntegerUpDown}">
                                             <Setter Property="Minimum" Value="1" />
+                                            <Setter Property="Maximum" Value="59"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=updateHours, Path=Value, Converter={StaticResource HoursConverter}}" Value="true">
                                                     <Setter Property="Minimum" Value="0" />

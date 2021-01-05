@@ -111,12 +111,8 @@ namespace WallBrite
                     _checkInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
                 }
 
-                // Only update next update time if there are at least two wallpapers
-                if (_library.LibraryList.Count > 1)
-                {
-                    // Update the update time (lol)
-                    _nextUpdateTime = FindNextUpdateTime();
-                }
+                // Run check
+                CheckAndUpdate();
 
                 // Notify change on hours
                 NotifyPropertyChanged("UpdateIntervalHours");
@@ -133,12 +129,8 @@ namespace WallBrite
                 // Create new interval with previously set hours and new mins
                 _checkInterval = new TimeSpan(UpdateIntervalHours, UpdateIntervalMins, 0);
 
-                // Only update next update time if there are at least two wallpapers
-                if (_library.LibraryList.Count > 1)
-                {
-                    // Update the update time (lol)
-                    _nextUpdateTime = FindNextUpdateTime();
-                }
+                // Run check
+                CheckAndUpdate();
 
                 // Notify change on mins
                 NotifyPropertyChanged("UpdateIntervalMins");
@@ -158,7 +150,7 @@ namespace WallBrite
         }
 
         public double CurrentDaylight { get; set; }
-        public string ProgressReport { get; private set; }
+        public string ProgressReport { get; set; }
         public double Progress { get; set; }
         public BitmapImage CurrentWallThumb { get; private set; }
         public SolidColorBrush CurrentWallBack { get; private set; }
@@ -169,7 +161,6 @@ namespace WallBrite
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public ICommand UpdateCommand { get; set; }
         public ICommand ManualSetCommand { get; set; }
         public ICommand StartupSetCommand { get; set; }
 
@@ -234,21 +225,7 @@ namespace WallBrite
 
         private void CreateCommands()
         {
-            // Create command(s)
-            UpdateCommand = new RelayCommand((object s) =>
-            {
-                bool changed = CheckAndUpdate();
-
-                if (!changed)
-                {
-                    if (_library.LibraryList.Count > 1)
-                        _notifier.ShowInformation("Not enough daylight change detected since last update: wallpaper was not changed.");
-                    else
-                        _notifier.ShowInformation("Not enough images in library for wallpaper to change");
-                }
-            }
-            );
-
+            // Create commands
             ManualSetCommand = new RelayCommand(Set);
             StartupSetCommand = new RelayCommand((object s) => SetStartupKey());
         }
@@ -275,7 +252,6 @@ namespace WallBrite
             _nextUpdateTime = DateTime.MinValue;
             _lastUpdateTime = DateTime.MinValue;
             Progress = 0;
-            ProgressReport = null;
             _updateTimer.Start();
             _progressTracker.Start();
         }
@@ -357,17 +333,16 @@ namespace WallBrite
                 changed = true;
             }
 
-            // Only change the next (actual) update time if there are at least two images in lib
-            // i.e. only when there is a possible other wallpaper to switch to at update time
-            if (_library.LibraryList.Count > 1)
-            {
-                // Find the next time when wallpaper will actually change
-                _nextUpdateTime = FindNextUpdateTime();
 
-                // Restart the timer; now use time until next actual update as the 
+            // Find the next time when wallpaper will actually change
+            _nextUpdateTime = FindNextUpdateTime();
+
+            // Restart the timer if a valid next update time was found
+            if (_nextUpdateTime != new DateTime())
+            {
                 _updateTimer.Interval = _nextUpdateTime.Subtract(DateTime.Now);
                 _updateTimer.Start();
-            } 
+            }
             // Otherwise set the timers to blank
             else
             {
@@ -388,7 +363,7 @@ namespace WallBrite
         /// </returns>
         private WBImage CheckforChange()
         {
-            // Only update the wall if there is at least one image in library to work with; otherwise throw below
+            // Only update the wall if there is at least one image in library to work with; otherwise return null
             if (_library.LibraryList.Count > 0)
             {
                 // First check for (and remove) any missing images
@@ -413,39 +388,53 @@ namespace WallBrite
 
         private DateTime FindNextUpdateTime()
         {
-            DateTime nextCheckTime = _lastUpdateTime.AddMinutes(_checkInterval.TotalMinutes);
-
-            // Continue looping until intervals have looped around back to the same time on the next day
-            // I.e. the check time has the same date as the timer's start time, or the checktime has looped
-            // over to the next day but is still before the timer's start time on that day
-            // I.e. exits when check time passes the timer's start time but on the following day
-            while (nextCheckTime.Date == _lastUpdateTime.Date
-                    || (nextCheckTime.Date == _lastUpdateTime.AddDays(1).Date
-                          && nextCheckTime.TimeOfDay.CompareTo(_lastUpdateTime.TimeOfDay) <= 0))
+            // Only do checks if there's at least 2 images in library; otherwise wallpaper will not change
+            if (_library.LibraryList.Count > 1)
             {
-                // Next image that will be set as wall when brightness is checked
+                // Set last update time to now if it has not been set yet
+                if (_lastUpdateTime == new DateTime())
+                    _lastUpdateTime = DateTime.Now;
 
-                WBImage nextCheckImage = FindClosestImage(nextCheckTime);
+                // Get first check time
+                DateTime nextCheckTime = _lastUpdateTime.AddMinutes(_checkInterval.TotalMinutes);
 
-                // Return if the image will actually be different at this check time (i.e. it will actually
-                // update to a different wall when checked)
-                if (_currentImage != nextCheckImage)
+                // Continue looping until intervals have looped around back to the same time on the next day
+                // I.e. the check time has the same date as the timer's start time, or the checktime has looped
+                // over to the next day but is still before the timer's start time on that day
+                // I.e. exits when check time passes the timer's start time but on the following day
+                while (nextCheckTime.Date == _lastUpdateTime.Date
+                        || (nextCheckTime.Date == _lastUpdateTime.AddDays(1).Date
+                              && nextCheckTime.TimeOfDay.CompareTo(_lastUpdateTime.TimeOfDay) <= 0))
                 {
-                    return nextCheckTime;
+                    // Next image that will be set as wall when brightness is checked
+
+                    WBImage nextCheckImage = FindClosestImage(nextCheckTime);
+
+                    // Return if the image will actually be different at this check time (i.e. it will actually
+                    // update to a different wall when checked)
+                    if (_currentImage != nextCheckImage)
+                    {
+                        return nextCheckTime;
+                    }
+                    // Otherwise start the loop again, checking at the time after the next interval
+                    else
+                    {
+                        nextCheckTime = nextCheckTime.AddMinutes(_checkInterval.TotalMinutes);
+                    }
                 }
-                // Otherwise start the loop again, checking at the time after the next interval
-                else
-                {
-                    nextCheckTime = nextCheckTime.AddMinutes(_checkInterval.TotalMinutes);
-                }
+
+                // If looped all the way around with no update, then there won't ever be any actual wall change
+                // with the current library/automation settings
+                // In this case, update progress report to reflect this and return a basic DateTime
+                ProgressReport = "Wallpaper will not change with current settings";
+                return new DateTime();
+            } 
+            // If < 2 images in library, wallpaper will not change
+            else
+            {
+                ProgressReport = "Wallpaper will not change with current settings";
+                return new DateTime();
             }
-
-            // If looped all the way around with no update, then there won't ever be any actual wall change
-            // with the current library/automation settings
-            // Occurs when only one image in library, for example
-            //TODO: add catch for this case; managed to get it when it was 12:50:27PM, brightest time 12:00AM darkest time 11:00PM, interval 1min; full testwalls library
-            throw new InvalidOperationException("Can't find next update time; the wallpaper will not update" +
-                "with current library/automation settings");
         }
 
         private WBImage FindClosestImage(DateTime time)
