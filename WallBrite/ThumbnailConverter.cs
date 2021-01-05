@@ -18,27 +18,25 @@ namespace WallBrite
             // Convert base64 string to byte array
             byte[] byteArray = Convert.FromBase64String(base64);
 
+            BitmapImage bitmap;
             // Create a memory stream holding the byte array
-            MemoryStream ms = new MemoryStream(byteArray)
+            using (MemoryStream ms = new MemoryStream(byteArray))
             {
-                Position = 0
-            };
-
-            // Create a BitmapImage source from the array in the stream
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.StreamSource = ms;
-            bitmap.EndInit();
+                ms.Position = 0;
+                // Create a BitmapImage source from the array in the stream
+                bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = ms;
+                bitmap.EndInit();
+            }
 
             return bitmap;
         }
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            // Get bitmap object for writing
-            var bitmap = (BitmapImage)value;
-            // Convert bitmap to byte array and write it
-            writer.WriteValue(Helpers.BitmapSourcetoByteArray(bitmap));
+            // Write bitmapimage as byte array to json
+            writer.WriteValue(Helpers.BitmapImageToByteArray((BitmapImage) value));
         }
 
         public override bool CanConvert(Type objectType)

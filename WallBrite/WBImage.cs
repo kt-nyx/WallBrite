@@ -46,33 +46,6 @@ namespace WallBrite
         public string Path { get; private set; }
 
         /// <summary>
-        /// Creates WBImage using image from given stream and file path
-        /// Calculates its average brightness, creates a proportionate thumbnail, sets creation date, and
-        /// stores the given path to the original file
-        /// </summary>
-        /// <param name="stream"></param>
-        public WBImage(Stream stream, string path)
-        {
-            // Create bitmap using image from given stream
-            // Free up this bitmap memory after using it to create the WBImage
-            using (Bitmap image = new Bitmap(stream)) {
-
-                // Create and set the thumbnail
-                Thumbnail = Helpers.GetThumbnailFromBitmap(image);
-
-                // Calculate and set average brightness of this image
-                AverageBrightness = CalculateAverageBrightness(image);
-            }
-
-            BackgroundColor = GetBackgroundColor();
-            AddedDate = DateTime.Now;
-            Path = path;
-
-            // Defaults to being enabled when created
-            IsEnabled = true;
-        }
-
-        /// <summary>
         /// Creates WBImage using data from externally created bitmap and given file path
         /// Calculates its average brightness, creates a proportionate thumbnail, sets creation date, and
         /// stores the given path to the original file

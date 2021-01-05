@@ -14,13 +14,12 @@ namespace WallBrite
     /// </summary>
     public partial class MainWindow : Window
     {
-        //FIXME: remove this reference and make sorttype events into commands inside the main vm
         public MainViewModel MainViewModel { get; private set; }
 
         public MainWindow(bool startingMinimized)
         {
-            MainViewModel = new MainViewModel(this, startingMinimized, imageGrid);
             InitializeComponent();
+            MainViewModel = new MainViewModel(this, startingMinimized, imageGrid);
             DataContext = MainViewModel;
         }
 
@@ -36,18 +35,6 @@ namespace WallBrite
             e.Cancel = true;
             Hide();
             base.OnClosing(e);
-        }
-
-        //TODO: make into command
-        private void SortTypeChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //MainViewModel.Library.SortTypeChanged(sender, imageGrid);
-        }
-
-        //TODO: make into command
-        private void SortDirectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //MainViewModel.Library.SortDirectionChanged(sender, imageGrid);
         }
     }
 }

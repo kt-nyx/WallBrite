@@ -68,11 +68,23 @@
                         </StackPanel>
                     </Border>
 
-                    <StackPanel Margin="0 5 0 8">
+                    <StackPanel DataContext="{Binding Library}" Margin="0 5 0 8">
+                        <StackPanel.Resources>
+                            <local:CutoffConverter x:Key="ManualSetConverter" Cutoff="1" />
+                            <Style x:Key="SortBoxStyle">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding ="{Binding IsEmpty}"
+                                        Value="true">
+                                        <Setter Property="ComboBox.IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
                         <TextBlock>Sort By:</TextBlock>
-                        <ComboBox x:Name="SortTypeBox" ItemsSource="{Binding SortTypes}" SelectedItem="{Binding SortType}"/>
+                        <ComboBox x:Name="SortTypeBox" Style="{StaticResource SortBoxStyle}" ItemsSource="{Binding SortTypes}" SelectedItem="{Binding SortType}"/>
                         <TextBlock>Sort Direction:</TextBlock>
-                        <ComboBox x:Name="SortDirectionBox" ItemsSource="{Binding SortDirections}" SelectedItem="{Binding SortDirection}"/>
+                        <ComboBox x:Name="SortDirectionBox" Style="{StaticResource SortBoxStyle}" ItemsSource="{Binding SortDirections}" SelectedItem="{Binding SortDirection}"/>
                     </StackPanel>
 
                     <Border BorderBrush="#FFABADB3" BorderThickness="0 0 0 1" Margin="0 0 0 5"></Border>

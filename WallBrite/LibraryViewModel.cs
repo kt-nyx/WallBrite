@@ -22,6 +22,10 @@ namespace WallBrite
 {
     public class LibraryViewModel : INotifyPropertyChanged
     {
+
+        private string _sortType;
+        private string _sortDirection;
+
         public ObservableCollection<WBImage> LibraryList { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -37,6 +41,36 @@ namespace WallBrite
         public double AddProgress { get; set; }
         public string AddProgressReport { get; set; }
         public bool IsEmpty { get; private set; }
+        public ListView ImageGrid { get; set; }
+        public List<string> SortTypes { get; set; }
+        public List<string> SortDirections { get; set; }
+
+        public string SortType
+        {
+            get { return _sortType; }
+            set
+            {
+                if (_sortType != value)
+                {
+                    _sortType = value;
+
+                    SortTypeChanged(_sortType);
+                }
+            }
+        }
+        public string SortDirection
+        {
+            get { return _sortDirection; }
+            set
+            {
+                if (_sortDirection != value)
+                {
+                    _sortDirection = value;
+
+                    SortDirectionChanged(_sortDirection);
+                }
+            }
+        }
 
         private AddFileProgressViewModel _addProgressViewModel;
         private readonly Notifier _notifier;
@@ -44,7 +78,7 @@ namespace WallBrite
 
         private ManagerViewModel _manager;
 
-        public LibraryViewModel(ManagerViewModel manager, Notifier notifier)
+        public LibraryViewModel(ManagerViewModel manager, Notifier notifier, ListView imageGrid)
         {
             // Create new empty library list
             LibraryList = new ObservableCollection<WBImage>();
@@ -55,6 +89,14 @@ namespace WallBrite
             _manager = manager;
 
             _notifier = notifier;
+            ImageGrid = imageGrid;
+
+            SortTypes = new List<string>(){"Brightness",
+                                           "Date Added",
+                                           "Enabled"};
+
+            SortDirections = new List<string>(){"Descending",
+                                                "Ascending"};
 
             // Create commands
             CreateCommands();
@@ -69,11 +111,23 @@ namespace WallBrite
             if (LibraryList.Count < 1)
                 IsEmpty = true;
             else
+            {
                 IsEmpty = false;
+            }
 
             _manager = manager;
 
             _notifier = notifier;
+
+            SortTypes = new List<string>(){"Brightness",
+                                           "Date Added",
+                                           "Enabled"};
+
+            SortDirections = new List<string>(){"Descending",
+                                                "Ascending"};
+
+            SortType = "Date Added";
+            SortDirection = "Ascending";
 
             // Create commands
             CreateCommands();
@@ -261,6 +315,11 @@ namespace WallBrite
         {
             _worker.CancelAsync();
 
+            if (IsEmpty && LibraryList.Count > 0)
+                SortType = "Brightness";
+                SortDirection = "Descending";
+                IsEmpty = false;
+
             // Save changes to last library file
             SaveLastLibrary();
 
@@ -312,35 +371,32 @@ namespace WallBrite
 
             OpenFileDialog dialog = (OpenFileDialog)e.Argument;
 
-            // Create streams from selected files
-            List<Stream> fileStreams = dialog.OpenFiles().ToList();
             List<string> filePaths = new List<string>(dialog.FileNames);
 
             // Do actual adding in generalized function
-            AddWork(sender, fileStreams, filePaths);
+            AddWork(sender, filePaths);
         }
 
-        private void AddWork(object sender, List<Stream> fileStreams, List<string> filePaths)
+        private void AddWork(object sender, List<string> filePaths)
         {
             // For keeping track of progress
             int numFiles = filePaths.Count;
             int progress;
 
             // Create the WBImage object for each image file and add it to library
-            for (int i = 0; i < fileStreams.Count; i++)
+            for (int i = 0; i < filePaths.Count; i++)
             {
                 // If user cancelled then exit loop and return before adding next file
                 if (_worker.CancellationPending == true) return;
 
                 // Get stream, path, and filename for current file
-                Stream stream = fileStreams[i];
                 string filePath = filePaths[i];
                 string fileName = Path.GetFileName(filePath);
 
                 string progressString = string.Format("{0}|{1}|{2}",
-                                                       fileName,
-                                                       i + 1,
-                                                       numFiles);
+                                                        fileName,
+                                                        i + 1,
+                                                        numFiles);
 
                 // Get current progress as percentage of total files
                 progress = Convert.ToInt32((double)i / numFiles * 100);
@@ -350,7 +406,8 @@ namespace WallBrite
 
                 // Creates the bitmap in the scope of the background worker (this is the performance intensive
                 // task for this whole process)
-                using (Bitmap bitmap = new Bitmap(stream))
+                //FIXME: error when other process has file open or corrupt file?; send toast notif and skip
+                using (Bitmap bitmap = new Bitmap(File.Open(filePaths[i], FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                 {
                     // Create the WBImage for this file and add it to the results list (in the main thread
                     // so that it doesn't get upset that UI-relevant objects were created in the background thread)
@@ -390,6 +447,8 @@ namespace WallBrite
             if (IsEmpty)
             {
                 _notifier.ShowSuccess("All set! WallBrite will now synchronize your wallpapers with daylight levels.");
+                SortType = "Brightness";
+                SortDirection = "Descending";
                 IsEmpty = false;
             }
 
@@ -450,32 +509,21 @@ namespace WallBrite
                                                     || filePath.EndsWith(".tiff"))
                                  .ToList();
 
-            List<Stream> fileStreams = new List<Stream>();
-            // Loop over each filePath in the array of filePaths (over each file in
-            // selected folder/subfolders)
-            foreach (string filePath in filePaths)
-            {
-                // TODO: add try catch for possible exceptions
-                // Open file stream for file at this path
-                FileStream file = File.OpenRead(filePath);
-                fileStreams.Add(file);
-            }
-
-            AddWork(sender, fileStreams, filePaths);
+            AddWork(sender, filePaths);
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="imageGrid"></param>
-        public void SortTypeChanged(string selected, ListView imageGrid)
+        /// <param name="ImageGrid"></param>
+        public void SortTypeChanged(string selected)
         {
             // Only do sort work if imageGrid already exists
-            if (imageGrid != null)
+            if (ImageGrid != null)
             {
                 // Get view for image grid
-                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ImageGrid.ItemsSource);
 
                 // Get current direction of sort to be used (if there is one); default to ascending if none
                 ListSortDirection direction;
@@ -511,14 +559,14 @@ namespace WallBrite
         ///
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="imageGrid"></param>
-        public void SortDirectionChanged(string selected, ListView imageGrid)
+        /// <param name="ImageGrid"></param>
+        public void SortDirectionChanged(string selected)
         {
             // Only do sort work if imageGrid already exists
-            if (imageGrid != null)
+            if (ImageGrid != null)
             {
                 // Get view for image grid
-                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(imageGrid.ItemsSource);
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ImageGrid.ItemsSource);
 
                 // Get current direction of sort to be used (if there is one); default to ascending if none
                 string currentSort;

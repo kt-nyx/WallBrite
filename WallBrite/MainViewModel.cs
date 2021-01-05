@@ -22,41 +22,12 @@ namespace WallBrite
 
         private readonly MainWindow _window;
         private Notifier _notifier;
-        
-        private string _sortType;
-        private string _sortDirection;
-        private ListView _imageGrid;
+        private readonly ListView _imageGrid;
 
         public LibraryViewModel Library { get; set; }
         public ManagerViewModel Manager { get; set; }
-        public List<string> SortTypes { get; set; }
-        public List<string> SortDirections { get; set; }
 
-        public string SortType
-        {
-            get { return _sortType; }
-            set
-            {
-                if (_sortType != value) {
-                    _sortType = value;
 
-                    Library.SortTypeChanged(_sortType, _imageGrid);
-                }
-            }
-        }
-        public string SortDirection
-        {
-            get { return _sortDirection; }
-            set
-            {
-                if (_sortDirection != value)
-                {
-                    _sortDirection = value;
-
-                    Library.SortDirectionChanged(_sortDirection, _imageGrid);
-                }
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public ICommand OpenCommand { get; set; }
@@ -73,35 +44,31 @@ namespace WallBrite
             if (!startingMinimized)
                 mainWindow.Show();
 
+            _imageGrid = imageGrid;
+
             // Try to pull library from last lib file
             LibraryViewModel libraryFromFile = GetLibraryFromLastLibFile(startingMinimized);
 
             // If successful, use the library from file
-            if (libraryFromFile != null)
+            if (libraryFromFile != null) {
                 Library = libraryFromFile;
+                Library.ImageGrid = _imageGrid;
+            }
             // Otherwise create new empty library
             else
-                Library = new LibraryViewModel(Manager, _notifier);
+            {
+                Library = new LibraryViewModel(Manager, _notifier, _imageGrid);
+            }
 
             // Try to pull new manager from settings file
             ManagerViewModel managerFromFile = GetManagerFromSettingsFile(startingMinimized);
 
             // If successful, use the manager from file
-            if (managerFromFile != null) 
+            if (managerFromFile != null)
                 Manager = managerFromFile;
             // If unsuccessful (e.g. no settings file exists), just create new manager with default settings
-            else 
+            else
                 Manager = new ManagerViewModel(Library, _notifier);
-
-            SortTypes = new List<string>(){"Brightness",
-                                           "Date Added",
-                                           "Enabled"};
-
-            SortDirections = new List<string>(){"Descending",
-                                                "Ascending"};
-
-            _sortType = "Brightness";
-            _sortDirection = "Descending";
 
             // Update after both manager and library created
             Library.UpdateManager(Manager);
@@ -111,7 +78,6 @@ namespace WallBrite
             Manager.CheckAndUpdate();
 
             _window = mainWindow;
-            _imageGrid = imageGrid;
 
             CreateCommands();
         }
@@ -156,7 +122,7 @@ namespace WallBrite
 
         private void NewLibrary()
         {
-            Library = new LibraryViewModel(Manager, _notifier);
+            Library = new LibraryViewModel(Manager, _notifier, _imageGrid);
             Manager.UpdateLibrary(Library);
             Manager.ResetTimers();
         }
@@ -244,6 +210,8 @@ namespace WallBrite
                 using (Stream fileStream = dialog.OpenFile())
                     // Open library using this stream
                     Library = OpenLibraryFromStream(fileStream);
+
+                Library.ImageGrid = _imageGrid;
 
                 Manager.UpdateLibrary(Library);
                 Manager.CheckAndUpdate();

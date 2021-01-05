@@ -2,12 +2,17 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
     public static class Helpers
     {
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
         public static BitmapImage GetThumbnailFromBitmap(Bitmap bitmap)
         {
             BitmapImage thumbnail;
@@ -15,19 +20,34 @@ namespace WallBrite
             // If image width larger than height; set width of thumbnail to 200 and reduce height
             // proportionally
             if (bitmap.Width >= bitmap.Height)
-                thumbnail = ImagetoBitmapSource(bitmap.GetThumbnailImage(200,
-                                                     200 * bitmap.Height / bitmap.Width,
-                                                     null, IntPtr.Zero));
+                thumbnail = BitmapToBitmapImage(new Bitmap(bitmap, new System.Drawing.Size(200,
+                                                                                           200 * bitmap.Height / bitmap.Width)));
 
             // If image height larger than width; set height of thumbnail to 200 and reduce width
             // proportionally
-            else thumbnail = ImagetoBitmapSource(bitmap.GetThumbnailImage(200 * bitmap.Width / bitmap.Height,
-                                                      200,
-                                                      null, IntPtr.Zero));
+            else
+                thumbnail = BitmapToBitmapImage(new Bitmap(bitmap, new System.Drawing.Size(200 * bitmap.Width / bitmap.Height,
+                                                                                           200)));
 
             return thumbnail;
+
         }
 
+        private static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
+        {
+            BitmapImage bitmapImage;
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+            }
+            return bitmapImage;
+        }
 
 
         /// <summary>
@@ -61,7 +81,7 @@ namespace WallBrite
         /// </summary>
         /// <param name="bitmapImage"></param>
         /// <returns></returns>
-        public static byte[] BitmapSourcetoByteArray(BitmapImage bitmapImage)
+        public static byte[] BitmapImageToByteArray(BitmapImage bitmapImage)
         {
             byte[] data;
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();
