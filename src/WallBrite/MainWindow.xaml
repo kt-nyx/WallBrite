@@ -331,7 +331,7 @@
                         </Style>
                     </TextBlock.Style>
                     <TextBlock.Inlines>
-                        <Span FontSize="40" FontWeight="Bold">Welcome to WallBrite!</Span>
+                        <Span FontSize="40" FontWeight="Bold" FontFamily="Orbitron">Welcome to WallBrite!</Span>
                         <LineBreak/>
                         <Span>WallBrite manages your desktop wallpapers by matching them up with the time of day</Span>
                     </TextBlock.Inlines>
