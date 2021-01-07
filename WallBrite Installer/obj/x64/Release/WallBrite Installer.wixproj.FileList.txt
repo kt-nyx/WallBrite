@@ -1,0 +1,7 @@
+obj\x64\Release\Product.wixobj
+obj\x64\Release\HeatGeneratedFileList.wixobj
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\x64\Release\WallBrite_Installer.msi
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\x64\Release\WallBrite_Installer.wixpdb
+obj\x64\Release\WallBrite Installer.wixproj.BindContentsFileListnull.txt
+obj\x64\Release\WallBrite Installer.wixproj.BindOutputsFileListnull.txt
+obj\x64\Release\WallBrite Installer.wixproj.BindBuiltOutputsFileListnull.txt

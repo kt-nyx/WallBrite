@@ -38,9 +38,6 @@
             <Component Id="cmpE4E1CC80D6A8BAE9A1EC369CA75ED8E6" Guid="*">
                 <File Id="fil4ECBCC0AC6251B3BA70628BCE259FB2C" KeyPath="yes" Source="$(var.HarvestPath)\WallBrite.exe.config" />
             </Component>
-            <Component Id="cmp379E80207A54349122DEAEB917372F66" Guid="*">
-                <File Id="fil26093C3CB148B385941B8D8C426CD784" KeyPath="yes" Source="$(var.HarvestPath)\WallBrite.pdb" />
-            </Component>
             <Component Id="cmpA60F8D332FFEFCB39143C1BCE291E69B" Guid="*">
                 <File Id="fil921D9BC3848E1B53C69D1ACED0B0B960" KeyPath="yes" Source="$(var.HarvestPath)\Xceed.Wpf.AvalonDock.dll" />
             </Component>
@@ -127,7 +124,6 @@
             <ComponentRef Id="cmp98F3AD510E224B94C5E56E650EBBC5A3" />
             <ComponentRef Id="cmp952979A1EA30F9712EF081B2E8CA4C89" />
             <ComponentRef Id="cmpE4E1CC80D6A8BAE9A1EC369CA75ED8E6" />
-            <ComponentRef Id="cmp379E80207A54349122DEAEB917372F66" />
             <ComponentRef Id="cmpA60F8D332FFEFCB39143C1BCE291E69B" />
             <ComponentRef Id="cmp973591499CF3FDE1BBD6F169BF3BB268" />
             <ComponentRef Id="cmp29DBBC0BF441C6AA7FC910CB87453E3B" />

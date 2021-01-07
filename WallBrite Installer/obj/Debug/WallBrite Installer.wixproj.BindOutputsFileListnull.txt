@@ -1,0 +1,2 @@
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\Debug\WallBrite_Installer.msi
+D:\Visual Studio Projects\WallBrite\WallBrite Installer\bin\Debug\WallBrite_Installer.wixpdb
