@@ -8,7 +8,7 @@ Wallpapers are rotated throughout the day based on the average brightness of ima
 
 
 ## Installation
-Latest release: 
+[Download latest release](https://github.com/MollyMayhem/WallBrite/releases/download/v1.0/WallBrite_Installer.msi)
 
 Simply download the installer (WallBrite_Installer.msi) and run it. WallBrite will be installed with a Start Menu icon and desktop icon.
 
