@@ -16,6 +16,11 @@ namespace WallBrite
     {
         public MainViewModel MainViewModel { get; private set; }
 
+        /// <summary>
+        /// Initializes the main window
+        /// </summary>
+        /// <param name="startingMinimized">true if starting minimized (ie from Windows startup),
+        /// false otherwise</param>
         public MainWindow(bool startingMinimized)
         {
             InitializeComponent();
@@ -31,8 +36,9 @@ namespace WallBrite
         protected override void OnClosing(CancelEventArgs e)
         {
             // setting cancel to true will cancel the close request
-            // so the application is not closed
             e.Cancel = true;
+            
+            // Hide (minimize) window instead of closing
             Hide();
             base.OnClosing(e);
         }
