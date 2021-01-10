@@ -18,8 +18,19 @@ using WinForms = System.Windows.Forms;
 
 namespace WallBrite
 {
+    /// <summary>
+    /// VM representing a library of WBImages; handles operations dealing with manipulating that library
+    /// (adding/removing, enabling/disabling, sorting, etc.)
+    /// </summary>
     public class LibraryViewModel : INotifyPropertyChanged
     {
+        private string _sortType;
+        private string _sortDirection;
+
+        private readonly Notifier _notifier;
+        private AddFileProgressViewModel _addProgressViewModel;
+        private BackgroundWorker _worker;
+
         /// <summary>
         /// Collection of WBImages in this library; most operations/checks are done on this collection
         /// </summary>
@@ -55,6 +66,9 @@ namespace WallBrite
         /// </summary>
         public List<string> SortDirections { get; set; }
 
+        /// <summary>
+        /// ManagerViewModel linked to this library
+        /// </summary>
         public ManagerViewModel Manager { get; set; }
 
         /// <summary>
@@ -95,7 +109,6 @@ namespace WallBrite
 
         // Commands + PropertyChangedEvent
         public ICommand EnableCommand { get; set; }
-
         public ICommand DisableCommand { get; set; }
         public ICommand RemoveCommand { get; set; }
         public ICommand AddFilesCommand { get; set; }
@@ -104,13 +117,6 @@ namespace WallBrite
         public ICommand CancelCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private string _sortType;
-        private string _sortDirection;
-
-        private readonly Notifier _notifier;
-        private AddFileProgressViewModel _addProgressViewModel;
-        private BackgroundWorker _worker;
 
         /// <summary>
         /// Creates new empty LibraryViewModel using given ManagerViewModel, Notifier, and imageGrid element

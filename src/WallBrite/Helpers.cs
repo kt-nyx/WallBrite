@@ -8,6 +8,9 @@ using System.Windows.Media.Imaging;
 
 namespace WallBrite
 {
+    /// <summary>
+    /// Some helpers for Bitmap work, partly from stack overflow ;)
+    /// </summary>
     public static class Helpers
     {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]

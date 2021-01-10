@@ -2,8 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -62,6 +60,15 @@ namespace WallBrite
             IsEnabled = true;
         }
 
+        /// <summary>
+        /// Creates WBImage from JSON file
+        /// </summary>
+        /// <param name="averageBrightness"></param>
+        /// <param name="isEnabled"></param>
+        /// <param name="addedDate"></param>
+        /// <param name="thumbnail"></param>
+        /// <param name="backgroundColor"></param>
+        /// <param name="path"></param>
         [JsonConstructor]
         public WBImage(float averageBrightness, bool isEnabled, DateTime addedDate, BitmapImage thumbnail, SolidColorBrush backgroundColor, string path)
         {
@@ -73,6 +80,11 @@ namespace WallBrite
             Path = path;
         }
 
+        /// <summary>
+        /// Gets appropriate background color for front-end; background color is a shade between black and
+        /// white representing this WBImage's brightness value
+        /// </summary>
+        /// <returns></returns>
         public SolidColorBrush GetBackgroundColor()
         {
             int backgroundBrightness = (int)Math.Round(AverageBrightness * 255);
@@ -81,6 +93,7 @@ namespace WallBrite
                                                   (byte)backgroundBrightness));
             return backgroundColor;
         }
+
         /// <summary>
         /// Sets and returns average brightness level (from fully black at 0.0 to fully white at 1.0) of this
         /// WBImage

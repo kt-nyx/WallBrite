@@ -13,8 +13,18 @@ using ToastNotifications.Position;
 
 namespace WallBrite
 {
+    /// <summary>
+    /// The main view model; represents the main window and higher-level operations; tracks the currently
+    /// used Manager and Library and pulls them from files on startup if possible; also manages toast
+    /// notifs via the notifier
+    /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        private readonly MainWindow _window;
+        private readonly ListView _imageGrid;
+        private Notifier _notifier;
+
+
         public LibraryViewModel Library { get; set; }
         public ManagerViewModel Manager { get; set; }
 
@@ -25,9 +35,6 @@ namespace WallBrite
         public ICommand OpenWindowCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly MainWindow _window;
-        private readonly ListView _imageGrid;
-        private Notifier _notifier;
 
         /// <summary>
         /// Creates new MainViewModel; attempts to pull Library and Manager from file and creates default

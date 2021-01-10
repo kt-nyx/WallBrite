@@ -6,19 +6,18 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using ToastNotifications;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Messages;
-using ToastNotifications.Position;
-using ToastNotifications.Utilities;
 
 namespace WallBrite
 {
+    /// <summary>
+    /// VM representing the "manager" which does a lot of the automatic backend work of running timers and
+    /// updating wallpapers when appropriate
+    /// Also manages the automation settings shown through the bottom panel on front-end
+    /// </summary>
     public class ManagerViewModel : INotifyPropertyChanged
     {
         // DLL Import, method reference, and constants for setting desktop wallpaper
@@ -32,21 +31,61 @@ namespace WallBrite
         private int _updateIntervalHours;
         private int _updateIntervalMins;
         private TimeSpan _checkInterval;
+        private DateTime _brightestTime;
+        private DateTime _darkestTime;
+        private DateTime _nextUpdateTime;
+        private DateTime _lastUpdateTime;
 
         private DispatcherTimer _updateTimer;
         private DispatcherTimer _progressTracker;
 
-        private DateTime _brightestTime;
-        private DateTime _darkestTime;
-
-        private DateTime _nextUpdateTime;
-        private DateTime _lastUpdateTime;
-
         private WBImage _currentImage;
-
-        
         private string _wallpaperStyle;
 
+        /// <summary>
+        /// LibraryViewModel linked to this manager
+        /// </summary>
+        public LibraryViewModel Library { get; set; }
+        /// <summary>
+        /// Current daylight value between 0 and 1; used for front-end display in bottom panel
+        /// </summary>
+        public double CurrentDaylight { get; set; }
+        /// <summary>
+        /// String diplayed in front-end progress bar representing progress between last update time and next update time
+        /// </summary>
+        public string ProgressReport { get; set; }
+        /// <summary>
+        /// Used in front-end progress bar representing progress between last update time and next update time
+        /// </summary>
+        public double Progress { get; set; }
+        /// <summary>
+        /// Thumbnail for currently set wallpaper; displayed on front-end in bottom panel
+        /// </summary>
+        public BitmapImage CurrentWallThumb { get; private set; }
+        /// <summary>
+        /// Background color for currently set wallpaper reflecting its brightness value
+        /// </summary>
+        public SolidColorBrush CurrentWallBack { get; private set; }
+        /// <summary>
+        /// Brightness value of currently set wallpaper; displayed on front-end in bottom panel
+        /// </summary>
+        public double CurrentWallBrightness { get; set; }
+        /// <summary>
+        /// Filename of currently set wallpaper; displayted on front-end in bottom panel
+        /// </summary>
+        public string CurrentWallFileName { get; set; }
+        /// <summary>
+        /// Wallpaper styles (Fit, Fill, Centered, Stretched, Tiled) determining how wallpaper is set
+        /// </summary>
+        public List<string> WallpaperStyles { get; set; }
+        /// <summary>
+        /// True when app starts on Windows startup; false when it doesn't
+        /// </summary>
+        public bool StartsOnStartup { get; set; }
+
+        /// <summary>
+        /// Darkest time of the day, set by user
+        /// </summary>
         public DateTime DarkestTime
         {
             get { return _darkestTime; }
@@ -65,6 +104,9 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Brightest time of the day, set by user
+        /// </summary>
         public DateTime BrightestTime
         {
             get { return _brightestTime; }
@@ -77,13 +119,15 @@ namespace WallBrite
                 CurrentDaylight = GetDaylightValue(now);
 
                 CheckAndUpdate();
-                
 
                 // Notify change on brightest time
                 NotifyPropertyChanged("BrightestTime");
             }
         }
 
+        /// <summary>
+        /// Hour component of maximum interval between wallpaper updates, set by user
+        /// </summary>
         public int UpdateIntervalHours
         {
             get { return _updateIntervalHours; }
@@ -117,6 +161,9 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Minute component of maximum interval between wallpaper updates, set by user
+        /// </summary>
         public int UpdateIntervalMins
         {
             get { return _updateIntervalMins; }
@@ -135,10 +182,14 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Wallpaper style (Fit, Fill, Stretched, Centered, Tiled) set via front-end button command
+        /// </summary>
         public string WallpaperStyle
         {
             get { return _wallpaperStyle; }
-            set { 
+            set
+            {
                 _wallpaperStyle = value;
 
                 // Update current wallpaper to reflect style change (if current wall has been set already)
@@ -147,32 +198,25 @@ namespace WallBrite
             }
         }
 
-        public LibraryViewModel Library { get; set; }
-        public double CurrentDaylight { get; set; }
-        public string ProgressReport { get; set; }
-        public double Progress { get; set; }
-        public BitmapImage CurrentWallThumb { get; private set; }
-        public SolidColorBrush CurrentWallBack { get; private set; }
-        public double CurrentWallBrightness { get; set; }
-        public string CurrentWallFileName { get; set; }
-        public List<string> WallpaperStyles { get; set; }
-        public bool StartsOnStartup { get; set; }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        // Commands + PropertyChangedEvent
         public ICommand ManualSetCommand { get; set; }
+
         public ICommand StartupSetCommand { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Creates new ManagerViewModel using default settings and given library
+        /// </summary>
+        /// <param name="library">LibraryViewModel representing library to be used with this manager</param>
         public ManagerViewModel(LibraryViewModel library)
         {
-
-            CreateCommands();
-
             // Set assigned library
             Library = library;
 
             // Set default property values
-            // Update interval 30 mins, brightest time 1:00 PM, darkest time 11:00 PM
+            // Update interval 1 min; brightest time 1:00 PM; darkest time 11:00 PM; start on startup false;
+            // Fill wallpaper style
             _updateIntervalHours = 0;
             _updateIntervalMins = 1;
             _checkInterval = new TimeSpan(_updateIntervalMins, _updateIntervalHours, 0);
@@ -182,21 +226,29 @@ namespace WallBrite
             StartsOnStartup = false;
             WallpaperStyle = "Fill";
 
+            // Create WallpaperStyles
             WallpaperStyles = new List<string>(){"Tiled",
                                                 "Centered",
                                                 "Stretched",
                                                 "Fill",
                                                 "Fit"};
 
-
+            // Create timers and start checking
             CreateTimers();
             CheckAndUpdate();
+
+            CreateCommands();
         }
 
+        /// <summary>
+        /// Creates ManagerViewModel using given library and settings represented by given ManagerSettings
+        /// object
+        /// </summary>
+        /// <param name="library">LibraryViewModel representing library to be used with this manager</param>
+        /// <param name="settings">ManagerSettings object representing settings to be used</param>
         public ManagerViewModel(LibraryViewModel library, ManagerSettings settings)
         {
-            CreateCommands();
-
+            // Set assigned library
             Library = library;
 
             // Pull settings from the settings object
@@ -208,39 +260,64 @@ namespace WallBrite
             StartsOnStartup = settings.StartsOnStartup;
             WallpaperStyle = settings.WallpaperStyle;
 
+            // Create WallpaperStyles
             WallpaperStyles = new List<string>(){"Tiled",
                                                 "Centered",
                                                 "Stretched",
                                                 "Fill",
                                                 "Fit"};
 
+            // Create timers and start checking
             CreateTimers();
             CheckAndUpdate();
+
+            CreateCommands();
         }
 
-
-        private void CreateCommands()
+        /// <summary>
+        /// Higher-level function for checking daylight + updating wallpaper if enough change has been
+        /// detected; checks whether current wallpaper is different from the wallpaper that should be set at
+        /// this time; if it is it sets that wallpaper
+        /// Also updates the next update time and resets it to blank if one cannot be found
+        /// </summary>
+        /// <returns>True if the current wallpaper was changed to another, false if not</returns>
+        public bool CheckAndUpdate()
         {
-            // Create commands
-            ManualSetCommand = new RelayCommand(Set);
-            StartupSetCommand = new RelayCommand((object s) => SetStartupKey());
+            bool changed = false;
+
+            // Check for change in wall
+            WBImage image = CheckforChange();
+
+            // If there is change, update the wall to the new one
+            if (image != null)
+            {
+                SetWall(image, WallpaperStyle);
+                changed = true;
+            }
+
+            // Find the next time when wallpaper will change
+            _nextUpdateTime = FindNextUpdateTime();
+
+            // Restart the timer if a valid next update time was found
+            if (_nextUpdateTime != new DateTime())
+            {
+                _updateTimer.Interval = _nextUpdateTime.Subtract(DateTime.Now);
+                _updateTimer.Start();
+            }
+            // Otherwise reset the timers (sets progress to blank, giving user 'wallpaper will not change'
+            // message in the progress bar)
+            else
+            {
+                ResetTimers();
+            }
+
+            return changed;
         }
 
-        private void CreateTimers()
-        {
-            // Create timer thread for updating walls
-            _updateTimer = new DispatcherTimer { Interval = _checkInterval };
-            _updateTimer.Tick += (object s, EventArgs a) => CheckAndUpdate();
-
-            // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
-            _progressTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
-            _progressTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
-
-            // Set start time as now and start the timers
-            _lastUpdateTime = DateTime.Now;
-            _updateTimer.Start();
-            _progressTracker.Start();
-        }
+        /// <summary>
+        /// Resets timers and update times; restarts timers and sets update times to DateTime.MinValue
+        /// (DateTime equivalent of a null value)
+        /// </summary>
         public void ResetTimers()
         {
             _updateTimer.Stop();
@@ -252,23 +329,15 @@ namespace WallBrite
             _progressTracker.Start();
         }
 
-        private void SetStartupKey()
-        {
-            // Add or remove the registry key to start on startup depending on new flag setting
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey
-            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-            if (StartsOnStartup)
-                rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location + " -minimized");
-            else
-                rk.DeleteValue("WallBrite", false);
-        }
-
+        /// <summary>
+        /// Saves current manager settings to AppData file
+        /// </summary>
         public void SaveSettings()
         {
+            // Get AppData directory
             string wallBriteAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WallBrite";
 
-            // Create folder for storing settings (if folder doesn't exist already)
+            // Create AppData folder if it doesn't exist already
             if (!Directory.Exists(wallBriteAppDataDirectory))
             {
                 Directory.CreateDirectory(wallBriteAppDataDirectory);
@@ -285,10 +354,62 @@ namespace WallBrite
                 WallpaperStyle = WallpaperStyle
             };
 
-            // Create settings file in directory and serialize settings object to it
+            // Create settings file in directory (or overwrite existing) and serialize settings object to it
             File.WriteAllText(wallBriteAppDataDirectory + "\\Settings.json", JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
 
+        /// <summary>
+        /// Creates commands used from front-end buttons
+        /// </summary>
+        private void CreateCommands()
+        {
+            // Create commands
+            ManualSetCommand = new RelayCommand(Set);
+            StartupSetCommand = new RelayCommand((object s) => SetStartupKey());
+        }
+
+        /// <summary>
+        /// Creates and starts timers to be used by manager for checking daylight + updating wallpapers
+        /// </summary>
+        private void CreateTimers()
+        {
+            // Create timer thread for updating walls
+            _updateTimer = new DispatcherTimer { Interval = _checkInterval };
+            _updateTimer.Tick += (object s, EventArgs a) => CheckAndUpdate();
+
+            // Create timer that keeps track of time remaining on this ^^^ timer (checks every 1/2 second)
+            _progressTracker = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1) };
+            _progressTracker.Tick += (object s, EventArgs a) => UpdateTimerProgress();
+
+            // Set start time as now and start the timers
+            _lastUpdateTime = DateTime.Now;
+            _updateTimer.Start();
+            _progressTracker.Start();
+        }
+
+        /// <summary>
+        /// Sets or deletes the Windows startup registry key (determines whether this app starts on Windows
+        /// startup)
+        /// Result depends on the status of the StartsOnStartup property which is set through data binding
+        /// in front-end (via taskbar button); if true, will set the key; if false, will delete the key (if
+        /// it exists)
+        /// </summary>
+        private void SetStartupKey()
+        {
+            // Get Windows startup registry key
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey
+            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            if (StartsOnStartup)
+                rk.SetValue("WallBrite", System.Reflection.Assembly.GetExecutingAssembly().Location + " -minimized");
+            else
+                rk.DeleteValue("WallBrite", false);
+        }
+
+        /// <summary>
+        /// Update progress between last update time and next update time; diplayed on front-end via
+        /// progress bar in bottom panel
+        /// </summary>
         private void UpdateTimerProgress()
         {
             if (_nextUpdateTime != DateTime.MinValue)
@@ -315,47 +436,14 @@ namespace WallBrite
             }
         }
 
-        public bool CheckAndUpdate()
-        {
-            bool changed = false;
-
-            // Check for change in wall
-            WBImage image = CheckforChange();
-
-            // If there is change, update the wall to the new one
-            if (image != null)
-            {
-                SetWall(image, WallpaperStyle);
-                changed = true;
-            }
-
-
-            // Find the next time when wallpaper will actually change
-            _nextUpdateTime = FindNextUpdateTime();
-
-            // Restart the timer if a valid next update time was found
-            if (_nextUpdateTime != new DateTime())
-            {
-                _updateTimer.Interval = _nextUpdateTime.Subtract(DateTime.Now);
-                _updateTimer.Start();
-            }
-            // Otherwise set the timers to blank
-            else
-            {
-                ResetTimers();
-            }
-
-            return changed;
-        }
-
         /// <summary>
         /// Checks whether there has been enough of a change in daylight setting to warrant a wallpaper change, and if there has been,
-        /// returns the new wallpaper image
+        /// returns the WBImage representing the new wallpaper to be changed to
         /// </summary>
         /// <returns>
-        /// WBImage: the new wallpaper, if there has been enough change in daylight setting to warrant a wallpaper change
-        /// null: if there has not been enough change in daylight setting to warrant wallpaper change;
-        ///         or there are no images in library
+        /// WBImage representing the new wallpaper, if there has been enough change in daylight setting to warrant a wallpaper change;
+        /// null if there has not been enough change in daylight setting to warrant wallpaper change
+        /// or there are no images in library
         /// </returns>
         private WBImage CheckforChange()
         {
@@ -376,12 +464,26 @@ namespace WallBrite
                 {
                     return checkImage;
                 }
+                // If new image is the same then no change will occur; return null
                 else return null;
             }
+
             // If no images in library, just return null
             return null;
         }
 
+        /// <summary>
+        /// Models the next 24-hour day using the current settings and searches for the next time that
+        /// a wallpaper change will occur; returns that time if it is found, returns a "blank" new DateTime()
+        /// if no update will occur in 24 hours (i.e. will not occur at all with current settings);
+        /// Also sets the front-end progress bar string to reflect that wallpaper will not change if this is
+        /// the case
+        /// </summary>
+        /// <returns>
+        /// DateTime representing time that next wallpaper update will occur if it is found,
+        /// "blank" DateTime with value == new DateTime() == DateTime.Min if this time is not found (i.e.
+        /// wallpaper will not update with the current settings
+        /// </returns>
         private DateTime FindNextUpdateTime()
         {
             // Only do checks if there's at least 2 images in library; otherwise wallpaper will not change
@@ -424,7 +526,7 @@ namespace WallBrite
                 // In this case, update progress report to reflect this and return a basic DateTime
                 ProgressReport = "Wallpaper will not change with current settings";
                 return new DateTime();
-            } 
+            }
             // If < 2 images in library, wallpaper will not change
             else
             {
@@ -433,6 +535,17 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Returns image in library with brightness value closest to the daylight value at given DateTime time
+        /// with current manager settings; returns null if no images in library to work with
+        /// </summary>
+        /// <param name="time">DateTime to be used to compare daylight value with library images' brightness
+        /// values</param>
+        /// <returns>
+        /// WBImage in library with brightness value closest to the daylight value at given
+        /// DateTime time using current manager settings;
+        /// null if no images in library
+        /// </returns>
         private WBImage FindClosestImage(DateTime time)
         {
             // Only search for closest if there are images in the library
@@ -450,15 +563,23 @@ namespace WallBrite
                                                            ? x : y);
                 return closestImage;
             }
-            // Otherwise throw an exception
+
+            // Return null if no images in library
             else
             {
-                //TODO: add try-catch for this somewhere
-                throw new InvalidOperationException("Can't find closest image in library at given time; " +
-                                                    "No images in library");
+                return null;
             }
         }
 
+        /// <summary>
+        /// Returns Daylight value (double between minimum 0 and maximum 1) representing the daylight amount at
+        /// the given DateTime time using current manager settings
+        /// </summary>
+        /// <param name="time">DateTime to be used to find daylight value</param>
+        /// <returns>
+        /// Daylight value (double between minimum 0 and maximum 1) representing the daylight amount at
+        /// the given DateTime time using current manager settings
+        /// </returns>
         private double GetDaylightValue(DateTime time)
         {
             // Get the current time in minutes since midnight
@@ -577,6 +698,12 @@ namespace WallBrite
             return daylightSetting;
         }
 
+        /// <summary>
+        /// Sets the wallpaper to the WBImage represented by the selection sent from the front-end
+        /// (front-end sends a collection representing the selected front-end element, which is converted
+        /// into the relevent WBImage)
+        /// </summary>
+        /// <param name="collection"></param>
         private void Set(object collection)
         {
             // Cast selected image and set it as wall
@@ -585,6 +712,14 @@ namespace WallBrite
             SetWall(selectedImage, WallpaperStyle);
         }
 
+        /// <summary>
+        /// Sets desktop wallpaper to given WBImage using given style (fill, fit, tiled, etc.)
+        /// </summary>
+        /// <param name="image">WBImage to be set as wallpaper</param>
+        /// <param name="style">
+        /// Wallpaper style to be used when setting:
+        /// "Tiled", "Centered", "Stretched", "Fit", or "Fill"
+        /// </param>
         private void SetWall(WBImage image, string style)
         {
             // Taken partly from https://stackoverflow.com/questions/1061678/change-desktop-wallpaper-using-code-in-net,
@@ -636,7 +771,7 @@ namespace WallBrite
             _lastUpdateTime = DateTime.Now;
         }
 
-        protected void NotifyPropertyChanged(String info)
+        protected void NotifyPropertyChanged(string info)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
         }

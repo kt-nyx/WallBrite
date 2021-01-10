@@ -15,6 +15,12 @@ namespace WallBrite
     {
         private MainWindow _mainWindow;
 
+        /// <summary>
+        /// Starts app minimized or with window open depending on whether -minimized flag is set (unless
+        /// manually run through cmd, this is only set if running from windows startup
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             // Check for start minimized argument
@@ -28,6 +34,11 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Saves last used library and current manager settings before exiting app
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             // Save current library as last library before exiting
