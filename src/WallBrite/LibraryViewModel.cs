@@ -13,9 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using ToastNotifications;
-using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
-using ToastNotifications.Position;
 using WinForms = System.Windows.Forms;
 
 namespace WallBrite
@@ -31,26 +29,32 @@ namespace WallBrite
         /// Progress during add file operation (0% - 100%); determines progress on front-end progress bar
         /// </summary>
         public double AddProgress { get; set; }
+
         /// <summary>
         /// Text displaying progress during add file operation; displays inside front-end progress bar
         /// </summary>
         public string AddProgressReport { get; set; }
+
         /// <summary>
         /// Whether library is empty (i.e. whether LibraryList is empty)
         /// </summary>
         public bool IsEmpty { get; private set; }
+
         /// <summary>
         /// Front-end ListView where images are displayed
         /// </summary>
         public ListView ImageGrid { get; set; }
+
         /// <summary>
         /// Sort types (Brightness, Date Added, Enabled) used for ImageGrid on front-end
         /// </summary>
         public List<string> SortTypes { get; set; }
+
         /// <summary>
         /// Sort directions (Ascending, Descending) used for ImageGrid on front-end
         /// </summary>
         public List<string> SortDirections { get; set; }
+
         public ManagerViewModel Manager { get; set; }
 
         /// <summary>
@@ -70,6 +74,7 @@ namespace WallBrite
                 }
             }
         }
+
         /// <summary>
         /// Currently used sort direction (Ascending, Descending) used for ImageGrid on front-end
         /// </summary>
@@ -90,12 +95,14 @@ namespace WallBrite
 
         // Commands + PropertyChangedEvent
         public ICommand EnableCommand { get; set; }
+
         public ICommand DisableCommand { get; set; }
         public ICommand RemoveCommand { get; set; }
         public ICommand AddFilesCommand { get; set; }
         public ICommand AddFolderCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand CancelCommand { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _sortType;
@@ -176,20 +183,6 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// Creates commands used from front-end buttons
-        /// </summary>
-        private void CreateCommands()
-        {
-            EnableCommand = new RelayCommand(Enable);
-            DisableCommand = new RelayCommand(Disable);
-            RemoveCommand = new RelayCommand(Remove);
-            AddFilesCommand = new RelayCommand((object s) => AddFiles());
-            AddFolderCommand = new RelayCommand((object s) => AddFolder());
-            SaveCommand = new RelayCommand((object s) => SaveLibrary());
-            CancelCommand = new RelayCommand((object s) => CancelAdd());
-        }
-
-        /// <summary>
         /// Checks for any missing images in library (i.e. image exists in library but not on disk); gives
         /// user message box notif and returns true if missing image(s) found; returns false otherwise
         /// </summary>
@@ -250,71 +243,17 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// Saves current library via user save-file dialog; also saves it as last used in AppData file
+        /// Creates commands used from front-end buttons
         /// </summary>
-        private void SaveLibrary()
+        private void CreateCommands()
         {
-            // Create file dialog
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = "WallBrite Library File (*.json)|*.json"
-            };
-
-            // Open file dialog and only save if 'Save' is clicked
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
-            }
-
-            // Save this as last library as well
-            SaveLastLibrary();
-        }
-
-        /// <summary>
-        /// Adds given WBImage at given filePath to the library if it is not already in library
-        /// </summary>
-        /// <param name="image"></param>
-        /// <param name="filePath"></param>
-        public void AddImage(WBImage image)
-        {
-            // Give user message and don't add this image if it is already in library
-            if (LibraryList.Any(checkImage => checkImage.Path.Equals(image.Path)))
-            {
-                _notifier.ShowInformation(string.Format("{0} was not added since it is already in the library",
-                                                         Path.GetFileName(image.Path)));
-            }
-            // Otherwise add the image to the library
-            else
-            {
-                LibraryList.Add(image);
-            }
-        }
-
-        /// <summary>
-        /// Remove given collection of controls (representing WBImages) from library; used with front-end button command
-        /// </summary>
-        /// <param name="collection">Collection of controls representing WBImages to be removed (object type since coming from command)</param>
-        private void Remove(object collection)
-        {
-            // Cast the collection of controls to a collection of WBImages
-            System.Collections.IList items = (System.Collections.IList)collection;
-            var selectedImages = items.Cast<WBImage>();
-
-            // Remove each WBImage in the collection from the library list
-            foreach (WBImage image in selectedImages.ToList())
-            {
-                LibraryList.Remove(image);
-            }
-
-            // Set empty flag if library is empty after removal
-            if (LibraryList.Count < 1)
-                IsEmpty = true;
-
-            // Save changes to last library file
-            SaveLastLibrary();
-
-            // Update manager
-            Manager.CheckAndUpdate();
+            EnableCommand = new RelayCommand(Enable);
+            DisableCommand = new RelayCommand(Disable);
+            RemoveCommand = new RelayCommand(Remove);
+            SaveCommand = new RelayCommand((object s) => SaveLibrary());
+            AddFilesCommand = new RelayCommand((object s) => AddFiles());
+            AddFolderCommand = new RelayCommand((object s) => AddFolder());
+            CancelCommand = new RelayCommand((object s) => CancelAdd());
         }
 
         /// <summary>
@@ -363,13 +302,60 @@ namespace WallBrite
             Manager.CheckAndUpdate();
         }
 
-        
+        /// <summary>
+        /// Remove given collection of controls (representing WBImages) from library; used with front-end button command
+        /// </summary>
+        /// <param name="collection">Collection of controls representing WBImages to be removed (object type since coming from command)</param>
+        private void Remove(object collection)
+        {
+            // Cast the collection of controls to a collection of WBImages
+            System.Collections.IList items = (System.Collections.IList)collection;
+            var selectedImages = items.Cast<WBImage>();
+
+            // Remove each WBImage in the collection from the library list
+            foreach (WBImage image in selectedImages.ToList())
+            {
+                LibraryList.Remove(image);
+            }
+
+            // Set empty flag if library is empty after removal
+            if (LibraryList.Count < 1)
+                IsEmpty = true;
+
+            // Save changes to last library file
+            SaveLastLibrary();
+
+            // Update manager
+            Manager.CheckAndUpdate();
+        }
+
+        /// <summary>
+        /// Saves current library via user save-file dialog; also saves it as last used in AppData file; used
+        /// via front-end command button
+        /// </summary>
+        private void SaveLibrary()
+        {
+            // Create file dialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "WallBrite Library File (*.json)|*.json"
+            };
+
+            // Open file dialog and only save if 'Save' is clicked
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(LibraryList, Formatting.Indented));
+            }
+
+            // Save this as last library as well
+            SaveLastLibrary();
+        }
 
         /// <summary>
         /// Adds image files to library with user open-file dialog; uses background worker to add the files
         /// and uses this thread to display the add operation's progress to user
         /// </summary>
-        public void AddFiles()
+        private void AddFiles()
         {
             // Create OpenFileDialog to browse files
             OpenFileDialog dialog = new OpenFileDialog
@@ -403,25 +389,10 @@ namespace WallBrite
         }
 
         /// <summary>
-        /// Sends AddWork the filePaths needed to do add operation
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddFilesWork(object sender, DoWorkEventArgs e)
-        {
-            // Get filepaths from OpenFileDialog
-            OpenFileDialog dialog = (OpenFileDialog)e.Argument;
-            List<string> filePaths = new List<string>(dialog.FileNames);
-
-            // Do actual adding in generalized function using these filePaths
-            AddWork(sender, filePaths);
-        }
-
-        /// <summary>
         /// Adds image files to library with user open-folder dialog; uses background worker to add the files
         /// and uses this thread to display the add operation's progress to user
         /// </summary>
-        public void AddFolder()
+        private void AddFolder()
         {
             // Create FolderBrowserDialog to browse folders
             WinForms.FolderBrowserDialog dialog = new WinForms.FolderBrowserDialog();
@@ -445,6 +416,21 @@ namespace WallBrite
                 // Run worker
                 _worker.RunWorkerAsync(dialog);
             }
+        }
+
+        /// <summary>
+        /// Sends AddWork the filePaths needed to do add operation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddFilesWork(object sender, DoWorkEventArgs e)
+        {
+            // Get filepaths from OpenFileDialog
+            OpenFileDialog dialog = (OpenFileDialog)e.Argument;
+            List<string> filePaths = new List<string>(dialog.FileNames);
+
+            // Do actual adding in generalized function using these filePaths
+            AddWork(sender, filePaths);
         }
 
         /// <summary>
@@ -543,9 +529,15 @@ namespace WallBrite
             }
         }
 
+        /// <summary>
+        /// Update progress of add operation; changes front-end progress bar percentage and string
+        /// displayed inside the progress bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateAddProgress(object sender, ProgressChangedEventArgs e)
         {
-            // Update front-end progress percentage
+            // Update progress percentage
             AddProgress = e.ProgressPercentage;
 
             // Parse arguments from UserState
@@ -561,12 +553,19 @@ namespace WallBrite
                                                 currentFile);
         }
 
+        /// <summary>
+        /// Closes add operation progress window and notifies user that operation is complete (if this is
+        /// their first add, i.e. adding files to empty library); also saves the new library to AppData file
+        /// and updates the Manager to reflect changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             _addProgressViewModel.CloseWindow();
 
-            // If library was empty before the add, give 'all set' notification to user and reset the empty
-            // flag
+            // If this is the first add (i.e. starting with empty library) give 'all set' notification to
+            // user, set default sort and reset the empty flag
             if (IsEmpty)
             {
                 _notifier.ShowSuccess("All set! WallBrite will now synchronize your wallpapers with daylight levels.");
@@ -582,16 +581,26 @@ namespace WallBrite
             Manager.CheckAndUpdate();
         }
 
+        /// <summary>
+        /// Cancels the add operation and notifies user if at least one add in the operation completed
+        /// successfully; also saves the new library to AppData file and updates the Manager to reflect changes
+        /// </summary>
         private void CancelAdd()
         {
             _worker.CancelAsync();
 
+            // If this is the first add (i.e. starting with empty library) and operation successfully managed
+            // to add at least one file, give 'all set' notification to user, set default sort and reset the
+            // empty flag
             if (IsEmpty && LibraryList.Count > 0)
+            {
+                _notifier.ShowSuccess("All set! WallBrite will now synchronize your wallpapers with daylight levels.");
                 SortType = "Brightness";
-            SortDirection = "Descending";
-            IsEmpty = false;
+                SortDirection = "Descending";
+                IsEmpty = false;
+            }
 
-            // Save changes to last library file
+            // Save any changes to last library file
             SaveLastLibrary();
 
             // Update manager
@@ -599,13 +608,35 @@ namespace WallBrite
         }
 
         /// <summary>
-        ///
+        /// Adds given WBImage at given filePath to the library if it is not already in library
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="ImageGrid"></param>
-        public void SortTypeChanged(string selected)
+        /// <param name="image"></param>
+        /// <param name="filePath"></param>
+        private void AddImage(WBImage image)
         {
-            // Only do sort work if imageGrid already exists
+            // Give user message and don't add this image if it is already in library
+            if (LibraryList.Any(checkImage => checkImage.Path.Equals(image.Path)))
+            {
+                _notifier.ShowInformation(string.Format("{0} was not added since it is already in the library",
+                                                         Path.GetFileName(image.Path)));
+            }
+            // Otherwise add the image to the library
+            else
+            {
+                LibraryList.Add(image);
+            }
+        }
+
+        /// <summary>
+        /// Updates ListView element displaying images (ImageGrid) to reflect sort type change
+        /// </summary>
+        /// <param name="selected">Sort type selected by user; either
+        /// "Brightness",
+        /// "Date Added",
+        /// or "Enabled"</param>
+        private void SortTypeChanged(string selected)
+        {
+            // Only do sort work if ImageGrid already exists
             if (ImageGrid != null)
             {
                 // Get view for image grid
@@ -642,13 +673,14 @@ namespace WallBrite
         }
 
         /// <summary>
-        ///
+        /// Updates ListView element displaying images (ImageGrid) to reflect sort direction change
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="ImageGrid"></param>
-        public void SortDirectionChanged(string selected)
+        /// <param name="selected">Sort direction selected by user; either
+        /// "Ascending"
+        /// or "Descending"</param>
+        private void SortDirectionChanged(string selected)
         {
-            // Only do sort work if imageGrid already exists
+            // Only do sort work if ImageGrid already exists
             if (ImageGrid != null)
             {
                 // Get view for image grid
@@ -679,5 +711,6 @@ namespace WallBrite
                 }
             }
         }
+
     }
 }

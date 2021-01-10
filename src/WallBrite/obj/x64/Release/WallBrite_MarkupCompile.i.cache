@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\Visual Studio Projects\WallBrite\WallBrite\obj\x64\Release\
+D:\Visual Studio Projects\WallBrite\src\WallBrite\obj\x64\Release\
 WallBrite
 none
 false
 
-D:\Visual Studio Projects\WallBrite\WallBrite\App.xaml
+D:\Visual Studio Projects\WallBrite\src\WallBrite\App.xaml
 3-441162518
 
 20-1757670532
-26859154693
+26414972215
 AddFileProgressWindow.xaml;MainWindow.xaml;Resources.xaml;
 
 False
