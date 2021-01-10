@@ -8,7 +8,7 @@ Wallpapers are rotated throughout the day based on the average brightness of ima
 
 
 ## Installation
-[Download latest release](https://github.com/MollyMayhem/WallBrite/releases/download/v1.0/WallBrite_Installer.msi)
+[Download latest release](https://github.com/MollyMayhem/WallBrite/releases/download/v1.0.1/WallBrite_Installer.msi)
 
 Simply download the installer (WallBrite_Installer.msi) and run it. WallBrite will be installed with a Start Menu icon and desktop icon.
 
@@ -40,7 +40,7 @@ You can use this icon to re-open WallBrite, actually exit it, or **toggle WallBr
 
 
 ## Known Issues
-- WallBrite *may* crash when trying to add an ultra-large image file to the library (giving an Out of Memory exception). This is due to the fact that WallBrite must convert image files into Bitmaps within .NET in order to easily pull data from pixels (i.e. get the average brightness of an image). Unfortunately, aside from manually pulling pixel data from raw image data (which would differ for each image format and would require a LOT of in-depth reading on how these formats work), I haven't found any workaround so I have to use the memory-inefficient Bitmap types in .NET. If anybody has any ideas for a workaround to this or could help me understand how to work with the raw image data in a simple way, please let me know! :)
+- WallBrite ~~*may* crash when trying to add an ultra-large image file to the library (giving an Out of Memory exception).~~ will notify you if an image is too large to add to the library. This is due to the fact that WallBrite must convert image files into Bitmaps within .NET in order to easily pull data from pixels (i.e. get the average brightness of an image). For the most part, this shouldn't cause any problems since it only seems to occur with ULTRA large images (>~800MB) on the new 64-bit release but if you have an insanely large image you may not be able use it with WallBrite. Unfortunately, aside from manually pulling pixel data from raw image data (which would differ for each image format and would require a LOT of in-depth reading on how these formats work), I haven't found any workaround so I have to use the memory-inefficient Bitmap types in .NET. If anybody has any ideas for a workaround to this or could help me understand how to work with the raw image data in a simple way, please let me know! :)
 
 
 ## Credits
