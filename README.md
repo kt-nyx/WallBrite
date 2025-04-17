@@ -49,4 +49,3 @@ Icons made by [Freepik](https://www.flaticon.com/authors/freepik) from [Flaticon
 
 ## License
 Released under GPL 3.0 license
-GPL © Bradley Cross
