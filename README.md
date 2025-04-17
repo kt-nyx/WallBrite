@@ -2,7 +2,7 @@
 
 
 ## Description
-WallBrite is a **desktop wallpaper utility** which syncs your wallpapers with the time of day. Add your wallpapers to its library and WallBrite will set bright ones during the day and dark ones at night!
+WallBrite is a **desktop wallpaper utility** which syncs your wallpapers with the time of day. Add your wallpapers to its library and WallBrite will set **bright** ones during the **day** and **dark** ones at **night**!
 ![Diagram](https://i.imgur.com/DlSmbQW.png)\
 Wallpapers are rotated throughout the day based on the average brightness of images and the time of day. The frequency of rotation, wallpapers in rotation, and times of day which are brightest/darkest are all configurable within the application!
 
